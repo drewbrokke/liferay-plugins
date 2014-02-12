@@ -2,9 +2,6 @@
 	"layoutTemplateId": "2_columns_iii",
 	"privatePages": [
 		{
-			"friendlyURL": "/home",
-			"name": "Welcome",
-			"title": "Welcome",
 			"columns": [
 				[
 					"mando.html",
@@ -14,8 +11,8 @@
 							"articleId": "stuff.html",
 							"groupId": "${groupId}",
 							"portletSetupShowBorders": "true",
-							"portletSetupUseCustomTitle": "true",
-							"portletSetupTitle_en_US": "Who We Are"
+							"portletSetupTitle_en_US": "Who We Are",
+							"portletSetupUseCustomTitle": "true"
 						}
 					}
 				],
@@ -33,10 +30,13 @@
 						"portletId": "73"
 					}
 				]
-			]
+			],
+			"friendlyURL": "/home",
+			"name": "Welcome",
+			"title": "Welcome",
 		},
 		{
-			"columns": [	
+			"columns": [
 				[
 					{
 						"portletId": "56",
@@ -44,8 +44,8 @@
 							"articleId": "Mission Statement.html",
 							"groupId": "${groupId}",
 							"portletSetupShowBorders": "true",
+							"portletSetupTitle_en_US": "Mission Statement",
 							"portletSetupUseCustomTitle": "true",
-							"portletSetupTitle_en_US": "Mission Statement"
 						}
 					}
 				],
@@ -77,8 +77,8 @@
 							"articleId": "Audio.html",
 							"groupId": "${groupId}",
 							"portletSetupShowBorders": "true",
-							"portletSetupUseCustomTitle": "true",
-							"portletSetupTitle_en_US": "Audio"
+							"portletSetupTitle_en_US": "Audio",
+							"portletSetupUseCustomTitle": "true"
 						}
 					},
 					{
@@ -87,8 +87,8 @@
 							"articleId": "Video.html",
 							"groupId": "${groupId}",
 							"portletSetupShowBorders": "true",
-							"portletSetupUseCustomTitle": "true",
-							"portletSetupTitle_en_US": "Video"
+							"portletSetupTitle_en_US": "Video",
+							"portletSetupUseCustomTitle": "true"
 						}
 					},
 					{
@@ -97,8 +97,8 @@
 							"articleId": "Carousel.html",
 							"groupId": "${groupId}",
 							"portletSetupShowBorders": "true",
-							"portletSetupUseCustomTitle": "true",
-							"portletSetupTitle_en_US": "Photos"
+							"portletSetupTitle_en_US": "Photos",
+							"portletSetupUseCustomTitle": "true"
 						}
 					}
 				],
@@ -118,8 +118,6 @@
 				]
 			],
 			"friendlyURL": "/media",
-			"name": "Media",
-			"title": "Media",
 			"layouts": [
 				{
 					"columns": [
@@ -130,8 +128,8 @@
 								"articleId": "Audio.html",
 								"groupId": "${groupId}",
 								"portletSetupShowBorders": "true",
-								"portletSetupUseCustomTitle": "true",
-								"portletSetupTitle_en_US": "Who We Are"
+								"portletSetupTitle_en_US": "Who We Are",
+								"portletSetupUseCustomTitle": "true"
 								}
 							}
 						],
@@ -163,8 +161,8 @@
 								"articleId": "Video.html",
 								"groupId": "${groupId}",
 								"portletSetupShowBorders": "true",
-								"portletSetupUseCustomTitle": "true",
-								"portletSetupTitle_en_US": "Who We Are"
+								"portletSetupTitle_en_US": "Who We Are",
+								"portletSetupUseCustomTitle": "true"
 								}
 							}
 						],
@@ -196,8 +194,8 @@
 								"articleId": "Carousel.html",
 								"groupId": "${groupId}",
 								"portletSetupShowBorders": "true",
-								"portletSetupUseCustomTitle": "true",
-								"portletSetupTitle_en_US": "Who We Are"
+								"portletSetupTitle_en_US": "Who We Are",
+								"portletSetupUseCustomTitle": "true"
 								}
 							}
 						],
@@ -220,7 +218,9 @@
 					"name": "Photos",
 					"title": "Photos"
 				}
-			]
+			],
+			"name": "Media",
+			"title": "Media"
 		},
 		{
 			"columns": [
