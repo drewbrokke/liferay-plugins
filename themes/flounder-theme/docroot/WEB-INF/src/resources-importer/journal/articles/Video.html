@@ -1,0 +1,21 @@
+<h3>Video</h3>
+
+<p>Here you can find all the videos you want!</p>
+
+<div id="myVideo"></div>
+
+<script>
+	AUI().use(
+		'aui-video',
+		function(A) {
+			new A.Video(
+				{
+					boundingBox: '#myVideo',
+					height: 300,
+					url: 'http://alloyui.com/video/movie.mp4',
+					width: 465
+				}
+			).render()
+		}
+	);
+</script>
