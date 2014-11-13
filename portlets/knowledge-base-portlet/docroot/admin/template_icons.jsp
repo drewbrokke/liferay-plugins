@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -35,10 +35,9 @@ long kbTemplateId = ParamUtil.getLong(request, "kbTemplateId");
 					</liferay-portlet:renderURL>
 
 					<liferay-ui:icon
-						image="../aui/check"
+						iconCssClass="icon-check"
 						label="<%= true %>"
 						message="use-this-template"
-						method="get"
 						url="<%= useThisKBTemplateURL %>"
 					/>
 				</td>
@@ -53,9 +52,9 @@ long kbTemplateId = ParamUtil.getLong(request, "kbTemplateId");
 					</liferay-portlet:renderURL>
 
 					<liferay-ui:icon
-						image="edit"
+						iconCssClass="icon-edit"
 						label="<%= true %>"
-						method="get"
+						message="edit"
 						url="<%= editURL %>"
 					/>
 				</td>
@@ -72,9 +71,9 @@ long kbTemplateId = ParamUtil.getLong(request, "kbTemplateId");
 					/>
 
 					<liferay-ui:icon
-						image="permissions"
+						iconCssClass="icon-lock"
 						label="<%= true %>"
-						method="get"
+						message="permissions"
 						url="<%= permissionsURL %>"
 						useDialog="<%= true %>"
 					/>

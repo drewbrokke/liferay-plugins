@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -40,6 +40,7 @@ page import="com.liferay.calendar.notification.NotificationField" %><%@
 page import="com.liferay.calendar.notification.NotificationTemplateType" %><%@
 page import="com.liferay.calendar.notification.NotificationType" %><%@
 page import="com.liferay.calendar.recurrence.Frequency" %><%@
+page import="com.liferay.calendar.recurrence.PositionalWeekday" %><%@
 page import="com.liferay.calendar.recurrence.Recurrence" %><%@
 page import="com.liferay.calendar.recurrence.Weekday" %><%@
 page import="com.liferay.calendar.search.CalendarResourceDisplayTerms" %><%@
@@ -59,34 +60,35 @@ page import="com.liferay.calendar.util.ColorUtil" %><%@
 page import="com.liferay.calendar.util.JCalendarUtil" %><%@
 page import="com.liferay.calendar.util.NotificationUtil" %><%@
 page import="com.liferay.calendar.util.PortletPropsValues" %><%@
+page import="com.liferay.calendar.util.RecurrenceUtil" %><%@
 page import="com.liferay.calendar.util.WebKeys" %><%@
 page import="com.liferay.calendar.util.comparator.CalendarNameComparator" %><%@
 page import="com.liferay.calendar.workflow.CalendarBookingWorkflowConstants" %><%@
 page import="com.liferay.portal.kernel.bean.BeanParamUtil" %><%@
 page import="com.liferay.portal.kernel.bean.BeanPropertiesUtil" %><%@
 page import="com.liferay.portal.kernel.dao.orm.QueryUtil" %><%@
-page import="com.liferay.portal.kernel.dao.search.ResultRow" %><%@
 page import="com.liferay.portal.kernel.dao.search.SearchContainer" %><%@
 page import="com.liferay.portal.kernel.json.JSONArray" %><%@
 page import="com.liferay.portal.kernel.json.JSONFactoryUtil" %><%@
 page import="com.liferay.portal.kernel.json.JSONObject" %><%@
+page import="com.liferay.portal.kernel.json.JSONSerializer" %><%@
 page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
-page import="com.liferay.portal.kernel.language.UnicodeLanguageUtil" %><%@
 page import="com.liferay.portal.kernel.portlet.LiferayWindowState" %><%@
 page import="com.liferay.portal.kernel.servlet.BrowserSnifferUtil" %><%@
 page import="com.liferay.portal.kernel.util.CalendarFactoryUtil" %><%@
 page import="com.liferay.portal.kernel.util.Constants" %><%@
+page import="com.liferay.portal.kernel.util.DateUtil" %><%@
 page import="com.liferay.portal.kernel.util.FastDateFormatConstants" %><%@
 page import="com.liferay.portal.kernel.util.FastDateFormatFactoryUtil" %><%@
 page import="com.liferay.portal.kernel.util.GetterUtil" %><%@
 page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@
+page import="com.liferay.portal.kernel.util.ListUtil" %><%@
 page import="com.liferay.portal.kernel.util.OrderByComparator" %><%@
 page import="com.liferay.portal.kernel.util.ParamUtil" %><%@
 page import="com.liferay.portal.kernel.util.StringBundler" %><%@
 page import="com.liferay.portal.kernel.util.StringPool" %><%@
 page import="com.liferay.portal.kernel.util.StringUtil" %><%@
 page import="com.liferay.portal.kernel.util.Time" %><%@
-page import="com.liferay.portal.kernel.util.UnicodeFormatter" %><%@
 page import="com.liferay.portal.kernel.util.Validator" %><%@
 page import="com.liferay.portal.kernel.workflow.WorkflowConstants" %><%@
 page import="com.liferay.portal.model.Group" %><%@
@@ -99,6 +101,7 @@ page import="com.liferay.portal.util.SessionClicks" %><%@
 page import="com.liferay.portal.util.comparator.UserScreenNameComparator" %><%@
 page import="com.liferay.portlet.asset.model.AssetEntry" %><%@
 page import="com.liferay.portlet.asset.service.AssetEntryLocalServiceUtil" %><%@
+page import="com.liferay.taglib.search.ResultRow" %><%@
 page import="com.liferay.util.RSSUtil" %>
 
 <%@ page import="java.text.Format" %>
@@ -133,11 +136,13 @@ if (userCalendarResource != null) {
 }
 
 int defaultDuration = GetterUtil.getInteger(portletPreferences.getValue("defaultDuration", null), 60);
-String defaultView = SessionClicks.get(request, "calendar-portlet-default-view", portletPreferences.getValue("defaultView", "week"));
-boolean isoTimeFormat = GetterUtil.getBoolean(portletPreferences.getValue("isoTimeFormat", null));
+String defaultView = portletPreferences.getValue("defaultView", "week");
+boolean isoTimeFormat = GetterUtil.getBoolean(portletPreferences.getValue("isoTimeFormat", null), !DateUtil.isFormatAmPm(locale));
 String timeZoneId = portletPreferences.getValue("timeZoneId", user.getTimeZoneId());
 boolean usePortalTimeZone = GetterUtil.getBoolean(portletPreferences.getValue("usePortalTimeZone", Boolean.TRUE.toString()));
 int weekStartsOn = GetterUtil.getInteger(portletPreferences.getValue("weekStartsOn", null), 0);
+
+String sessionClicksDefaultView = SessionClicks.get(request, "calendar-portlet-default-view", defaultView);
 
 if (usePortalTimeZone) {
 	timeZoneId = user.getTimeZoneId();

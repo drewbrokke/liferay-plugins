@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,11 +14,13 @@
 
 package com.liferay.calendar.model;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.portal.LocaleException;
 import com.liferay.portal.kernel.bean.AutoEscape;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.CacheModel;
+import com.liferay.portal.model.LocalizedModel;
 import com.liferay.portal.model.StagedGroupedModel;
 import com.liferay.portal.service.ServiceContext;
 
@@ -43,7 +45,9 @@ import java.util.Map;
  * @see com.liferay.calendar.model.impl.CalendarModelImpl
  * @generated
  */
-public interface CalendarModel extends BaseModel<Calendar>, StagedGroupedModel {
+@ProviderType
+public interface CalendarModel extends BaseModel<Calendar>, LocalizedModel,
+	StagedGroupedModel {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
@@ -147,10 +151,9 @@ public interface CalendarModel extends BaseModel<Calendar>, StagedGroupedModel {
 	 * Returns the user uuid of this calendar.
 	 *
 	 * @return the user uuid of this calendar
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public String getUserUuid() throws SystemException;
+	public String getUserUuid();
 
 	/**
 	 * Sets the user uuid of this calendar.
@@ -438,6 +441,21 @@ public interface CalendarModel extends BaseModel<Calendar>, StagedGroupedModel {
 		Locale defaultLocale);
 
 	/**
+	 * Returns the time zone ID of this calendar.
+	 *
+	 * @return the time zone ID of this calendar
+	 */
+	@AutoEscape
+	public String getTimeZoneId();
+
+	/**
+	 * Sets the time zone ID of this calendar.
+	 *
+	 * @param timeZoneId the time zone ID of this calendar
+	 */
+	public void setTimeZoneId(String timeZoneId);
+
+	/**
 	 * Returns the color of this calendar.
 	 *
 	 * @return the color of this calendar
@@ -547,12 +565,16 @@ public interface CalendarModel extends BaseModel<Calendar>, StagedGroupedModel {
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext);
 
+	@Override
 	public String[] getAvailableLanguageIds();
 
+	@Override
 	public String getDefaultLanguageId();
 
+	@Override
 	public void prepareLocalizedFieldsForImport() throws LocaleException;
 
+	@Override
 	public void prepareLocalizedFieldsForImport(Locale defaultImportLocale)
 		throws LocaleException;
 
@@ -560,19 +582,19 @@ public interface CalendarModel extends BaseModel<Calendar>, StagedGroupedModel {
 	public Object clone();
 
 	@Override
-	public int compareTo(Calendar calendar);
+	public int compareTo(com.liferay.calendar.model.Calendar calendar);
 
 	@Override
 	public int hashCode();
 
 	@Override
-	public CacheModel<Calendar> toCacheModel();
+	public CacheModel<com.liferay.calendar.model.Calendar> toCacheModel();
 
 	@Override
-	public Calendar toEscapedModel();
+	public com.liferay.calendar.model.Calendar toEscapedModel();
 
 	@Override
-	public Calendar toUnescapedModel();
+	public com.liferay.calendar.model.Calendar toUnescapedModel();
 
 	@Override
 	public String toString();

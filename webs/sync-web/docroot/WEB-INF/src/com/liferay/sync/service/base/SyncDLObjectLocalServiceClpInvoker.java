@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,6 +14,8 @@
 
 package com.liferay.sync.service.base;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.sync.service.SyncDLObjectLocalServiceUtil;
 
 import java.util.Arrays;
@@ -22,6 +24,7 @@ import java.util.Arrays;
  * @author Brian Wing Shun Chan
  * @generated
  */
+@ProviderType
 public class SyncDLObjectLocalServiceClpInvoker {
 	public SyncDLObjectLocalServiceClpInvoker() {
 		_methodName0 = "addSyncDLObject";
@@ -88,35 +91,45 @@ public class SyncDLObjectLocalServiceClpInvoker {
 
 		_methodParameterTypes11 = new String[] { "long" };
 
-		_methodName12 = "getPersistedModel";
+		_methodName12 = "getActionableDynamicQuery";
 
-		_methodParameterTypes12 = new String[] { "java.io.Serializable" };
+		_methodParameterTypes12 = new String[] {  };
 
-		_methodName13 = "getSyncDLObjects";
+		_methodName14 = "deletePersistedModel";
 
-		_methodParameterTypes13 = new String[] { "int", "int" };
+		_methodParameterTypes14 = new String[] {
+				"com.liferay.portal.model.PersistedModel"
+			};
 
-		_methodName14 = "getSyncDLObjectsCount";
+		_methodName15 = "getPersistedModel";
 
-		_methodParameterTypes14 = new String[] {  };
+		_methodParameterTypes15 = new String[] { "java.io.Serializable" };
 
-		_methodName15 = "updateSyncDLObject";
+		_methodName16 = "getSyncDLObjects";
 
-		_methodParameterTypes15 = new String[] {
+		_methodParameterTypes16 = new String[] { "int", "int" };
+
+		_methodName17 = "getSyncDLObjectsCount";
+
+		_methodParameterTypes17 = new String[] {  };
+
+		_methodName18 = "updateSyncDLObject";
+
+		_methodParameterTypes18 = new String[] {
 				"com.liferay.sync.model.SyncDLObject"
 			};
 
-		_methodName62 = "getBeanIdentifier";
+		_methodName83 = "getBeanIdentifier";
 
-		_methodParameterTypes62 = new String[] {  };
+		_methodParameterTypes83 = new String[] {  };
 
-		_methodName63 = "setBeanIdentifier";
+		_methodName84 = "setBeanIdentifier";
 
-		_methodParameterTypes63 = new String[] { "java.lang.String" };
+		_methodParameterTypes84 = new String[] { "java.lang.String" };
 
-		_methodName68 = "addSyncDLObject";
+		_methodName89 = "addSyncDLObject";
 
-		_methodParameterTypes68 = new String[] {
+		_methodParameterTypes89 = new String[] {
 				"long", "long", "long", "long", "java.lang.String",
 				"java.lang.String", "java.lang.String", "java.lang.String",
 				"java.lang.String", "java.lang.String", "java.lang.String",
@@ -125,13 +138,15 @@ public class SyncDLObjectLocalServiceClpInvoker {
 				"java.lang.String"
 			};
 
-		_methodName69 = "fetchSyncDLObject";
+		_methodName90 = "deleteSyncDLObjects";
 
-		_methodParameterTypes69 = new String[] { "long" };
+		_methodParameterTypes90 = new String[] {
+				"java.lang.String", "java.lang.String"
+			};
 
-		_methodName70 = "getLatestModifiedTime";
+		_methodName91 = "getLatestModifiedTime";
 
-		_methodParameterTypes70 = new String[] {  };
+		_methodParameterTypes91 = new String[] {  };
 	}
 
 	public Object invokeMethod(String name, String[] parameterTypes,
@@ -178,7 +193,7 @@ public class SyncDLObjectLocalServiceClpInvoker {
 			return SyncDLObjectLocalServiceUtil.dynamicQuery((com.liferay.portal.kernel.dao.orm.DynamicQuery)arguments[0],
 				((Integer)arguments[1]).intValue(),
 				((Integer)arguments[2]).intValue(),
-				(com.liferay.portal.kernel.util.OrderByComparator)arguments[3]);
+				(com.liferay.portal.kernel.util.OrderByComparator<?>)arguments[3]);
 		}
 
 		if (_methodName8.equals(name) &&
@@ -204,39 +219,49 @@ public class SyncDLObjectLocalServiceClpInvoker {
 
 		if (_methodName12.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes12, parameterTypes)) {
-			return SyncDLObjectLocalServiceUtil.getPersistedModel((java.io.Serializable)arguments[0]);
-		}
-
-		if (_methodName13.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes13, parameterTypes)) {
-			return SyncDLObjectLocalServiceUtil.getSyncDLObjects(((Integer)arguments[0]).intValue(),
-				((Integer)arguments[1]).intValue());
+			return SyncDLObjectLocalServiceUtil.getActionableDynamicQuery();
 		}
 
 		if (_methodName14.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes14, parameterTypes)) {
-			return SyncDLObjectLocalServiceUtil.getSyncDLObjectsCount();
+			return SyncDLObjectLocalServiceUtil.deletePersistedModel((com.liferay.portal.model.PersistedModel)arguments[0]);
 		}
 
 		if (_methodName15.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes15, parameterTypes)) {
+			return SyncDLObjectLocalServiceUtil.getPersistedModel((java.io.Serializable)arguments[0]);
+		}
+
+		if (_methodName16.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes16, parameterTypes)) {
+			return SyncDLObjectLocalServiceUtil.getSyncDLObjects(((Integer)arguments[0]).intValue(),
+				((Integer)arguments[1]).intValue());
+		}
+
+		if (_methodName17.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes17, parameterTypes)) {
+			return SyncDLObjectLocalServiceUtil.getSyncDLObjectsCount();
+		}
+
+		if (_methodName18.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes18, parameterTypes)) {
 			return SyncDLObjectLocalServiceUtil.updateSyncDLObject((com.liferay.sync.model.SyncDLObject)arguments[0]);
 		}
 
-		if (_methodName62.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes62, parameterTypes)) {
+		if (_methodName83.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes83, parameterTypes)) {
 			return SyncDLObjectLocalServiceUtil.getBeanIdentifier();
 		}
 
-		if (_methodName63.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes63, parameterTypes)) {
+		if (_methodName84.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes84, parameterTypes)) {
 			SyncDLObjectLocalServiceUtil.setBeanIdentifier((java.lang.String)arguments[0]);
 
 			return null;
 		}
 
-		if (_methodName68.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes68, parameterTypes)) {
+		if (_methodName89.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes89, parameterTypes)) {
 			return SyncDLObjectLocalServiceUtil.addSyncDLObject(((Long)arguments[0]).longValue(),
 				((Long)arguments[1]).longValue(),
 				((Long)arguments[2]).longValue(),
@@ -255,13 +280,16 @@ public class SyncDLObjectLocalServiceClpInvoker {
 				(java.lang.String)arguments[19]);
 		}
 
-		if (_methodName69.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes69, parameterTypes)) {
-			return SyncDLObjectLocalServiceUtil.fetchSyncDLObject(((Long)arguments[0]).longValue());
+		if (_methodName90.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes90, parameterTypes)) {
+			SyncDLObjectLocalServiceUtil.deleteSyncDLObjects((java.lang.String)arguments[0],
+				(java.lang.String)arguments[1]);
+
+			return null;
 		}
 
-		if (_methodName70.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes70, parameterTypes)) {
+		if (_methodName91.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes91, parameterTypes)) {
 			return SyncDLObjectLocalServiceUtil.getLatestModifiedTime();
 		}
 
@@ -294,20 +322,24 @@ public class SyncDLObjectLocalServiceClpInvoker {
 	private String[] _methodParameterTypes11;
 	private String _methodName12;
 	private String[] _methodParameterTypes12;
-	private String _methodName13;
-	private String[] _methodParameterTypes13;
 	private String _methodName14;
 	private String[] _methodParameterTypes14;
 	private String _methodName15;
 	private String[] _methodParameterTypes15;
-	private String _methodName62;
-	private String[] _methodParameterTypes62;
-	private String _methodName63;
-	private String[] _methodParameterTypes63;
-	private String _methodName68;
-	private String[] _methodParameterTypes68;
-	private String _methodName69;
-	private String[] _methodParameterTypes69;
-	private String _methodName70;
-	private String[] _methodParameterTypes70;
+	private String _methodName16;
+	private String[] _methodParameterTypes16;
+	private String _methodName17;
+	private String[] _methodParameterTypes17;
+	private String _methodName18;
+	private String[] _methodParameterTypes18;
+	private String _methodName83;
+	private String[] _methodParameterTypes83;
+	private String _methodName84;
+	private String[] _methodParameterTypes84;
+	private String _methodName89;
+	private String[] _methodParameterTypes89;
+	private String _methodName90;
+	private String[] _methodParameterTypes90;
+	private String _methodName91;
+	private String[] _methodParameterTypes91;
 }

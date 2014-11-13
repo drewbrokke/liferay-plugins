@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -24,9 +24,9 @@ String tabs1 = ParamUtil.getString(request, "tabs1", "timeline");
 
 int cur = ParamUtil.getInteger(request, SearchContainer.DEFAULT_CUR_PARAM);
 
-long receiverMicroblogsEntryId = ParamUtil.getLong(request, "receiverMicroblogsEntryId");
+long parentMicroblogsEntryId = ParamUtil.getLong(request, "parentMicroblogsEntryId");
 
-List<MicroblogsEntry> microblogsEntries = MicroblogsEntryLocalServiceUtil.getReceiverMicroblogsEntryMicroblogsEntries(MicroblogsEntryConstants.TYPE_REPLY, receiverMicroblogsEntryId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, new EntryCreateDateComparator(true));
+List<MicroblogsEntry> microblogsEntries = MicroblogsEntryLocalServiceUtil.getParentMicroblogsEntryMicroblogsEntries(MicroblogsEntryConstants.TYPE_REPLY, parentMicroblogsEntryId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, new EntryCreateDateComparator(true));
 
 request.setAttribute(WebKeys.MICROBLOGS_ENTRIES, microblogsEntries);
 
@@ -47,7 +47,7 @@ request.setAttribute(WebKeys.MICROBLOGS_ENTRIES_URL, microblogsEntriesURL);
 	</c:if>
 
 	<%
-	request.setAttribute("view_comments.jsp-receiverMicroblogsEntryId", receiverMicroblogsEntryId);
+	request.setAttribute("view_comments.jsp-parentMicroblogsEntryId", parentMicroblogsEntryId);
 	request.setAttribute("view_comments.jsp-comment", "true");
 	%>
 

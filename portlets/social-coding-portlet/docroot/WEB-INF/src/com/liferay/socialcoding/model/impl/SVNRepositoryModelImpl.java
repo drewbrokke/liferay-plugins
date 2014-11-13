@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -13,6 +13,8 @@
  */
 
 package com.liferay.socialcoding.model.impl;
+
+import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -49,6 +51,7 @@ import java.util.Map;
  * @see com.liferay.socialcoding.model.SVNRepositoryModel
  * @generated
  */
+@ProviderType
 public class SVNRepositoryModelImpl extends BaseModelImpl<SVNRepository>
 	implements SVNRepositoryModel {
 	/*
@@ -78,7 +81,7 @@ public class SVNRepositoryModelImpl extends BaseModelImpl<SVNRepository>
 	public static final boolean COLUMN_BITMASK_ENABLED = GetterUtil.getBoolean(com.liferay.util.service.ServiceProps.get(
 				"value.object.column.bitmask.enabled.com.liferay.socialcoding.model.SVNRepository"),
 			true);
-	public static long URL_COLUMN_BITMASK = 1L;
+	public static final long URL_COLUMN_BITMASK = 1L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(com.liferay.util.service.ServiceProps.get(
 				"lock.expiration.time.com.liferay.socialcoding.model.SVNRepository"));
 
@@ -354,8 +357,8 @@ public class SVNRepositoryModelImpl extends BaseModelImpl<SVNRepository>
 		return sb.toString();
 	}
 
-	private static ClassLoader _classLoader = SVNRepository.class.getClassLoader();
-	private static Class<?>[] _escapedModelInterfaces = new Class[] {
+	private static final ClassLoader _classLoader = SVNRepository.class.getClassLoader();
+	private static final Class<?>[] _escapedModelInterfaces = new Class[] {
 			SVNRepository.class
 		};
 	private long _svnRepositoryId;

@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -26,7 +26,8 @@ String content = BeanParamUtil.getString(kbTemplate, request, "content");
 
 <liferay-ui:header
 	backURL="<%= redirect %>"
-	title='<%= (kbTemplate != null) ? kbTemplate.getTitle() : "new-template" %>'
+	localizeTitle="<%= (kbTemplate == null) %>"
+	title='<%= (kbTemplate == null) ? "new-template" : kbTemplate.getTitle() %>'
 />
 
 <liferay-portlet:actionURL name="updateKBTemplate" var="updateKBTemplateURL" />
@@ -46,7 +47,7 @@ String content = BeanParamUtil.getString(kbTemplate, request, "content");
 		<aui:input name="title" />
 
 		<aui:field-wrapper label="content">
-			<liferay-ui:input-editor width="100%" />
+			<liferay-ui:input-editor contents="<%= content %>" width="100%" />
 
 			<aui:input name="content" type="hidden" />
 		</aui:field-wrapper>
@@ -68,12 +69,8 @@ String content = BeanParamUtil.getString(kbTemplate, request, "content");
 </aui:form>
 
 <aui:script>
-	function <portlet:namespace />initEditor() {
-		return "<%= UnicodeFormatter.toString(content) %>";
-	}
-
 	function <portlet:namespace />updateKBTemplate() {
-		document.<portlet:namespace />fm.<portlet:namespace /><%= Constants.CMD %>.value = "<%= (kbTemplate == null) ? Constants.ADD : Constants.UPDATE %>";
+		document.<portlet:namespace />fm.<portlet:namespace /><%= Constants.CMD %>.value = '<%= (kbTemplate == null) ? Constants.ADD : Constants.UPDATE %>';
 		document.<portlet:namespace />fm.<portlet:namespace />content.value = window.<portlet:namespace />editor.getHTML();
 		submitForm(document.<portlet:namespace />fm);
 	}

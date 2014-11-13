@@ -1,4 +1,5 @@
 @import "compass";
+@import "mixins";
 @import "so";
 
 /* ---------- Banner ---------- */
@@ -8,6 +9,7 @@
 
 	@include header;
 
+	overflow: hidden;
 	padding: 0.86em 1.5em;
 
 	h1, h2 {
@@ -42,6 +44,10 @@
 		}
 	}
 
+	.member-link {
+		margin: 0 1em;
+	}
+
 	.avatar {
 		display: inline-block;
 		margin: -0.6em 0.3em -0.6em -0.8em;
@@ -56,15 +62,17 @@
 	#toggleDockbar {
 		display: block;
 		float: right;
-		height: 52px;
-		margin: -0.75em -1.4em -0.85em 1em;
+		margin-left: 2em;
 		overflow: visible;
-		width: 52px;
+		padding: 4px;
 
-		img {
-			height: 16px;
-			padding: 1.35em;
-			width: 16px;
+		&:focus, &:hover {
+			text-decoration: none;
+		}
+
+		i {
+			color: #252D31;
+			font-size: 24px;
 		}
 	}
 }
@@ -72,6 +80,10 @@
 #page-search {
 	float: right;
 	position: relative;
+
+	.form-group {
+		margin-bottom: 0;
+	}
 
 	input[type="text"] {
 		color: $defaultBorderColor;
@@ -85,8 +97,8 @@
 		color: $defaultTextColor;
 	}
 
-	input[type="image"], select {
-		display: none;
+	.taglib-icon {
+		@include hidden-accessible;
 	}
 }
 
@@ -106,10 +118,27 @@ div#navigation {
 		}
 
 		.portrait-icons {
-			bottom: -5px;
-			left: 5px;
+			bottom: 0;
+			left: 0;
+			margin: 4px 0;
 			position: absolute;
 			visibility: hidden;
+			width: 100%;
+
+			.btn-group {
+				margin: 0 3%;
+				width: 94%;
+			}
+
+			.btn {
+				@include border-radius(4px);
+
+				display: block;
+				float: right;
+				margin-top: 4px;
+				padding: 4px;
+				width: 100%;
+			}
 		}
 
 		&:hover .portrait-icons {
@@ -153,7 +182,7 @@ div#navigation {
 	}
 
 	.selected a {
-		border-bottom: none;
+		border-bottom-width: 0;
 		border-top: 1px solid #0E50A9;
 
 		@include box-shadow(0 1px 0 #7FBBF4 inset);
@@ -202,7 +231,7 @@ body {
 #main-content {
 	background: #FFF;
 
-	@include box-shadow(-4px 0 15px -7px rgba(0,0,0, 0.6));
+	@include box-shadow(-4px 0 15px -7px rgba(0, 0, 0, 0.6));
 
 	float: left;
 	min-height: 500px;
@@ -290,111 +319,138 @@ a {
 	}
 }
 
+.opens-new-window-accessible {
+	display: inline-block;
+	font-size: 0;
+	margin-left: 2px;
+	overflow: hidden;
+	vertical-align: middle;
+
+	&:before {
+		@include font-awesome("\f08e");
+
+		font-size: 12px;
+	}
+}
+
+.ie7 .opens-new-window-accessible {
+	background: url(/html/themes/classic/images/common/open_window.png) no-repeat 0 50%;
+	height: 16px;
+	text-indent: -9999px;
+	width: 11px;
+}
+
 /* ---------- Dockbar ---------- */
 
-html.aui {
-	.alert .close {
-		background: inherit;
-		border-width: 0;
+.alert .close {
+	background: inherit;
+	border-width: 0;
 
-		@include box-shadow(none);
+	@include box-shadow(none);
 
+	padding: 0;
+}
+
+.navbar .nav-navigation {
+	display: none;
+}
+
+.dockbar-split .dockbar {
+	@include transition-duration(0.2s);
+	@include transition-property(margin-left);
+
+	.container-fluid .nav-add-controls .dockbar-item .dropdown-menu {
+		background: $controlBgColor;
+		bottom: 0;
+		margin-left: -64px;
 		padding: 0;
-	}
+		top: 0;
 
-	.navbar .nav-navigation {
-		display: none;
-	}
-
-	.dockbar-split .dockbar {
 		@include transition-duration(0.2s);
 		@include transition-property(margin-left);
 
-		.navbar-inner .nav-add-controls {
-			background: $controlBgColor;
-			bottom: 0;
-			margin-left: -64px;
+		.dockbar-item {
+			float: none;
+		}
+	}
+
+	&.navbar-static-top .collapse, .container-fluid .container {
+		.nav-account-controls {
 			top: 0;
 
 			@include transition-duration(0.2s);
-			@include transition-property(margin-left);
+			@include transition-property(top);
+		}
+	}
 
-			.dockbar-item {
-				float: none;
-			}
+	.info-items, .info-link-container {
+		a {
+			background: transparent none;
+		}
+	}
+
+	.info-items {
+		left: auto;
+		position: absolute;
+		right: 332px;
+		top: 44px;
+		width: 360px;
+
+		.page-customization-bar .page-customization-bar-text {
+			height: 56px;
 		}
 
-		.info-items, .info-link-container {
-			a {
-				background: transparent none;
-			}
+		.btn-link {
+			border-width: inherit;
+			padding: 4px 12px;
+			text-decoration: none;
+			text-shadow: inherit;
 		}
+	}
 
-		.info-button .diamond {
-			border-bottom-color: transparent;
-			border-left-color: rgba(0, 0, 0, 0.5);
-			right: -12px;
-			top: 0;
+	.info-link-container {
+		left: auto;
+		position: absolute;
+		right: 332px;
+		top: 48px;
 
-			&:after {
-				border-top-color: transparent;
+		.info-button {
+			.info-link {
+				padding: 5px 10px;
 			}
-		}
 
-		.hide + .info-link-container .info-button .diamond {
-			border-bottom-color: rgba(0, 0, 0, 0.5);
-			border-left-color: transparent;
-			right: 0;
-			top: -12px;
-
-			&:after {
-				border-top-color: rgba(0, 0, 0, 0.5);
-			}
-		}
-
-		&.navbar-static-top .collapse, .navbar-inner .container {
-			.nav-account-controls {
+			.diamond {
+				border-bottom-color: transparent;
+				border-left-color: rgba(0, 0, 0, 0.5);
+				right: -12px;
 				top: 0;
 
-				@include transition-duration(0.2s);
-				@include transition-property(top);
+				&:after {
+					border-top-color: transparent;
+				}
 			}
 		}
+	}
 
-		.info-items {
-			left: auto;
-			position: absolute;
-			right: 332px;
-			top: 44px;
+	.hide + .info-link-container .info-button .diamond {
+		border-bottom-color: rgba(0, 0, 0, 0.5);
+		border-left-color: transparent;
+		right: 0;
+		top: -12px;
 
-			.page-customization-bar .page-customization-bar-text {
-				height: 74px;
-			}
-
-			.btn-link {
-				border-width: inherit;
-				padding: 4px 12px;
-				text-decoration: none;
-				text-shadow: inherit;
-			}
-		}
-
-		.info-link-container {
-			left: auto;
-			position: absolute;
-			right: 332px;
-			top: 56px;
+		&:after {
+			border-top-color: rgba(0, 0, 0, 0.5);
 		}
 	}
 }
 
-.aui .dockbar-split.show-dockbar {
+.dockbar-split.show-dockbar {
 	border-left: 63px solid $controlBgColor;
 
 	@include transition-duration(0.2s);
 	@include transition-property(border-left);
 
-	.dockbar .navbar-inner .nav-add-controls {
+	.dockbar .container-fluid .nav-add-controls .dockbar-item .dropdown-menu {
 		background: $controlBgColor;
 		border-right: 1px solid $defaultBorderColor;
 		bottom: 0;
@@ -405,30 +461,22 @@ html.aui {
 
 /* ---------- Forms ---------- */
 
-.aui {
-	form#hrefFm {
-		margin: 0;
-	}
+form#hrefFm {
+	margin: 0;
+}
 
-	fieldset {
-		@include default-border;
+input[type="text"], input[type="password"], input[type="file"], input[type="submit"], input[type="button"], input[type="reset"], select, textarea, .textarea, button {
+	@include input-field-default;
+}
 
-		padding: 8px;
+input, textarea {
+	&.focus {
+		@include input-field-focus;
 	}
+}
 
-	input[type="text"], input[type="password"], input[type="file"], input[type="submit"], input[type="button"], input[type="reset"], select, textarea, .textarea, button {
-		@include input-field-default;
-	}
-
-	input, textarea {
-		&.focus {
-			@include input-field-focus;
-		}
-	}
-
-	.lfr-menu-list ul .taglib-icon.aui-focus, .lfr-menu-expanded li a:focus {
-		background-color: #1D87EB;
-	}
+.lfr-menu-list ul .taglib-icon.aui-focus, .lfr-menu-expanded li a:focus {
+	background-color: #1D87EB;
 }
 
 .ie6 {
@@ -455,40 +503,37 @@ html.aui {
 	@include normal-gradient;
 }
 
-.aui {
-	.invite-members, .social-relations a {
-		@include border-radius(4px);
-		@include button-default;
+.invite-members, .social-relations a {
+	@include border-radius(4px);
+	@include button-default;
 
-		&:hover, &:focus {
-			@include button-hover;
+	&:hover, &:focus {
+		@include button-hover;
 
-			text-decoration: none;
-		}
+		text-decoration: none;
+	}
 
-		&:active {
-			@include button-active;
-		}
+	&:active {
+		@include button-active;
 	}
 }
 
 /* ---------- Layout ---------- */
 
-.aui .row-fluid {
-	.span4 {
-		margin-left: 0;
-		width: 34%;
-	}
+.row {
+	margin-left: 0;
+	margin-right: 0;
 
-	.span8 {
-		width: 66%;
+	.col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12 {
+		padding-left: 0;
+		padding-right: 0;
 	}
 }
 
 .portlet-column .portlet-column-content {
 	border: solid $defaultBorderColor;
 	border-width: 0 1px 0 0;
-	margin: 0 0 0 -1px;
+	margin: 0;
 	padding: 0;
 }
 
@@ -500,6 +545,18 @@ html.aui {
 
 .portlet-column-last .portlet-column .portlet-column-content {
 	border-left-width: 0;
+}
+
+/* ---------- Modules ---------- */
+
+.accordion-group {
+	.accordion-toggle:before {
+		@include font-awesome("\f0da");
+	}
+
+	.toggler-header-expanded .accordion-toggle:before {
+		content: "\f0d7";
+	}
 }
 
 /* ---------- Portlet base styling ---------- */
@@ -603,6 +660,9 @@ html.aui {
 
 	.activity-item {
 		border-bottom: 1px solid $defaultBorderColor;
+
+		@include hashtag;
+
 		line-height: 1.5em;
 		padding: 1em;
 	}
@@ -729,6 +789,10 @@ html.aui {
 		}
 	}
 
+	.entry-body .lfr-editable {
+		word-wrap: break-word;
+	}
+
 	div.taglib-header {
 		position: relative;
 	}
@@ -775,22 +839,19 @@ html.aui {
 		margin: 0;
 	}
 
-	.lfr-meta-actions {
-		margin-top: -36px;
-		padding: 4px;
-		position: absolute;
-		right: 0;
-		width: auto;
+	.edit-actions {
+		margin: 0;
+		padding-top: 0;
 
-		.lfr-table tr td, .lfr-table tr th {
-			padding: 0 2px;
+		.lfr-table td {
+			display: inline-block;
 		}
 
 		a {
 			color: #34404F;
 			display: inline-block;
 			font-weight: bold;
-			padding: 3px 5px 3px 3px;
+			margin: 5px 5px 5px 0;
 
 			&:hover {
 				text-decoration: none;
@@ -813,17 +874,15 @@ html.aui {
 		padding: 0;
 	}
 
-	.abstract, .entry-categories, .entry-tags {
-		display: none;
+	.abstract img {
+		margin-right: 10px;
 	}
 
-	.comments {
-		display: inline;
-		margin: 0.5em 0;
-	}
-
-	.comments a {
-		white-space: nowrap;
+	.entry-tags {
+		border-left-width: 0;
+		margin-bottom: 0.5em;
+		padding-left: 0;
+		padding-right: 0;
 	}
 }
 
@@ -869,6 +928,50 @@ html.aui {
 
 		.lfr-contact-name a {
 			color: $red;
+		}
+
+		.user-information-column-2 .field-group {
+			width: auto;
+		}
+
+		.user-sites {
+			list-style: none;
+			margin-left: 0;
+
+			li {
+				line-height: 24px;
+			}
+
+			.social-office-disabled:before {
+				color: #DDD;
+
+				@include font-awesome("\f0ac");
+
+				font-size: 18px;
+			}
+
+			.social-office-enabled {
+				background: url(@portal_ctx@/html/icons/social_office.png) no-repeat 0 50%;
+				padding-left: 15px;
+			}
+
+			a {
+				margin-left: 8px;
+			}
+		}
+
+		.user-tags {
+			list-style: none;
+			margin: 5px 0;
+
+			li {
+				display: inline-block;
+				margin: 0 5px 5px 0;
+			}
+
+			a {
+				@include tag(true);
+			}
 		}
 	}
 
@@ -956,6 +1059,10 @@ html.aui {
 		padding-top: 10px;
 	}
 
+	.project-current {
+		margin-left: 20px;
+	}
+
 	.projects {
 		padding: 20px 65px;
 
@@ -981,6 +1088,17 @@ html.aui {
 
 	.social-relations {
 		border-bottom: 1px solid $defaultBorderColor;
+	}
+}
+
+.portal-popup.profile-page {
+	.fieldset.w50 {
+		display: inline;
+		width: 49%;
+	}
+
+	.form-section h3 {
+		display: none;
 	}
 }
 
@@ -1024,32 +1142,13 @@ html.aui {
 
 	input[type="file"] {
 		height: auto;
-		line-height: 0;
+		line-height: 1em;
 		padding: 7px;
 	}
 
 	.accordion-group, .accordion-inner {
 		border-width: 0;
 		margin-bottom: 10px;
-
-		.accordion-toggle {
-			-webkit-font-smoothing: antialiased;
-			font-family: 'fontawesome-alloy';
-			font-style: normal;
-			font-variant: normal;
-			font-weight: normal;
-			line-height: 1;
-			speak: none;
-			text-transform: none;
-
-			&:before {
-				content: "\f0da";
-			}
-		}
-
-		.toggler-header-expanded .accordion-toggle:before {
-			content: "\f0d7";
-		}
 	}
 
 	.field-wrapper .btn {
@@ -1066,7 +1165,7 @@ html.aui {
 
 		.navigation-pane .nav {
 			background: none;
-			border: 0;
+			border-width: 0;
 			padding: 0 15px;
 
 			.app-view-navigation-entry .overlay.entry-action .btn {
@@ -1160,362 +1259,224 @@ html.aui {
 /* ---------- Portlet: message boards ---------- */
 
 .portlet-message-boards {
-	.category-current {
-		font-weight: bold;
+	margin: 10px;
+}
+
+.portlet-asset-publisher, .portlet-message-boards {
+	.accordion-heading {
+		background-color: #F6F6F6;
 	}
 
-	.result-data .views {
-		clear: none;
-		color: #777;
-		float: none;
-		padding: 0;
+	.category-title {
+		white-space: normal;
 	}
 
-	.answer {
-		background-color: #AAD049;
+	.tags {
+		margin-bottom: 0.5em;
+	}
 
-		@include border-radius(4px 0 0 4px);
+	/* ---------- Thread ---------- */
 
-		margin-right: 82px;
-		padding: 4px;
-		position: absolute;
-		right: 100%;
-		text-align: center;
-		top: 0;
-		width: 79px;
+	.edit-controls li, .thread-actions li, .thread-navigation {
+		line-height: 2em;
+	}
+
+	.thread-message-view {
+		position: relative;
+
+		> tbody > {
+			tr, tr > td {
+				display: block;
+			}
+		}
+	}
+
+	.thread-controls {
+		background-color: #F6F6F6;
+	}
+
+	.thread-actions .taglib-icon-list {
+		margin-bottom: 0;
 	}
 
 	.message-container {
-		border-color: $defaultBorderColor;
-		border-width: 0 0 1px 1px;
-		margin: 0;
-		overflow: inherit;
-		padding: 8px 5px;
+		overflow: visible;
 
-		&.reply {
-			border: 1px solid $defaultBorderColor;
-			margin: -1px 0;
-			padding: 0 5px;
+		.thread-message-view {
+			min-width: 0;
+		}
+
+		.lfr-top {
+			box-sizing: border-box;
+			width: 100%;
+
+			&.user-info {
+				border-right-width: 0;
+				padding: 10px;
+				position: absolute;
+				top: 0;
+				width: 75px;
+			}
+
+			.thread-top {
+				border-bottom-width: 0;
+				padding-left: 80px;
+			}
+
+			.edit-controls {
+				clear: both;
+				float: left;
+				margin-bottom: 1em;
+				margin-top: 0.5em;
+			}
 		}
 
 		.user-info {
-			border-width: 0;
-			padding: 0;
-			width: 75px;
-
-			.taglib-user-display {
-				position: relative;
-			}
-		}
-
-		.user-name {
-			display: block;
-			left: 100%;
-			padding-left: 0.5em;
-			position: absolute;
-			text-align: left;
-			text-decoration: none;
-			top: 0.25em;
-			white-space: nowrap;
-			z-index: 1;
-		}
-
-		.user-details {
-			display: none;
-		}
-
-		.thread-top {
-			border-bottom-width: 0;
-			padding: 1.75em 0.5em 0;
 			position: relative;
 
-			.edit-controls {
+			.user-details {
+				display: none;
+			}
+
+			&:hover .user-details {
+				background-color: #FFF;
+				border: 1px solid $defaultBorderColor;
+
+				@include border-radius(4px);
+				@include box-shadow(-4px 0 15px -7px rgba(0, 0, 0, 0.6));
+
+				display: block;
+				margin-top: 0;
+				padding: 10px;
 				position: absolute;
-				right: -5px;
-				top: 0;
+				top: 100%;
+
+				div, span {
+					white-space: nowrap;
+				}
 			}
 		}
 
-		.results-row {
-			img {
-				max-width: 100%;
+		.taglib-user-display {
+			padding: 0;
+
+			.user-name {
+				left: 75px;
+				margin-left: 6px;
+				margin-top: 0.5em;
+				position: absolute;
+				top: 0;
+				white-space: nowrap;
+				word-break: normal;
+			}
+		}
+
+		.user-profile-image {
+			height: 55px;
+			max-width: 55px;
+			overflow: hidden;
+
+			.avatar {
+				width: 55px;
+			}
+		}
+
+		.subject {
+			color: #999;
+			margin-top: 2em;
+			word-break: break-word;
+
+			div {
+				color: #333;
 			}
 
-			td, &.alt td {
-				background: none;
-				border-width: 0;
-				padding-top: 10px;
+			.tags {
+				float: none;
+			}
+		}
+
+		.answer {
+			background: #FFF;
+			border: 2px solid #2D8308;
+
+			@include border-radius(4px 0 0 4px);
+
+			border-right-width: 0;
+			margin-right: 1px;
+			padding: 4px;
+			position: absolute;
+			right: 100%;
+			text-align: center;
+			top: 10px;
+			width: 80px;
+		}
+
+		.thread-body {
+			padding-left: 80px;
+			word-break: break-word;
+		}
+
+		.message-attachments {
+			margin-bottom: -2em;
+			margin-top: 2em;
+
+			h3 {
+				color: #999;
+				font-size: 1em;
+				margin-bottom: 0;
 			}
 
-			td.thread-bottom {
-				padding-bottom: 10px;
-				padding-top: 0;
-				vertical-align: middle;
+			.message-attachment {
+				padding: 0;
 			}
 		}
 
 		.thread-bottom {
-			.taglib-flags, .taglib-ratings.thumbs {
-				margin-top: 1.5em;
-			}
-		}
-	}
+			padding-left: 75px;
 
-	.taglib-user-display {
-		padding: 0;
-
-		.user-profile-image {
-			height: 65px;
-			overflow: hidden;
-		}
-	}
-
-	.message-boards-panels, .results-grid {
-		.lfr-actions.show-arrow.direction-left .lfr-trigger {
-			padding: 0;
-
-			strong {
-				min-width: 20px;
-
-				a {
-					background-image: url(../images/arrows/08_left.png);
-					background-position: 0 -4px;
-					display: block;
-					height: 16px;
-					padding: 0;
-					width: 16px;
-
-					&:active {
-						background-position: 0 -22px;
-					}
-				}
-			}
-
-			img, .taglib-text {
+			br {
 				display: none;
 			}
-		}
-	}
 
-	.thread-body {
-		padding: 0.5em;
-	}
+			.edit-controls {
+				float: none;
+				margin: 1em 1em 0.5em 16em;
+				overflow: hidden;
 
-	.thread-controls {
-		background: $controlBgColor;
-
-		@include border-radius(4px);
-		@include default-border;
-
-		padding: 0 6px;
-
-		.thread-actions {
-			padding: 5px 0 0;
-		}
-
-		ul {
-			margin-bottom: 0;
-
-			li {
-				margin-bottom: 6px;
-				margin-right: 0.5em;
-
-				img {
-					display: none;
+				li {
+					float: right;
 				}
 			}
 		}
-	}
 
-	.thread-navigation {
-		border: 1px solid $defaultBorderColor;
-		border-width: 0px 1px 1px;
-		bottom: -1px;
-		margin: -2px 0 0;
-		padding: 6px 11px;
-		position: relative;
-	}
-
-	.edit-controls {
-		opacity: 0;
-		position: relative;
-		top: -0.5em;
-
-		@include transition-duration(0.2s);
-		@include transition-property(opacity);
-
-		z-index: 2;
-
-		li {
-			margin: 0 5px 0 0;
+		.taglib-ratings {
+			bottom: 0;
+			margin-bottom: 0.6em;
+			position: absolute;
 		}
 
-		a img {
+		.taglib-flags {
+			bottom: 1em;
+			margin-left: 10em;
+			position: absolute;
+		}
+
+		.entry-links {
+			clear: both;
+			margin-left: 10px;
+
+			.asset-links-list {
+				margin-left: 25px;
+			}
+		}
+	}
+}
+
+.ios.touch {
+	.portlet-asset-publisher, .portlet-message-boards {
+		.user-info:hover .user-details {
 			display: none;
 		}
-	}
-
-	.controls-visible .edit-controls {
-		opacity: 1;
-	}
-
-	.stats {
-		.status, .votes {
-			display: block;
-			height: auto;
-			margin: 0;
-			padding: 0;
-			width: auto;
-		}
-
-		.count {
-			display: inline;
-			font-size: 1em;
-		}
-	}
-
-	.displayStyle-question {
-		.stats {
-			width: auto;
-
-			a {
-				display: block;
-				padding: 8px 0;
-
-				.question-details {
-					display: block;
-					text-align: center;
-
-					.status, .votes {
-						display: inline-block;
-						font-weight: bold;
-						margin: 0 3px 0 0;
-						padding: 5px;
-					}
-				}
-			}
-		}
-
-		.count {
-			display: block;
-			font-size: 190%;
-			min-width: 50px;
-			padding-top: 0.3em;
-		}
-
-		.summary {
-			font-size: 1.25em;
-			font-weight: normal;
-			margin-top: 0.5em;
-		}
-
-		.question-subject {
-			font-weight: normal;
-		}
-
-		.question {
-			vertical-align: middle;
-			width: auto;
-		}
-
-		.user-info {
-			margin: -5px -10px;
-
-			div {
-				padding: 10px;
-			}
-
-			.portrait {
-				padding-bottom: 0;
-			}
-
-			.username {
-				font-weight: bold;
-				padding: 0 10px;
-			}
-
-			.time {
-				padding-top: 0;
-			}
-		}
-	}
-}
-
-.portlet-message-boards, .portlet-wiki {
-	.taglib-header {
-		border-bottom-width: 0;
-	}
-
-	.top-links-container {
-		margin: -10px -10px 10px;
-
-		.page-search, .category-search {
-			font-size: 0;
-			margin: 0;
-			padding: 0;
-
-			.aui-field-input, .aui-button-submit {
-				font-size: 13px;
-			}
-
-			.aui-field-input {
-				@include border-radius(4px 0 0 4px);
-
-				margin-right: -1px;
-				width: 9em;
-			}
-
-			.aui-button-submit input {
-				@include border-radius(0 4px 4px 0);
-			}
-		}
-
-		.top-links {
-			padding: 0.45em 0.95em;
-		}
-	}
-
-	.top-links-container .top-link {
-		vertical-align: middle;
-	}
-
-	.portlet-msg-success {
-		border-width: 0 0 1px;
-		margin: -10px -10px 10px;
-	}
-
-	.portlet-borderless-container .portlet-body {
-		margin: 10px;
-	}
-}
-
-.portlet-message-boards .edit-controls a, .portlet-message-boards .thread-controls a, .portlet-wiki .page-actions a, .portlet-wiki .toc a.toc-trigger {
-	@include border-radius(4px);
-	@include button-default;
-
-	display: inline-block;
-
-	&, .taglib-text {
-		text-decoration: none;
-	}
-
-	&:active {
-		@include button-active;
-	}
-
-	&:hover, &:focus {
-		@include button-focus;
-	}
-
-	img {
-		vertical-align: top;
-	}
-}
-
-.portlet-asset-publisher, .portlet-message-boards, .portlet-trash {
-	.thread-view-controls {
-		margin: 0.5em;
-		text-align: left;
 	}
 }
 
@@ -1589,6 +1550,26 @@ html.aui {
 
 .private-page .microblogs-status-container {
 	padding-bottom: 0;
+}
+
+/* ---------- Portlet: notifications ---------- */
+
+.dockbar-user-notifications, .notifications-portlet {
+	@include hashtag;
+
+	.nonactionable .user-notification {
+		&, &.archived {
+			.lfr-icon-menu .dropdown-menu {
+				.taglib-icon:hover .unsubscribe-info {
+					color: #FFF;
+				}
+
+				.unsubscribe-info {
+					color: #666;
+				}
+			}
+		}
+	}
 }
 
 /* ---------- Portlet: private messaging ---------- */
@@ -1694,6 +1675,75 @@ html.aui {
 		display: inline-block;
 		vertical-align: baseline;
 	}
+
+	.taglib-header {
+		border-bottom-width: 0;
+	}
+
+	.top-links-container {
+		margin: -10px -10px 10px;
+
+		.page-search, .category-search {
+			font-size: 0;
+			margin: 0;
+			padding: 0;
+
+			.aui-field-input, .aui-button-submit {
+				font-size: 13px;
+			}
+
+			.aui-field-input {
+				@include border-radius(4px 0 0 4px);
+
+				margin-right: -1px;
+				width: 9em;
+			}
+
+			.aui-button-submit input {
+				@include border-radius(0 4px 4px 0);
+			}
+		}
+
+		.top-links {
+			padding: 0.45em 0.95em;
+		}
+	}
+
+	.top-links-container .top-link {
+		vertical-align: middle;
+	}
+
+	.portlet-msg-success {
+		border-width: 0 0 1px;
+		margin: -10px -10px 10px;
+	}
+
+	.portlet-borderless-container .portlet-body {
+		margin: 10px;
+	}
+
+	.page-actions a, .toc a.toc-trigger {
+		@include border-radius(4px);
+		@include button-default;
+
+		display: inline-block;
+
+		&, .taglib-text {
+			text-decoration: none;
+		}
+
+		&:active {
+			@include button-active;
+		}
+
+		&:hover, &:focus {
+			@include button-focus;
+		}
+
+		img {
+			vertical-align: top;
+		}
+	}
 }
 
 @media print {
@@ -1715,14 +1765,30 @@ html.aui {
 	position: relative;
 }
 
+.taglib-ratings.thumbs {
+	margin: 0;
+	padding: 5px;
+
+	.thumbrating .rating-label {
+		display: inline-block;
+	}
+}
+
+.taglib-asset-tags-summary .tag {
+	@include tag(false);
+}
+
 /* ---------- Top links component ---------- */
 
 .taglib-header {
+	clear: both;
 	margin: 1em 0;
 
 	.header-back-to, .header-title {
-		display: inline-block;
+		display: inline;
 		vertical-align: middle;
+		white-space: normal;
+		word-break: break-word;
 	}
 
 	.header-back-to a {
@@ -1737,59 +1803,424 @@ html.aui {
 
 /* ---------- Responsive ---------- */
 
-html.aui {
-	@media (max-width: 1200px) {
-		.portlet-document-library .row-fluid {
-			.span2 {
-				width: 15%;
-			}
+@media (max-width: 1200px) {
+	.portlet-document-library .row-fluid {
+		.span2 {
+			width: 15%;
+		}
 
-			.span10 {
-				width: 85%;
+		.span10 {
+			width: 85%;
+		}
+	}
+}
+
+@include respond-to(phone, tablet) {
+	.navbar {
+		.info-items, .info-link-container {
+			display: none;
+		}
+
+		.container-fluid .nav-collapse.open .nav-add-controls .dockbar-item .dropdown-menu {
+			bottom: auto;
+			top: auto;
+		}
+	}
+
+	#banner #toggleDockbar {
+		display: none
+	}
+
+	#content, #navigation, #navigation ul {
+		border-width: 0;
+	}
+
+	#content {
+		padding-left: 0;
+	}
+
+	#navigation {
+		display: none;
+	}
+
+	.portlet-layout, .portlet-column {
+		display: block;
+		width: auto;
+	}
+
+	/* ---------- Portlet: message boards ---------- */
+
+	.portlet-asset-publisher, .portlet-message-boards {
+		.message-container .thread-top .answer {
+			@include border-radius(4px);
+
+			border-width: 2px;
+			display: block;
+			margin-bottom: 0.5em;
+			position: initial;
+			text-align: left;
+			width: auto;
+		}
+	}
+}
+
+@include respond-to(phone) {
+	body #banner {
+		padding: 0.5em 1em;
+		text-align: center;
+
+		.site-title {
+			width: 100%;
+		}
+
+		.avatar, .logo img {
+			display: none;
+		}
+	}
+
+	.row-fluid [class*="span"] {
+		width: 100%;
+	}
+
+	#page-search {
+		display: none;
+	}
+
+	/* ---------- Mobile pop ups ---------- */
+
+	.dialog-iframe-root-node {
+		padding: 10px !important;
+	}
+
+	.modal {
+		bottom: 0;
+
+		@include border-radius(0);
+
+		border-width: 0;
+		height: 100% !important;
+		left: 0 !important;
+		position: fixed;
+		top: 0 !important;
+		width: 100% !important;
+
+		.modal-header .close {
+			font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+			font-size: 50px;
+			line-height: 50px;
+			margin-top: -10px;
+			padding: 0;
+			width: 50px;
+		}
+
+		.modal-body {
+			padding: 0 10px;
+			width: 100%;
+
+			&.dialog-iframe-bd {
+				padding: 0;
 			}
 		}
 	}
 
-	@media (max-width: 979px) {
-		.navbar {
-			.info-items, .info-link-container {
-				display: none;
+	.modal-body, .portal-popup {
+		.portlet-body {
+			padding: 0;
+		}
+
+		#main-content {
+			margin: 0;
+		}
+
+		.form {
+			margin: 10px 0 0;
+		}
+
+		.nav-tabs {
+			margin: 10px 0;
+		}
+
+		.tab-content {
+			overflow: initial;
+		}
+
+		.control-group, & {
+			margin-right: 0;
+			width: 100%;
+
+			input[type="email"], input[type="file"], input[type="text"], textarea {
+				height: 30px;
+				margin-left: -1px;
+				min-width: 0;
+				padding: 0;
+				text-indent: 4px;
+				width: 100%;
 			}
 
-			.navbar-inner .nav-collapse.open .nav-add-controls {
-				bottom: auto;
-				top: auto;
+			.lfr-input-text {
+				max-width: none !important;
+				min-width: 0;
+				width: 100%;
+			}
+
+			textarea {
+				height: auto;
+			}
+
+			select {
+				min-width: 0;
+				width: 100%;
 			}
 		}
 
-		#banner #toggleDockbar {
-			display: none
+		.btn, .btn:hover {
+			display: inline-block;
+			margin: 0 0 0 5px;
+			padding: 10px;
+			width: auto;
+
+			i {
+				display: block;
+			}
 		}
 
-		#content, #navigation, #navigation ul {
-			border-width: 0;
+		.button-holder {
+			background-color: #FFF;
+			border-top: 1px solid $defaultBorderColor;
+			bottom: 0;
+			margin: 10px -10px 0;
+			padding: 10px;
+			width: 100%;
+
+			.btn {
+				float: right;
+
+				&:last-child {
+					margin-left: 0;
+				}
+			}
+		}
+	}
+
+	.portal-popup {
+		padding: 0;
+	}
+
+	.so-portlet-invite-members .modal-body {
+		.invite-actions {
+			background-color: #FFF;
+			border-top: 1px solid $defaultBorderColor;
+			border-width: 1px 0 0;
+			bottom: 0;
+			margin: 10px -10px 0;
+			overflow: hidden;
+			padding: 10px;
+			width: 100%;
+
+			.form {
+				margin: 0;
+			}
+
+			.btn {
+				float: right;
+
+				&:last-child {
+					margin-left: 0;
+				}
+			}
+		}
+	}
+
+	/* ---------- Portlet: activities ---------- */
+
+	.so-portlet-activities .activity-item {
+		padding: 1em 0;
+	}
+
+	.profile-page .so-portlet-activities .portlet-title {
+		text-align: left;
+	}
+
+	/* ---------- Portlet: contacts ---------- */
+
+	.contacts-portlet .contacts-profile {
+		.profile-actions {
+			margin: 10px 0;
 		}
 
-		#content {
-			padding-left: 0;
+		.user-information-title {
+			text-align: left;
+			width: auto;
 		}
 
-		#navigation {
-			display: none;
-		}
+		.section {
+			h3 {
+				float: none;
+				text-align: left;
+				width: auto;
+			}
 
-		.portlet-layout, .portlet-column {
-			display: block;
+			.property-list {
+				margin-left: 10px;
+			}
+		}
+	}
+
+	.profile-page .contacts-portlet .projects {
+		padding: 10px;
+	}
+
+	/* ---------- Portlet: document library ---------- */
+
+	.portlet-document-library .row-fluid {
+		.span2, .span10 {
 			width: auto;
 		}
 	}
 
-	@media (max-width: 767px) {
-		.row-fluid [class*="span"] {
-			width: 100%;
+	/* ---------- Portlet: message boards ---------- */
+
+	.portlet-asset-publisher, .portlet-message-boards {
+		#toggle_id_message_boards_view_message_thread, #toggle_id_message_boards_view_message_thread_image, .thread-view-controls {
+			display: none;
 		}
 
-		#page-search {
+		.accordion-inner {
+			padding: 0;
+
+			.lfr-search-container {
+				margin-top: 0;
+			}
+
+			.table {
+				border-width: 0;
+				margin-bottom: 0;
+
+				td, th {
+					&:first-child {
+						border-left-width: 0;
+					}
+				}
+			}
+		}
+
+		#_19_mbCategoriesSearchContainerSearchContainer {
+			tr {
+				td, th {
+					&:nth-child(2), &:nth-child(3), &:nth-child(4) {
+						display: none;
+					}
+				}
+			}
+		}
+
+		#_19_mbThreadsSearchContainerSearchContainer {
+			tr {
+				td, th {
+					&:nth-child(2), &:nth-child(3), &:nth-child(4), &:nth-child(5), &:nth-child(6) {
+						display: none;
+					}
+				}
+			}
+		}
+
+		.displayStyle-question #_19_mbThreadsSearchContainerSearchContainer {
+			.table {
+				border-top-width: 0;
+			}
+
+			thead {
+				display: none;
+			}
+
+			tr {
+				td, th {
+					&:nth-child(2), &:nth-child(4), &:nth-child(5), &:nth-child(6) {
+						display: table-cell;
+					}
+				}
+			}
+
+			.question-details {
+				float: none;
+
+				.status, .votes {
+					display: block;
+					margin: 5px auto;
+				}
+
+				.status {
+					background-color: transparent;
+
+					&.answered {
+						color: #5BA018;
+					}
+
+					&.unanswered {
+						color: #CF4937;
+					}
+				}
+
+				.views {
+					display: none;
+				}
+			}
+		}
+
+		/* ---------- Thread ---------- */
+
+		.message-container {
+			margin-left: 0 !important;
+
+			.user-name {
+				margin-top: 0.9em;
+			}
+
+			.thread-top {
+				padding-left: 15px;
+
+				.subject {
+					margin-top: 2.6em;
+
+					> a {
+						display: block;
+						margin-bottom: 1.5em;
+						margin-left: 65px;
+					}
+
+					br {
+						display: none;
+					}
+				}
+			}
+
+			.thread-body {
+				padding-left: 15px;
+			}
+
+			.thread-bottom {
+				padding-left: 5px;
+
+				.edit-controls {
+					margin-bottom: 2.5em;
+					margin-left: 0.5em;
+
+					li {
+						float: left;
+					}
+				}
+			}
+		}
+	}
+
+	/* ---------- Portlet: microblogs ---------- */
+
+	.user-dashboard .microblogs-portlet {
+		.microblogs-entry-form {
+			margin-bottom: 0;
+		}
+
+		.microblogs-status-container {
 			display: none;
 		}
 	}

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -51,6 +51,27 @@ public class JCalendarUtil {
 		return (endTime - startTime) / DAY;
 	}
 
+	public static int getDSTShift(
+		Calendar jCalendar1, Calendar jCalendar2, TimeZone timeZone) {
+
+		jCalendar1 = JCalendarUtil.getJCalendar(
+			jCalendar1.getTimeInMillis(), timeZone);
+		jCalendar2 = JCalendarUtil.getJCalendar(
+			jCalendar2.getTimeInMillis(), timeZone);
+
+		Calendar sameDayJCalendar = getJCalendar(
+			jCalendar1.get(Calendar.YEAR), jCalendar1.get(Calendar.MONTH),
+			jCalendar1.get(Calendar.DAY_OF_MONTH),
+			jCalendar2.get(Calendar.HOUR_OF_DAY),
+			jCalendar2.get(Calendar.MINUTE), jCalendar2.get(Calendar.SECOND),
+			jCalendar2.get(Calendar.MILLISECOND), timeZone);
+
+		Long shift =
+			jCalendar1.getTimeInMillis() - sameDayJCalendar.getTimeInMillis();
+
+		return shift.intValue();
+	}
+
 	public static Calendar getJCalendar(
 		int year, int month, int day, int hour, int minutes, int seconds,
 		int milliseconds, TimeZone timeZone) {
@@ -90,6 +111,22 @@ public class JCalendarUtil {
 		}
 
 		return offset;
+	}
+
+	public static int getWeekdayPosition(Calendar jCalendar) {
+		int weekOfMonth = jCalendar.get(Calendar.WEEK_OF_MONTH);
+
+		Calendar firstDayJCalendar = (Calendar)jCalendar.clone();
+
+		firstDayJCalendar.set(Calendar.DAY_OF_MONTH, 1);
+
+		if (firstDayJCalendar.get(Calendar.DAY_OF_WEEK) >
+				jCalendar.get(Calendar.DAY_OF_WEEK)) {
+
+			return weekOfMonth - 1;
+		}
+
+		return weekOfMonth;
 	}
 
 	public static Calendar toLastHourJCalendar(Calendar jCalendar) {

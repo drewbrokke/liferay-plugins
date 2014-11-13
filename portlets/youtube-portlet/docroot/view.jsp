@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -60,8 +60,8 @@
 			wmode="opaque"
 		>
 			<c:if test="<%= showThumbnail %>">
-				<aui:a href="<%= watchURL + id %>" rel="external" title='<%= LanguageUtil.get(pageContext, "watch-this-video-at-youtube") %>'>
-					<img alt="<liferay-ui:message key="youtube-video" />" height="<%= height %>" src="<%= imageURL %>" width="<%= width %>" />
+				<aui:a href="<%= watchURL + id %>" rel="external" title='<%= HtmlUtil.escapeAttribute(LanguageUtil.get(request, "watch-this-video-at-youtube")) %>'>
+					<img alt="<liferay-ui:message escapeAttribute="<%= true %>" key="youtube-video" />" height="<%= height %>" src="<%= imageURL %>" width="<%= width %>" />
 				</aui:a>
 			</c:if>
 		</liferay-ui:flash>

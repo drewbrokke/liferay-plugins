@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,29 +19,57 @@
 <%
 String activeView = ParamUtil.getString(request, "activeView", defaultView);
 
-java.util.Calendar nowJCalendar = CalendarFactoryUtil.getCalendar(userTimeZone);
+CalendarBooking calendarBooking = (CalendarBooking)request.getAttribute(WebKeys.CALENDAR_BOOKING);
+
+boolean allDay = BeanParamUtil.getBoolean(calendarBooking, request, "allDay");
+
+TimeZone calendarBookingTimeZone = userTimeZone;
+
+if (allDay) {
+	calendarBookingTimeZone = utcTimeZone;
+}
+
+java.util.Calendar nowJCalendar = CalendarFactoryUtil.getCalendar(calendarBookingTimeZone);
 
 long date = ParamUtil.getLong(request, "date", nowJCalendar.getTimeInMillis());
 
-CalendarBooking calendarBooking = (CalendarBooking)request.getAttribute(WebKeys.CALENDAR_BOOKING);
-
 long calendarBookingId = BeanPropertiesUtil.getLong(calendarBooking, "calendarBookingId");
+
+int instanceIndex = BeanParamUtil.getInteger(calendarBooking, request, "instanceIndex");
 
 long calendarId = BeanParamUtil.getLong(calendarBooking, request, "calendarId", userDefaultCalendar.getCalendarId());
 
-long startTime = BeanParamUtil.getLong(calendarBooking, request, "startTime", nowJCalendar.getTimeInMillis());
+long startTime = BeanPropertiesUtil.getLong(calendarBooking, "startTime", nowJCalendar.getTimeInMillis());
 
-java.util.Calendar startTimeJCalendar = JCalendarUtil.getJCalendar(startTime, userTimeZone);
+java.util.Calendar startTimeJCalendar = JCalendarUtil.getJCalendar(startTime, calendarBookingTimeZone);
+
+int startTimeYear = ParamUtil.getInteger(request, "startTimeYear", startTimeJCalendar.get(java.util.Calendar.YEAR));
+int startTimeMonth = ParamUtil.getInteger(request, "startTimeMonth", startTimeJCalendar.get(java.util.Calendar.MONTH));
+int startTimeDay = ParamUtil.getInteger(request, "startTimeDay", startTimeJCalendar.get(java.util.Calendar.DAY_OF_MONTH));
+int startTimeHour = ParamUtil.getInteger(request, "startTimeHour", startTimeJCalendar.get(java.util.Calendar.HOUR_OF_DAY));
+int startTimeMinute = ParamUtil.getInteger(request, "startTimeMinute", startTimeJCalendar.get(java.util.Calendar.MINUTE));
+
+startTimeJCalendar = CalendarFactoryUtil.getCalendar(startTimeYear, startTimeMonth, startTimeDay, startTimeHour, startTimeMinute, 0, 0, calendarBookingTimeZone);
+
+startTime = startTimeJCalendar.getTimeInMillis();
 
 java.util.Calendar defaultEndTimeJCalendar = (java.util.Calendar)nowJCalendar.clone();
 
 defaultEndTimeJCalendar.add(java.util.Calendar.HOUR, 1);
 
-long endTime = BeanParamUtil.getLong(calendarBooking, request, "endTime", defaultEndTimeJCalendar.getTimeInMillis());
+long endTime = BeanPropertiesUtil.getLong(calendarBooking, "endTime", defaultEndTimeJCalendar.getTimeInMillis());
 
-java.util.Calendar endTimeJCalendar = JCalendarUtil.getJCalendar(endTime, userTimeZone);
+java.util.Calendar endTimeJCalendar = JCalendarUtil.getJCalendar(endTime, calendarBookingTimeZone);
 
-boolean allDay = BeanParamUtil.getBoolean(calendarBooking, request, "allDay");
+int endTimeYear = ParamUtil.getInteger(request, "endTimeYear", endTimeJCalendar.get(java.util.Calendar.YEAR));
+int endTimeMonth = ParamUtil.getInteger(request, "endTimeMonth", endTimeJCalendar.get(java.util.Calendar.MONTH));
+int endTimeDay = ParamUtil.getInteger(request, "endTimeDay", endTimeJCalendar.get(java.util.Calendar.DAY_OF_MONTH));
+int endTimeHour = ParamUtil.getInteger(request, "endTimeHour", endTimeJCalendar.get(java.util.Calendar.HOUR_OF_DAY));
+int endTimeMinute = ParamUtil.getInteger(request, "endTimeMinute", endTimeJCalendar.get(java.util.Calendar.MINUTE));
+
+endTimeJCalendar = CalendarFactoryUtil.getCalendar(endTimeYear, endTimeMonth, endTimeDay, endTimeHour, endTimeMinute, 0, 0, calendarBookingTimeZone);
+
+endTime = endTimeJCalendar.getTimeInMillis();
 
 long firstReminder = BeanParamUtil.getLong(calendarBooking, request, "firstReminder");
 String firstReminderType = BeanParamUtil.getString(calendarBooking, request, "firstReminderType", PortletPropsValues.CALENDAR_NOTIFICATION_DEFAULT_TYPE);
@@ -55,7 +83,9 @@ JSONArray declinedCalendarsJSONArray = JSONFactoryUtil.createJSONArray();
 JSONArray maybeCalendarsJSONArray = JSONFactoryUtil.createJSONArray();
 JSONArray pendingCalendarsJSONArray = JSONFactoryUtil.createJSONArray();
 
+boolean hasChildCalendarBookings = false;
 boolean invitable = true;
+boolean masterBooking = true;
 Recurrence recurrence = null;
 boolean recurring = false;
 
@@ -67,8 +97,16 @@ if (calendarBooking != null) {
 	maybeCalendarsJSONArray = CalendarUtil.toCalendarBookingsJSONArray(themeDisplay, CalendarBookingServiceUtil.getChildCalendarBookings(calendarBooking.getParentCalendarBookingId(), CalendarBookingWorkflowConstants.STATUS_MAYBE));
 	pendingCalendarsJSONArray = CalendarUtil.toCalendarBookingsJSONArray(themeDisplay, CalendarBookingServiceUtil.getChildCalendarBookings(calendarBooking.getParentCalendarBookingId(), CalendarBookingWorkflowConstants.STATUS_PENDING));
 
-	if (!calendarBooking.isMasterBooking()) {
+	if (calendarBooking.isMasterBooking()) {
+		List<CalendarBooking> childCalendarBookings = CalendarBookingServiceUtil.getChildCalendarBookings(calendarBooking.getParentCalendarBookingId());
+
+		if (childCalendarBookings.size() > 1) {
+			hasChildCalendarBookings = true;
+		}
+	}
+	else {
 		invitable = false;
+		masterBooking = false;
 	}
 
 	if (calendarBooking.isRecurring()) {
@@ -93,15 +131,17 @@ List<Calendar> manageableCalendars = CalendarServiceUtil.search(themeDisplay.get
 
 <liferay-portlet:actionURL name="updateCalendarBooking" var="updateCalendarBookingURL" />
 
-<liferay-portlet:renderURL var="redirectURL">
-	<liferay-portlet:param name="mvcPath" value="/edit_calendar_booking.jsp" />
-	<liferay-portlet:param name="calendarBookingId" value="<%= String.valueOf(calendarBookingId) %>" />
-</liferay-portlet:renderURL>
-
 <aui:form action="<%= updateCalendarBookingURL %>" method="post" name="fm" onSubmit='<%= "event.preventDefault(); " + renderResponse.getNamespace() + "updateCalendarBooking();" %>'>
 	<aui:input name="mvcPath" type="hidden" value="/edit_calendar_booking.jsp" />
+
+	<liferay-portlet:renderURL var="redirectURL">
+		<liferay-portlet:param name="mvcPath" value="/edit_calendar_booking.jsp" />
+		<liferay-portlet:param name="calendarBookingId" value="<%= String.valueOf(calendarBookingId) %>" />
+	</liferay-portlet:renderURL>
+
 	<aui:input name="redirect" type="hidden" value="<%= redirectURL %>" />
 	<aui:input name="calendarBookingId" type="hidden" value="<%= calendarBookingId %>" />
+	<aui:input name="instanceIndex" type="hidden" value="<%= instanceIndex %>" />
 	<aui:input name="childCalendarIds" type="hidden" />
 	<aui:input name="status" type="hidden" value ="<%= status %>" />
 	<aui:input name="allFollowing" type="hidden" />
@@ -116,14 +156,14 @@ List<Calendar> manageableCalendars = CalendarServiceUtil.search(themeDisplay.get
 	<aui:model-context bean="<%= calendarBooking %>" model="<%= CalendarBooking.class %>" />
 
 	<aui:fieldset>
-		<aui:input name="title" />
+		<aui:input defaultLanguageId="<%= themeDisplay.getLanguageId() %>" name="title" />
 
 		<div class="<%= allDay ? "allday-class-active" : "" %>" id="<portlet:namespace />startDateContainer">
-			<aui:input label="start-date" name="startTime" value="<%= startTimeJCalendar %>" />
+			<aui:input ignoreRequestValue="<%= true %>" label="start-date" name="startTime" value="<%= startTimeJCalendar %>" />
 		</div>
 
 		<div class="<%= allDay ? "allday-class-active" : "" %>" id="<portlet:namespace />endDateContainer">
-			<aui:input label="end-date" name="endTime" value="<%= endTimeJCalendar %>" />
+			<aui:input ignoreRequestValue="<%= true %>" label="end-date" name="endTime" value="<%= endTimeJCalendar %>" />
 		</div>
 
 		<aui:input checked="<%= allDay %>" name="allDay" />
@@ -134,7 +174,7 @@ List<Calendar> manageableCalendars = CalendarServiceUtil.search(themeDisplay.get
 			<a class="calendar-portlet-recurrence-summary" href="javascript:;" id="<portlet:namespace />summary"></a>
 		</aui:field-wrapper>
 
-		<aui:input name="description" />
+		<aui:input defaultLanguageId="<%= themeDisplay.getLanguageId() %>" name="description" />
 	</aui:fieldset>
 
 	<aui:fieldset>
@@ -218,7 +258,7 @@ List<Calendar> manageableCalendars = CalendarServiceUtil.search(themeDisplay.get
 					</c:if>
 
 					<aui:column columnWidth="100">
-						<div class="toggler-header-collapsed calendar-portlet-list-header" id="<portlet:namespace />checkAvailability">
+						<div class="calendar-portlet-list-header toggler-header-collapsed" id="<portlet:namespace />checkAvailability">
 							<span class="calendar-portlet-list-arrow"></span>
 
 							<span class="calendar-portlet-list-text"><liferay-ui:message key="resources-availability" /></span>
@@ -290,6 +330,19 @@ List<Calendar> manageableCalendars = CalendarServiceUtil.search(themeDisplay.get
 		return document.<portlet:namespace />fm.<portlet:namespace />title.value + ' ' + window.<portlet:namespace />description.getHTML();
 	}
 
+	function <portlet:namespace />resolver(data) {
+		var A = AUI();
+
+		var answers = data.answers;
+
+		if (!answers.cancel) {
+			A.one('#<portlet:namespace />allFollowing').val(!!answers.allFollowing);
+			A.one('#<portlet:namespace />updateCalendarBookingInstance').val(!!answers.updateInstance);
+
+			submitForm(document.<portlet:namespace />fm);
+		}
+	}
+
 	Liferay.provide(
 		window,
 		'<portlet:namespace />updateCalendarBooking',
@@ -305,60 +358,15 @@ List<Calendar> manageableCalendars = CalendarServiceUtil.search(themeDisplay.get
 				A.one('#<portlet:namespace />childCalendarIds').val(childCalendarIds.join(','));
 			</c:if>
 
-			<c:if test="<%= calendarBooking == null %>">
-				submitForm(document.<portlet:namespace />fm);
-			</c:if>
-
-			<c:if test="<%= (calendarBooking != null) && (calendar != null) %>">
-				<c:choose>
-					<c:when test="<%= recurring %>">
-						Liferay.RecurrenceUtil.openConfirmationPanel(
-							'update',
-							function() {
-								A.one('#<portlet:namespace />updateCalendarBookingInstance').val('true');
-
-								submitForm(document.<portlet:namespace />fm);
-							},
-							function() {
-								A.one('#<portlet:namespace />allFollowing').val('true');
-								A.one('#<portlet:namespace />updateCalendarBookingInstance').val('true');
-
-								submitForm(document.<portlet:namespace />fm);
-							},
-							function() {
-								submitForm(document.<portlet:namespace />fm);
-							}
-						);
-					</c:when>
-					<c:when test="<%= calendarBooking.isMasterBooking() %>">
-						submitForm(document.<portlet:namespace />fm);
-					</c:when>
-					<c:otherwise>
-						var content = [
-							'<p class="calendar-portlet-confirmation-text">',
-							A.Lang.sub(
-								Liferay.Language.get('you-are-about-to-make-changes-that-will-only-effect-your-calendar-x'),
-								['<%= HtmlUtil.escapeJS(calendar.getName(locale)) %>']
-							),
-							'</p>'
-						].join('');
-
-						Liferay.CalendarMessageUtil.confirm(
-							content,
-							Liferay.Language.get('continue'),
-							Liferay.Language.get('dont-change-the-event'),
-							function() {
-								submitForm(document.<portlet:namespace />fm);
-
-								this.hide();
-							},
-							function() {
-								this.hide();
-							}
-						);
-					</c:otherwise>
-				</c:choose>
-			</c:if>
+			Liferay.CalendarMessageUtil.promptSchedulerEventUpdate(
+				{
+					calendarName: '<%= HtmlUtil.escapeJS(calendar.getName(locale)) %>',
+					hasChild: <%= hasChildCalendarBookings %>,
+					masterBooking: <%= masterBooking %>,
+					recurring: <%= recurring %>,
+					resolver: <portlet:namespace />resolver
+				}
+			);
 		},
 		['liferay-calendar-message-util', 'json']
 	);
@@ -369,7 +377,7 @@ List<Calendar> manageableCalendars = CalendarServiceUtil.search(themeDisplay.get
 	String titleCurrentValue = ParamUtil.getString(request, "titleCurrentValue");
 	%>
 
-	<c:if test="<%= Validator.isNotNull(titleCurrentValue) %>">
+	<c:if test="<%= Validator.isNotNull(titleCurrentValue) && (calendarBooking == null || !Validator.equals(titleCurrentValue, calendarBooking.getTitle(locale))) %>">
 		document.<portlet:namespace />fm.<portlet:namespace />title.value = '<%= HtmlUtil.escapeJS(titleCurrentValue) %>';
 		document.<portlet:namespace />fm.<portlet:namespace />title_<%= themeDisplay.getLanguageId() %>.value = '<%= HtmlUtil.escapeJS(titleCurrentValue) %>';
 	</c:if>
@@ -379,14 +387,6 @@ List<Calendar> manageableCalendars = CalendarServiceUtil.search(themeDisplay.get
 	var defaultCalendarId = <%= calendarId %>;
 
 	var scheduler = window.<portlet:namespace />scheduler;
-
-	var removeCalendarResource = function(calendarList, calendar, menu) {
-		calendarList.remove(calendar);
-
-		if (menu) {
-			menu.hide();
-		}
-	}
 
 	var syncCalendarsMap = function() {
 		Liferay.CalendarUtil.syncCalendarsMap(
@@ -404,91 +404,21 @@ List<Calendar> manageableCalendars = CalendarServiceUtil.search(themeDisplay.get
 
 		A.each(
 			Liferay.CalendarUtil.availableCalendars,
-			function(item, index, collection) {
+			function(item, index) {
 				item.set('disabled', true);
 			}
 		);
 	}
 
-	window.<portlet:namespace />toggler = new A.Toggler(
+	var calendarsMenu = Liferay.CalendarUtil.getCalendarsMenu(
 		{
-			after: {
-				expandedChange: function(event) {
-					if (event.newVal) {
-						var activeView = scheduler.get('activeView');
-
-						activeView._fillHeight();
-					}
-				}
-			},
-			animated: true,
 			content: '#<portlet:namespace />schedulerContainer',
-			expanded: false,
-			header: '#<portlet:namespace />checkAvailability'
+			defaultCalendarId: defaultCalendarId,
+			header: '#<portlet:namespace />checkAvailability',
+			invitable: <%= invitable %>,
+			scheduler: scheduler
 		}
 	);
-
-	var calendarsMenu = {
-		items: [
-			{
-				caption: '<%= UnicodeLanguageUtil.get(pageContext, "check-availability") %>',
-				fn: function(event) {
-					var instance = this;
-
-					A.each(
-						Liferay.CalendarUtil.availableCalendars,
-						function(item, index, collection) {
-							item.set('visible', false);
-						}
-					);
-
-					var calendarList = instance.get('host');
-
-					calendarList.activeItem.set('visible', true);
-
-					<portlet:namespace />toggler.expand();
-
-					instance.hide();
-
-					return false;
-				},
-				id: 'check-availability'
-			}
-			<c:if test="<%= invitable %>">
-				,{
-					caption: '<%= UnicodeLanguageUtil.get(pageContext, "remove") %>',
-					fn: function(event) {
-						var instance = this;
-
-						var calendarList = instance.get('host');
-
-						removeCalendarResource(calendarList, calendarList.activeItem, instance);
-					},
-					id: 'remove'
-				}
-			</c:if>
-		],
-		<c:if test="<%= invitable %>">
-			on: {
-				visibleChange: function(event) {
-					var instance = this;
-
-					if (event.newVal) {
-						var calendarList = instance.get('host');
-						var calendar = calendarList.activeItem;
-
-						var hiddenItems = [];
-
-						if (calendar.get('calendarId') === defaultCalendarId) {
-							hiddenItems.push('remove');
-						}
-
-						instance.set('hiddenItems', hiddenItems);
-					}
-				}
-			}
-		</c:if>
-	}
 
 	window.<portlet:namespace />calendarListPending = new Liferay.CalendarList(
 		{
@@ -602,6 +532,7 @@ List<Calendar> manageableCalendars = CalendarServiceUtil.search(themeDisplay.get
 					Liferay.DatePickerUtil.syncUI(formNode, 'startTime', event.newVal);
 				}
 			},
+			borderColor: '#000',
 			borderStyle: 'dashed',
 			borderWidth: '2px',
 			color: '#F8F8F8',
@@ -635,21 +566,31 @@ List<Calendar> manageableCalendars = CalendarServiceUtil.search(themeDisplay.get
 	);
 
 	<c:if test="<%= invitable %>">
+		var manageableCalendars = {};
+
+		A.Array.each(
+			<%= CalendarUtil.toCalendarsJSONArray(themeDisplay, manageableCalendars) %>,
+			function(item, index) {
+				manageableCalendars[item.calendarId] = item;
+			}
+		);
+
 		A.one('#<portlet:namespace />calendarId').on(
 			'valueChange',
 			function(event) {
 				var calendarId = parseInt(event.target.val(), 10);
-				var calendarJSON = Liferay.CalendarUtil.manageableCalendars[calendarId];
+
+				var calendar = manageableCalendars[calendarId];
 
 				A.Array.each(
 					[
 						<portlet:namespace />calendarListAccepted,
 
-						 <c:if test="<%= calendarBooking != null %>">
+						<c:if test="<%= calendarBooking != null %>">
 							<portlet:namespace />calendarListDeclined, <portlet:namespace />calendarListMaybe,
-						 </c:if>
+						</c:if>
 
-						 <portlet:namespace />calendarListPending
+						<portlet:namespace />calendarListPending
 					],
 					function(calendarList) {
 						calendarList.remove(calendarList.getCalendar(calendarId));
@@ -657,15 +598,15 @@ List<Calendar> manageableCalendars = CalendarServiceUtil.search(themeDisplay.get
 					}
 				);
 
-				<portlet:namespace />calendarListPending.add(calendarJSON);
+				<portlet:namespace />calendarListPending.add(calendar);
 
 				defaultCalendarId = calendarId;
 			}
 		);
 
-		<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="calendarResources" var="calendarResourcesURL"></liferay-portlet:resourceURL>
-
 		var inviteResourcesInput = A.one('#<portlet:namespace />inviteResource');
+
+		<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="calendarResources" var="calendarResourcesURL"></liferay-portlet:resourceURL>
 
 		Liferay.CalendarUtil.createCalendarsAutoComplete(
 			'<%= calendarResourcesURL %>',
@@ -699,7 +640,7 @@ List<Calendar> manageableCalendars = CalendarServiceUtil.search(themeDisplay.get
 		}
 	);
 
-	var allDayCheckbox = A.one('#<portlet:namespace />allDayCheckbox');
+	var allDayCheckbox = A.one('#<portlet:namespace />allDay');
 
 	allDayCheckbox.after(
 		'click',

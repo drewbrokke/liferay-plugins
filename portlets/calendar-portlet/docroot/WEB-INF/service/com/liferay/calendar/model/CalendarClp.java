@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,12 +14,14 @@
 
 package com.liferay.calendar.model;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.calendar.service.CalendarLocalServiceUtil;
 import com.liferay.calendar.service.ClpSerializer;
 
 import com.liferay.portal.LocaleException;
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
-import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.lar.StagedModelType;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -30,7 +32,9 @@ import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.BaseModel;
+import com.liferay.portal.model.User;
 import com.liferay.portal.model.impl.BaseModelImpl;
+import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.util.PortalUtil;
 
 import java.io.Serializable;
@@ -47,6 +51,7 @@ import java.util.TreeSet;
 /**
  * @author Eduardo Lundgren
  */
+@ProviderType
 public class CalendarClp extends BaseModelImpl<Calendar> implements Calendar {
 	public CalendarClp() {
 	}
@@ -97,6 +102,7 @@ public class CalendarClp extends BaseModelImpl<Calendar> implements Calendar {
 		attributes.put("calendarResourceId", getCalendarResourceId());
 		attributes.put("name", getName());
 		attributes.put("description", getDescription());
+		attributes.put("timeZoneId", getTimeZoneId());
 		attributes.put("color", getColor());
 		attributes.put("defaultCalendar", getDefaultCalendar());
 		attributes.put("enableComments", getEnableComments());
@@ -180,6 +186,12 @@ public class CalendarClp extends BaseModelImpl<Calendar> implements Calendar {
 
 		if (description != null) {
 			setDescription(description);
+		}
+
+		String timeZoneId = (String)attributes.get("timeZoneId");
+
+		if (timeZoneId != null) {
+			setTimeZoneId(timeZoneId);
 		}
 
 		Integer color = (Integer)attributes.get("color");
@@ -326,13 +338,19 @@ public class CalendarClp extends BaseModelImpl<Calendar> implements Calendar {
 	}
 
 	@Override
-	public String getUserUuid() throws SystemException {
-		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
+	public String getUserUuid() {
+		try {
+			User user = UserLocalServiceUtil.getUserById(getUserId());
+
+			return user.getUuid();
+		}
+		catch (PortalException pe) {
+			return StringPool.BLANK;
+		}
 	}
 
 	@Override
 	public void setUserUuid(String userUuid) {
-		_userUuid = userUuid;
 	}
 
 	@Override
@@ -700,6 +718,29 @@ public class CalendarClp extends BaseModelImpl<Calendar> implements Calendar {
 	}
 
 	@Override
+	public String getTimeZoneId() {
+		return _timeZoneId;
+	}
+
+	@Override
+	public void setTimeZoneId(String timeZoneId) {
+		_timeZoneId = timeZoneId;
+
+		if (_calendarRemoteModel != null) {
+			try {
+				Class<?> clazz = _calendarRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setTimeZoneId", String.class);
+
+				method.invoke(_calendarRemoteModel, timeZoneId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
+	}
+
+	@Override
 	public int getColor() {
 		return _color;
 	}
@@ -829,6 +870,25 @@ public class CalendarClp extends BaseModelImpl<Calendar> implements Calendar {
 	}
 
 	@Override
+	public java.util.TimeZone getTimeZone() {
+		try {
+			String methodName = "getTimeZone";
+
+			Class<?>[] parameterTypes = new Class<?>[] {  };
+
+			Object[] parameterValues = new Object[] {  };
+
+			java.util.TimeZone returnObj = (java.util.TimeZone)invokeOnRemoteModel(methodName,
+					parameterTypes, parameterValues);
+
+			return returnObj;
+		}
+		catch (Exception e) {
+			throw new UnsupportedOperationException(e);
+		}
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				Calendar.class.getName()));
@@ -884,7 +944,7 @@ public class CalendarClp extends BaseModelImpl<Calendar> implements Calendar {
 	}
 
 	@Override
-	public void persist() throws SystemException {
+	public void persist() {
 		if (this.isNew()) {
 			CalendarLocalServiceUtil.addCalendar(this);
 		}
@@ -930,7 +990,9 @@ public class CalendarClp extends BaseModelImpl<Calendar> implements Calendar {
 			return StringPool.BLANK;
 		}
 
-		return LocalizationUtil.getDefaultLanguageId(xml);
+		Locale defaultLocale = LocaleUtil.getSiteDefault();
+
+		return LocalizationUtil.getDefaultLanguageId(xml, defaultLocale);
 	}
 
 	@Override
@@ -942,7 +1004,7 @@ public class CalendarClp extends BaseModelImpl<Calendar> implements Calendar {
 	@SuppressWarnings("unused")
 	public void prepareLocalizedFieldsForImport(Locale defaultImportLocale)
 		throws LocaleException {
-		Locale defaultLocale = LocaleUtil.getDefault();
+		Locale defaultLocale = LocaleUtil.getSiteDefault();
 
 		String modelDefaultLanguageId = getDefaultLanguageId();
 
@@ -988,6 +1050,7 @@ public class CalendarClp extends BaseModelImpl<Calendar> implements Calendar {
 		clone.setCalendarResourceId(getCalendarResourceId());
 		clone.setName(getName());
 		clone.setDescription(getDescription());
+		clone.setTimeZoneId(getTimeZoneId());
 		clone.setColor(getColor());
 		clone.setDefaultCalendar(getDefaultCalendar());
 		clone.setEnableComments(getEnableComments());
@@ -1031,6 +1094,10 @@ public class CalendarClp extends BaseModelImpl<Calendar> implements Calendar {
 		}
 	}
 
+	public Class<?> getClpSerializerClass() {
+		return _clpSerializerClass;
+	}
+
 	@Override
 	public int hashCode() {
 		return (int)getPrimaryKey();
@@ -1048,7 +1115,7 @@ public class CalendarClp extends BaseModelImpl<Calendar> implements Calendar {
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(33);
+		StringBundler sb = new StringBundler(35);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -1074,6 +1141,8 @@ public class CalendarClp extends BaseModelImpl<Calendar> implements Calendar {
 		sb.append(getName());
 		sb.append(", description=");
 		sb.append(getDescription());
+		sb.append(", timeZoneId=");
+		sb.append(getTimeZoneId());
 		sb.append(", color=");
 		sb.append(getColor());
 		sb.append(", defaultCalendar=");
@@ -1089,7 +1158,7 @@ public class CalendarClp extends BaseModelImpl<Calendar> implements Calendar {
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(52);
+		StringBundler sb = new StringBundler(55);
 
 		sb.append("<model><model-name>");
 		sb.append("com.liferay.calendar.model.Calendar");
@@ -1144,6 +1213,10 @@ public class CalendarClp extends BaseModelImpl<Calendar> implements Calendar {
 		sb.append(getDescription());
 		sb.append("]]></column-value></column>");
 		sb.append(
+			"<column><column-name>timeZoneId</column-name><column-value><![CDATA[");
+		sb.append(getTimeZoneId());
+		sb.append("]]></column-value></column>");
+		sb.append(
 			"<column><column-name>color</column-name><column-value><![CDATA[");
 		sb.append(getColor());
 		sb.append("]]></column-value></column>");
@@ -1170,7 +1243,6 @@ public class CalendarClp extends BaseModelImpl<Calendar> implements Calendar {
 	private long _groupId;
 	private long _companyId;
 	private long _userId;
-	private String _userUuid;
 	private String _userName;
 	private Date _createDate;
 	private Date _modifiedDate;
@@ -1180,11 +1252,13 @@ public class CalendarClp extends BaseModelImpl<Calendar> implements Calendar {
 	private String _nameCurrentLanguageId;
 	private String _description;
 	private String _descriptionCurrentLanguageId;
+	private String _timeZoneId;
 	private int _color;
 	private boolean _defaultCalendar;
 	private boolean _enableComments;
 	private boolean _enableRatings;
 	private BaseModel<?> _calendarRemoteModel;
+	private Class<?> _clpSerializerClass = com.liferay.calendar.service.ClpSerializer.class;
 	private boolean _entityCacheEnabled;
 	private boolean _finderCacheEnabled;
 }

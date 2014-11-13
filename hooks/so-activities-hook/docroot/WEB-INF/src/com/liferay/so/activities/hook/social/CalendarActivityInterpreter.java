@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -17,6 +17,7 @@ package com.liferay.so.activities.hook.social;
 import com.liferay.calendar.model.CalendarBooking;
 import com.liferay.calendar.service.CalendarBookingLocalServiceUtil;
 import com.liferay.calendar.service.permission.CalendarPermission;
+import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
@@ -33,6 +34,7 @@ import com.liferay.portlet.social.service.SocialActivityLocalServiceUtil;
 import com.liferay.portlet.social.service.SocialActivitySetLocalServiceUtil;
 import com.liferay.so.activities.util.SocialActivityKeyConstants;
 
+import java.text.DateFormat;
 import java.text.Format;
 
 import javax.portlet.PortletRequest;
@@ -93,10 +95,6 @@ public class CalendarActivityInterpreter extends SOSocialActivityInterpreter {
 		if (activitySet.getType() ==
 				SocialActivityKeyConstants.CALENDAR_UPDATE_CALENDAR_BOOKING) {
 
-			if (!hasPermissions(activitySet, serviceContext)) {
-				return null;
-			}
-
 			return getBody(
 				activitySet.getClassName(), activitySet.getClassPK(),
 				serviceContext);
@@ -117,8 +115,9 @@ public class CalendarActivityInterpreter extends SOSocialActivityInterpreter {
 		sb.append(serviceContext.translate("date"));
 		sb.append(": </strong>");
 
-		Format dateFormatDate = getFormatDateTime(
-			serviceContext.getLocale(), serviceContext.getTimeZone());
+		Format dateFormatDate = FastDateFormatFactoryUtil.getDateTime(
+			DateFormat.FULL, DateFormat.SHORT, serviceContext.getLocale(),
+			serviceContext.getTimeZone());
 
 		CalendarBooking calendarBooking =
 			CalendarBookingLocalServiceUtil.fetchCalendarBooking(classPK);
@@ -137,9 +136,7 @@ public class CalendarActivityInterpreter extends SOSocialActivityInterpreter {
 
 		sb.append(
 			StringUtil.shorten(
-				HtmlUtil.escape(
-					assetRenderer.getSummary(
-						serviceContext.getLocale()), 200)));
+				HtmlUtil.escape(assetRenderer.getSummary(), 200)));
 
 		sb.append("</div></div>");
 

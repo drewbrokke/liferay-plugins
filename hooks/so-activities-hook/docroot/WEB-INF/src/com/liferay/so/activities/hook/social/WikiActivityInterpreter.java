@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -15,7 +15,6 @@
 package com.liferay.so.activities.hook.social;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.util.HtmlUtil;
@@ -57,9 +56,7 @@ public class WikiActivityInterpreter extends SOSocialActivityInterpreter {
 	}
 
 	@Override
-	public void updateActivitySet(long activityId)
-		throws PortalException, SystemException {
-
+	public void updateActivitySet(long activityId) throws PortalException {
 		SocialActivity activity =
 			SocialActivityLocalServiceUtil.fetchSocialActivity(activityId);
 
@@ -93,16 +90,15 @@ public class WikiActivityInterpreter extends SOSocialActivityInterpreter {
 					extraDataJSONObject = JSONFactoryUtil.createJSONObject();
 
 					extraDataJSONObject.put(
-						"sourceVersion", wikiPage.getVersion());
+						"sourceVersion",
+						MathUtil.format(wikiPage.getVersion() - 0.1, 1, 1));
 				}
 				else {
 					extraDataJSONObject = JSONFactoryUtil.createJSONObject(
 						activitySet.getExtraData());
 				}
 
-				extraDataJSONObject.put(
-					"targetVersion",
-					MathUtil.format(wikiPage.getVersion() + 0.1, 1, 1));
+				extraDataJSONObject.put("targetVersion", wikiPage.getVersion());
 
 				activitySet.setExtraData(extraDataJSONObject.toString());
 
@@ -127,10 +123,10 @@ public class WikiActivityInterpreter extends SOSocialActivityInterpreter {
 				JSONObject extraDataJSONObject =
 					JSONFactoryUtil.createJSONObject();
 
-				extraDataJSONObject.put("sourceVersion", wikiPage.getVersion());
 				extraDataJSONObject.put(
-					"targetVersion",
-					MathUtil.format(wikiPage.getVersion() + 0.1, 1, 1));
+					"sourceVersion",
+					MathUtil.format(wikiPage.getVersion() - 0.1, 1, 1));
+				extraDataJSONObject.put("targetVersion", wikiPage.getVersion());
 
 				activitySet.setExtraData(extraDataJSONObject.toString());
 
@@ -224,10 +220,6 @@ public class WikiActivityInterpreter extends SOSocialActivityInterpreter {
 			(activitySet.getType() ==
 				SocialActivityConstants.TYPE_ADD_COMMENT)) {
 
-			if (!hasPermissions(activitySet, serviceContext)) {
-				return null;
-			}
-
 			return getBody(
 				activitySet.getClassName(), activitySet.getClassPK(),
 				serviceContext);
@@ -250,9 +242,7 @@ public class WikiActivityInterpreter extends SOSocialActivityInterpreter {
 
 		sb.append(
 			StringUtil.shorten(
-				HtmlUtil.escape(
-					assetRenderer.getSummary(
-						serviceContext.getLocale()), 200)));
+				HtmlUtil.escape(assetRenderer.getSummary(), 200)));
 
 		sb.append("</div></div>");
 

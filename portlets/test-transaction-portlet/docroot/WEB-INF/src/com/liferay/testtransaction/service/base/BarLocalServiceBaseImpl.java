@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -20,6 +20,8 @@ import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBFactoryUtil;
 import com.liferay.portal.kernel.dao.jdbc.SqlUpdate;
 import com.liferay.portal.kernel.dao.jdbc.SqlUpdateFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.DefaultActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.Projection;
@@ -70,11 +72,10 @@ public abstract class BarLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 *
 	 * @param bar the bar
 	 * @return the bar that was added
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
-	public Bar addBar(Bar bar) throws SystemException {
+	public Bar addBar(Bar bar) {
 		bar.setNew(true);
 
 		return barPersistence.update(bar);
@@ -97,11 +98,10 @@ public abstract class BarLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 * @param barId the primary key of the bar
 	 * @return the bar that was removed
 	 * @throws PortalException if a bar with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
-	public Bar deleteBar(long barId) throws PortalException, SystemException {
+	public Bar deleteBar(long barId) throws PortalException {
 		return barPersistence.remove(barId);
 	}
 
@@ -110,11 +110,10 @@ public abstract class BarLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 *
 	 * @param bar the bar
 	 * @return the bar that was removed
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
-	public Bar deleteBar(Bar bar) throws SystemException {
+	public Bar deleteBar(Bar bar) {
 		return barPersistence.remove(bar);
 	}
 
@@ -131,12 +130,9 @@ public abstract class BarLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 *
 	 * @param dynamicQuery the dynamic query
 	 * @return the matching rows
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	@SuppressWarnings("rawtypes")
-	public List dynamicQuery(DynamicQuery dynamicQuery)
-		throws SystemException {
+	public <T> List<T> dynamicQuery(DynamicQuery dynamicQuery) {
 		return barPersistence.findWithDynamicQuery(dynamicQuery);
 	}
 
@@ -151,12 +147,10 @@ public abstract class BarLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 * @param start the lower bound of the range of model instances
 	 * @param end the upper bound of the range of model instances (not inclusive)
 	 * @return the range of matching rows
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	@SuppressWarnings("rawtypes")
-	public List dynamicQuery(DynamicQuery dynamicQuery, int start, int end)
-		throws SystemException {
+	public <T> List<T> dynamicQuery(DynamicQuery dynamicQuery, int start,
+		int end) {
 		return barPersistence.findWithDynamicQuery(dynamicQuery, start, end);
 	}
 
@@ -172,12 +166,10 @@ public abstract class BarLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 * @param end the upper bound of the range of model instances (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @return the ordered range of matching rows
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	@SuppressWarnings("rawtypes")
-	public List dynamicQuery(DynamicQuery dynamicQuery, int start, int end,
-		OrderByComparator orderByComparator) throws SystemException {
+	public <T> List<T> dynamicQuery(DynamicQuery dynamicQuery, int start,
+		int end, OrderByComparator<T> orderByComparator) {
 		return barPersistence.findWithDynamicQuery(dynamicQuery, start, end,
 			orderByComparator);
 	}
@@ -187,11 +179,9 @@ public abstract class BarLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 *
 	 * @param dynamicQuery the dynamic query
 	 * @return the number of rows that match the dynamic query
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public long dynamicQueryCount(DynamicQuery dynamicQuery)
-		throws SystemException {
+	public long dynamicQueryCount(DynamicQuery dynamicQuery) {
 		return barPersistence.countWithDynamicQuery(dynamicQuery);
 	}
 
@@ -201,16 +191,15 @@ public abstract class BarLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 * @param dynamicQuery the dynamic query
 	 * @param projection the projection to apply to the query
 	 * @return the number of rows that match the dynamic query
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public long dynamicQueryCount(DynamicQuery dynamicQuery,
-		Projection projection) throws SystemException {
+		Projection projection) {
 		return barPersistence.countWithDynamicQuery(dynamicQuery, projection);
 	}
 
 	@Override
-	public Bar fetchBar(long barId) throws SystemException {
+	public Bar fetchBar(long barId) {
 		return barPersistence.fetchByPrimaryKey(barId);
 	}
 
@@ -220,16 +209,46 @@ public abstract class BarLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 * @param barId the primary key of the bar
 	 * @return the bar
 	 * @throws PortalException if a bar with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public Bar getBar(long barId) throws PortalException, SystemException {
+	public Bar getBar(long barId) throws PortalException {
 		return barPersistence.findByPrimaryKey(barId);
 	}
 
 	@Override
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		ActionableDynamicQuery actionableDynamicQuery = new DefaultActionableDynamicQuery();
+
+		actionableDynamicQuery.setBaseLocalService(com.liferay.testtransaction.service.BarLocalServiceUtil.getService());
+		actionableDynamicQuery.setClass(Bar.class);
+		actionableDynamicQuery.setClassLoader(getClassLoader());
+
+		actionableDynamicQuery.setPrimaryKeyPropertyName("barId");
+
+		return actionableDynamicQuery;
+	}
+
+	protected void initActionableDynamicQuery(
+		ActionableDynamicQuery actionableDynamicQuery) {
+		actionableDynamicQuery.setBaseLocalService(com.liferay.testtransaction.service.BarLocalServiceUtil.getService());
+		actionableDynamicQuery.setClass(Bar.class);
+		actionableDynamicQuery.setClassLoader(getClassLoader());
+
+		actionableDynamicQuery.setPrimaryKeyPropertyName("barId");
+	}
+
+	/**
+	 * @throws PortalException
+	 */
+	@Override
+	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
+		throws PortalException {
+		return barLocalService.deleteBar((Bar)persistedModel);
+	}
+
+	@Override
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
-		throws PortalException, SystemException {
+		throws PortalException {
 		return barPersistence.findByPrimaryKey(primaryKeyObj);
 	}
 
@@ -243,10 +262,9 @@ public abstract class BarLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 * @param start the lower bound of the range of bars
 	 * @param end the upper bound of the range of bars (not inclusive)
 	 * @return the range of bars
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public List<Bar> getBars(int start, int end) throws SystemException {
+	public List<Bar> getBars(int start, int end) {
 		return barPersistence.findAll(start, end);
 	}
 
@@ -254,10 +272,9 @@ public abstract class BarLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 * Returns the number of bars.
 	 *
 	 * @return the number of bars
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public int getBarsCount() throws SystemException {
+	public int getBarsCount() {
 		return barPersistence.countAll();
 	}
 
@@ -266,11 +283,10 @@ public abstract class BarLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 *
 	 * @param bar the bar
 	 * @return the bar that was updated
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
-	public Bar updateBar(Bar bar) throws SystemException {
+	public Bar updateBar(Bar bar) {
 		return barPersistence.update(bar);
 	}
 
@@ -530,7 +546,7 @@ public abstract class BarLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 *
 	 * @param sql the sql query
 	 */
-	protected void runSQL(String sql) throws SystemException {
+	protected void runSQL(String sql) {
 		try {
 			DataSource dataSource = barPersistence.getDataSource();
 

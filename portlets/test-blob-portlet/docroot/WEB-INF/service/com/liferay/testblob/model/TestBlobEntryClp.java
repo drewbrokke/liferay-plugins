@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -15,7 +15,6 @@
 package com.liferay.testblob.model;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
@@ -230,7 +229,7 @@ public class TestBlobEntryClp extends BaseModelImpl<TestBlobEntry>
 	}
 
 	@Override
-	public void persist() throws SystemException {
+	public void persist() {
 		if (this.isNew()) {
 			TestBlobEntryLocalServiceUtil.addTestBlobEntry(this);
 		}
@@ -293,6 +292,10 @@ public class TestBlobEntryClp extends BaseModelImpl<TestBlobEntry>
 		}
 	}
 
+	public Class<?> getClpSerializerClass() {
+		return _clpSerializerClass;
+	}
+
 	@Override
 	public int hashCode() {
 		return (int)getPrimaryKey();
@@ -353,6 +356,7 @@ public class TestBlobEntryClp extends BaseModelImpl<TestBlobEntry>
 	private long _testBlobEntryId;
 	private Blob _blobField;
 	private BaseModel<?> _testBlobEntryRemoteModel;
+	private Class<?> _clpSerializerClass = com.liferay.testblob.service.ClpSerializer.class;
 	private boolean _entityCacheEnabled;
 	private boolean _finderCacheEnabled;
 }

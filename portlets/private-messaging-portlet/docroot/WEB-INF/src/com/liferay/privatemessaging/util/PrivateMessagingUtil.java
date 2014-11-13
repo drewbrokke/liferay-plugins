@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -20,11 +20,16 @@ package com.liferay.privatemessaging.util;
 import com.liferay.portal.NoSuchRoleException;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.search.BaseModelSearchResult;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.util.CharPool;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.model.Group;
@@ -56,7 +61,7 @@ public class PrivateMessagingUtil {
 
 	public static JSONObject getJSONRecipients(
 			long userId, String type, String keywords, int start, int end)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 
@@ -105,15 +110,33 @@ public class PrivateMessagingUtil {
 		catch (NoSuchRoleException nsre) {
 		}
 
-		int total = UserLocalServiceUtil.searchCount(
-			user.getCompanyId(), keywords, WorkflowConstants.STATUS_APPROVED,
-			params);
+		List<User> users = new ArrayList<User>();
 
-		jsonObject.put("total", total);
+		if (_USERS_INDEXER_ENABLED && _USERS_SEARCH_WITH_INDEX) {
+			Sort sort = SortFactoryUtil.getSort(User.class, "firstName", "asc");
 
-		List<User> users = UserLocalServiceUtil.search(
-			user.getCompanyId(), keywords, WorkflowConstants.STATUS_APPROVED,
-			params, start, end, new UserFirstNameComparator(true));
+			BaseModelSearchResult<User> baseModelSearchResult =
+				UserLocalServiceUtil.searchUsers(
+					user.getCompanyId(), keywords, keywords, keywords, keywords,
+					keywords, WorkflowConstants.STATUS_APPROVED, params, false,
+					start, end, sort);
+
+			jsonObject.put("total", baseModelSearchResult.getLength());
+
+			users = baseModelSearchResult.getBaseModels();
+		}
+		else {
+			int total = UserLocalServiceUtil.searchCount(
+				user.getCompanyId(), keywords,
+				WorkflowConstants.STATUS_APPROVED, params);
+
+			jsonObject.put("total", total);
+
+			users = UserLocalServiceUtil.search(
+				user.getCompanyId(), keywords,
+				WorkflowConstants.STATUS_APPROVED, params, start, end,
+				new UserFirstNameComparator(true));
+		}
 
 		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
 
@@ -144,8 +167,7 @@ public class PrivateMessagingUtil {
 	 * only person to have posted on the thread, then he will the represenative.
 	 */
 	public static long getThreadRepresentativeUserId(
-			long userId, long mbThreadId)
-		throws SystemException {
+		long userId, long mbThreadId) {
 
 		List<MBMessage> mbMessages =
 			MBMessageLocalServiceUtil.getThreadMessages(
@@ -170,9 +192,7 @@ public class PrivateMessagingUtil {
 		return userId;
 	}
 
-	public static String getThreadSubject(long mbThreadId)
-		throws SystemException {
-
+	public static String getThreadSubject(long mbThreadId) {
 		List<MBMessage> mbMessages =
 			MBMessageLocalServiceUtil.getThreadMessages(
 				mbThreadId, WorkflowConstants.STATUS_ANY, 0, 1);
@@ -181,7 +201,7 @@ public class PrivateMessagingUtil {
 	}
 
 	public static List<User> getThreadUsers(long userId, long mbThreadId)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		List<User> users = new ArrayList<User>();
 
@@ -237,7 +257,7 @@ public class PrivateMessagingUtil {
 	}
 
 	public static boolean isUserPartOfThread(long userId, long mbThreadId)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		try {
 			UserThreadLocalServiceUtil.getUserThread(userId, mbThreadId);
@@ -248,5 +268,11 @@ public class PrivateMessagingUtil {
 			return false;
 		}
 	}
+
+	private static final boolean _USERS_INDEXER_ENABLED = GetterUtil.getBoolean(
+		PropsUtil.get(PropsKeys.USERS_INDEXER_ENABLED));
+
+	private static final boolean _USERS_SEARCH_WITH_INDEX =
+		GetterUtil.getBoolean(PropsUtil.get(PropsKeys.USERS_SEARCH_WITH_INDEX));
 
 }

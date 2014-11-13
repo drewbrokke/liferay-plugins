@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -196,14 +196,14 @@ MailManager mailManager = MailManager.getInstance(request);
 								</td>
 								<td>
 									<div class="<%= messageCssClass + (Validator.isNull(message.getSubject()) ? " no-subject" : StringPool.BLANK) %>" data-folderId="<%= folderId %>" data-keywords="<%= keywords %>" data-messageId="<%= message.getMessageId() %>" data-messageNumber="<%= messageNumber %>" data-orderByField="<%= orderByField %>" data-orderByType="<%= orderByType %>">
-										<%= Validator.isNull(message.getSubject()) ? LanguageUtil.get(pageContext, "no-subject") : HtmlUtil.escape(message.getSubject()) %>
+										<%= Validator.isNull(message.getSubject()) ? LanguageUtil.get(request, "no-subject") : HtmlUtil.escape(message.getSubject()) %>
 									</div>
 								</td>
 								<td class="attachments">
 									<div class="<%= messageCssClass %>" data-folderId="<%= folderId %>" data-keywords="<%= keywords %>" data-messageId="<%= message.getMessageId() %>" data-messageNumber="<%= messageNumber %>" data-orderByField="<%= orderByField %>" data-orderByType="<%= orderByType %>">
 										<c:if test="<%= !AttachmentLocalServiceUtil.getAttachments(message.getMessageId()).isEmpty() %>">
 											<liferay-ui:icon
-												image="../mail/clip"
+												iconCssClass="icon-paper-clip"
 												message="attachments"
 											/>
 										</c:if>

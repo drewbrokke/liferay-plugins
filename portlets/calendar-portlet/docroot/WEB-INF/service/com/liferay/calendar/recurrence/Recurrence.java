@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -43,12 +43,16 @@ public class Recurrence {
 		return _interval;
 	}
 
-	public Calendar getUntilJCalendar() {
-		return _untilJCalendar;
+	public List<Integer> getMonths() {
+		return _months;
 	}
 
-	public List<Weekday> getWeekdays() {
-		return _weekdays;
+	public List<PositionalWeekday> getPositionalWeekdays() {
+		return _positionalWeekdays;
+	}
+
+	public Calendar getUntilJCalendar() {
+		return _untilJCalendar;
 	}
 
 	public void setCount(int count) {
@@ -67,19 +71,26 @@ public class Recurrence {
 		_interval = interval;
 	}
 
-	public void setUntilJCalendar(Calendar untilJCalendar) {
-		_untilJCalendar = untilJCalendar;
+	public void setMonths(List<Integer> months) {
+		_months = months;
 	}
 
-	public void setWeekdays(List<Weekday> weekdays) {
-		_weekdays = weekdays;
+	public void setPositionalWeekdays(
+		List<PositionalWeekday> positionalWeekdays) {
+
+		_positionalWeekdays = positionalWeekdays;
+	}
+
+	public void setUntilJCalendar(Calendar untilJCalendar) {
+		_untilJCalendar = untilJCalendar;
 	}
 
 	private int _count;
 	private List<Calendar> _exceptionJCalendars = new ArrayList<Calendar>();
 	private Frequency _frequency;
 	private int _interval;
+	private List<Integer> _months;
+	private List<PositionalWeekday> _positionalWeekdays;
 	private Calendar _untilJCalendar;
-	private List<Weekday> _weekdays;
 
 }

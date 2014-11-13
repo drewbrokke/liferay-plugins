@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,6 +14,8 @@
 
 package com.liferay.sync.model;
 
+import aQute.bnd.annotation.ProviderType;
+
 import java.io.Serializable;
 
 import java.util.ArrayList;
@@ -26,6 +28,7 @@ import java.util.List;
  * @author Brian Wing Shun Chan
  * @generated
  */
+@ProviderType
 public class SyncDLFileVersionDiffSoap implements Serializable {
 	public static SyncDLFileVersionDiffSoap toSoapModel(
 		SyncDLFileVersionDiff model) {
@@ -34,7 +37,7 @@ public class SyncDLFileVersionDiffSoap implements Serializable {
 		soapModel.setSyncDLFileVersionDiffId(model.getSyncDLFileVersionDiffId());
 		soapModel.setFileEntryId(model.getFileEntryId());
 		soapModel.setSourceFileVersionId(model.getSourceFileVersionId());
-		soapModel.setDestinationFileVersionId(model.getDestinationFileVersionId());
+		soapModel.setTargetFileVersionId(model.getTargetFileVersionId());
 		soapModel.setDataFileEntryId(model.getDataFileEntryId());
 		soapModel.setSize(model.getSize());
 		soapModel.setExpirationDate(model.getExpirationDate());
@@ -117,12 +120,12 @@ public class SyncDLFileVersionDiffSoap implements Serializable {
 		_sourceFileVersionId = sourceFileVersionId;
 	}
 
-	public long getDestinationFileVersionId() {
-		return _destinationFileVersionId;
+	public long getTargetFileVersionId() {
+		return _targetFileVersionId;
 	}
 
-	public void setDestinationFileVersionId(long destinationFileVersionId) {
-		_destinationFileVersionId = destinationFileVersionId;
+	public void setTargetFileVersionId(long targetFileVersionId) {
+		_targetFileVersionId = targetFileVersionId;
 	}
 
 	public long getDataFileEntryId() {
@@ -152,7 +155,7 @@ public class SyncDLFileVersionDiffSoap implements Serializable {
 	private long _syncDLFileVersionDiffId;
 	private long _fileEntryId;
 	private long _sourceFileVersionId;
-	private long _destinationFileVersionId;
+	private long _targetFileVersionId;
 	private long _dataFileEntryId;
 	private long _size;
 	private Date _expirationDate;

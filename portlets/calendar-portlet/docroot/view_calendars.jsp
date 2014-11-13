@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -24,7 +24,7 @@ CalendarResource calendarResource = (CalendarResource)request.getAttribute(WebKe
 
 <liferay-ui:header
 	backURL="<%= redirect %>"
-	title='<%= LanguageUtil.format(pageContext, "x-calendars", calendarResource.getName(locale), false) %>'
+	title='<%= LanguageUtil.format(request, "x-calendars", calendarResource.getName(locale), false) %>'
 />
 
 <c:if test="<%= CalendarResourcePermission.contains(permissionChecker, calendarResource, ActionKeys.ADD_CALENDAR) %>">
@@ -84,6 +84,7 @@ CalendarResource calendarResource = (CalendarResource)request.getAttribute(WebKe
 
 		<liferay-ui:search-container-column-jsp
 			align="right"
+			cssClass="entry-action"
 			path="/calendar_action.jsp"
 		/>
 
@@ -92,7 +93,7 @@ CalendarResource calendarResource = (CalendarResource)request.getAttribute(WebKe
 	<liferay-ui:search-iterator />
 </liferay-ui:search-container>
 
-<div class="hide calendar-portlet-import-container" id="<portlet:namespace />importCalendarContainer">
+<div class="calendar-portlet-import-container hide" id="<portlet:namespace />importCalendarContainer">
 	<div class="hide portlet-msg-error" id="<portlet:namespace />portletErrorMessage"></div>
 
 	<div class="hide portlet-msg-success" id="<portlet:namespace />portletSuccessMessage">
@@ -127,12 +128,12 @@ CalendarResource calendarResource = (CalendarResource)request.getAttribute(WebKe
 								A.io.request(
 									url,
 									{
-										dataType: 'json',
+										dataType: 'JSON',
 										form: {
 											id: '<portlet:namespace />importFm',
 											upload: true
 										},
-										method: 'post',
+										method: 'POST',
 										on: {
 											complete: function() {
 												var responseData = this.get('responseData');
@@ -165,7 +166,7 @@ CalendarResource calendarResource = (CalendarResource)request.getAttribute(WebKe
 				var buttonClose = [
 					{
 						cssClass: 'close',
-						label: "\u00D7",
+						label: '\u00D7',
 						render: true,
 						on: {
 							click: function() {

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -13,6 +13,8 @@
  */
 
 package com.liferay.marketplace.service;
+
+import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.bean.PortletBeanLocatorUtil;
 import com.liferay.portal.kernel.util.ReferenceRegistry;
@@ -32,12 +34,17 @@ import com.liferay.portal.service.InvokableService;
  * @see com.liferay.marketplace.service.impl.AppServiceImpl
  * @generated
  */
+@ProviderType
 public class AppServiceUtil {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
 	 * Never modify this class directly. Add custom service methods to {@link com.liferay.marketplace.service.impl.AppServiceImpl} and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static com.liferay.marketplace.model.App deleteApp(long appId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService().deleteApp(appId);
+	}
 
 	/**
 	* Returns the Spring bean ID for this bean.
@@ -46,6 +53,17 @@ public class AppServiceUtil {
 	*/
 	public static java.lang.String getBeanIdentifier() {
 		return getService().getBeanIdentifier();
+	}
+
+	public static void installApp(long remoteAppId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		getService().installApp(remoteAppId);
+	}
+
+	public static java.lang.Object invokeMethod(java.lang.String name,
+		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
+		throws java.lang.Throwable {
+		return getService().invokeMethod(name, parameterTypes, arguments);
 	}
 
 	/**
@@ -57,34 +75,14 @@ public class AppServiceUtil {
 		getService().setBeanIdentifier(beanIdentifier);
 	}
 
-	public static java.lang.Object invokeMethod(java.lang.String name,
-		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
-		throws java.lang.Throwable {
-		return getService().invokeMethod(name, parameterTypes, arguments);
-	}
-
-	public static com.liferay.marketplace.model.App deleteApp(long appId)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException {
-		return getService().deleteApp(appId);
-	}
-
-	public static void installApp(long remoteAppId)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException {
-		getService().installApp(remoteAppId);
-	}
-
 	public static void uninstallApp(long remoteAppId)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException {
+		throws com.liferay.portal.kernel.exception.PortalException {
 		getService().uninstallApp(remoteAppId);
 	}
 
 	public static com.liferay.marketplace.model.App updateApp(
 		long remoteAppId, java.lang.String version, java.io.File file)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException {
+		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService().updateApp(remoteAppId, version, file);
 	}
 

@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -61,7 +61,7 @@ if (group.isUser() && !showManageEntries) {
 		}
 	);
 
-	var announcementEntries = A.one('#p_p_id<portlet:namespace /> .portlet-content-container');
+	var announcementEntries = A.one('#p_p_id<portlet:namespace />');
 
 	announcementEntries.delegate(
 		'click',
@@ -76,7 +76,7 @@ if (group.isUser() && !showManageEntries) {
 		function(event) {
 			event.preventDefault();
 
-			if (confirm('<%= UnicodeLanguageUtil.get(pageContext,"are-you-sure-you-want-to-delete-the-selected-entry") %>')) {
+			if (confirm('<%= UnicodeLanguageUtil.get(request,"are-you-sure-you-want-to-delete-the-selected-entry") %>')) {
 				var entry = event.currentTarget.ancestor('.entry');
 
 				var entryId = entry.attr('data-entryId');
@@ -113,7 +113,7 @@ if (group.isUser() && !showManageEntries) {
 
 							}
 						},
-						dataType: 'json'
+						dataType: 'JSON'
 					}
 				);
 			}
@@ -129,11 +129,11 @@ if (group.isUser() && !showManageEntries) {
 			<portlet:param name="redirect" value="<%= currentURL %>" />
 		</portlet:renderURL>
 
-		<portlet:namespace />openWindow('<%= addEntryURL %>', '<%= UnicodeLanguageUtil.get(pageContext, "add-entry") %>', true, 800);
+		<portlet:namespace />openWindow('<%= addEntryURL %>', '<%= UnicodeLanguageUtil.get(request, "add-entry") %>', true, 800);
 	}
 
 	function <portlet:namespace />editEntry(uri) {
-		<portlet:namespace />openWindow(uri, '<%= UnicodeLanguageUtil.get(pageContext, "edit-entry") %>', true, 800);
+		<portlet:namespace />openWindow(uri, '<%= UnicodeLanguageUtil.get(request, "edit-entry") %>', true, 800);
 	}
 
 	function <portlet:namespace />handleEntry(entryId) {
@@ -163,7 +163,7 @@ if (group.isUser() && !showManageEntries) {
 	function <portlet:namespace />manageEntries() {
 		<portlet:renderURL var="manageEntriesURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>"><portlet:param name="mvcPath" value="/manage_entries.jsp" /></portlet:renderURL>
 
-		<portlet:namespace />openWindow('<%= manageEntriesURL %>', '<%= UnicodeLanguageUtil.get(pageContext, "manage-entries") %>', true, 800);
+		<portlet:namespace />openWindow('<%= manageEntriesURL %>', '<%= UnicodeLanguageUtil.get(request, "manage-entries") %>', true, 800);
 	}
 
 	function <portlet:namespace />markEntry(entryId) {

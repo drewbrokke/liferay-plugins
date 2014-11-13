@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -25,11 +25,19 @@ import com.liferay.util.portlet.PortletProps;
  */
 public class PortletPropsValues {
 
+	public static final String LOGIN_REDIRECT = PortletProps.get(
+		PortletPropsKeys.LOGIN_REDIRECT);
+
 	public static final String[] SITE_AUTO_CREATE_TEAM_NAMES =
 		PortletProps.getArray(PortletPropsKeys.SITE_AUTO_CREATE_TEAM_NAMES);
 
 	public static final String SITE_PROTOTYPE_LAYOUT_TEMPLATE =
 		GetterUtil.getString(
 			PortletProps.get(PortletPropsKeys.SITE_PROTOTYPE_LAYOUT_TEMPLATE));
+
+	public static final String SO_USER_DEFAULT_LANDING_PAGE_PATH =
+		GetterUtil.getString(
+			PortletProps.get(
+				PortletPropsKeys.SO_USER_DEFAULT_LANDING_PAGE_PATH));
 
 }

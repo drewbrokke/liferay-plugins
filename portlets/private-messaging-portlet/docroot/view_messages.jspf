@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -19,7 +19,7 @@
 
 <aui:button-row cssClass="controls">
 	<c:if test="<%= UserThreadLocalServiceUtil.getUserUserThreadCount(themeDisplay.getUserId(), false) > 0 %>">
-		<aui:input cssClass="check-all" inline="<%= true %>" label="" name="checkAllMessages" title='<%= LanguageUtil.get(pageContext, "check-all-messages") %>' type="checkbox" />
+		<aui:input cssClass="check-all" inline="<%= true %>" label="" name="checkAllMessages" title='<%= LanguageUtil.get(request, "check-all-messages") %>' type="checkbox" />
 	</c:if>
 
 	<aui:button cssClass="hide" name="markMessagesAsUnread" value="mark-as-unread" />
@@ -86,23 +86,18 @@
 						User curUser = users.get(i);
 					%>
 
-						<c:choose>
-							<c:when test="<%= curUser.isActive() %>">
-								<span class="author-sender"><%= HtmlUtil.escape(curUser.getFullName()) %></span>
-							</c:when>
-							<c:otherwise>
-								<span class="author-sender line-through"><%= HtmlUtil.escape(curUser.getFullName()) %></span>
+						<span class="author-sender">
+							<span class="<%= !curUser.isActive() ? "line-through" : StringPool.BLANK %>"><%= HtmlUtil.escape(curUser.getFullName()) %></span>
 
+							<c:if test="<%= !curUser.isActive() %>">
 								<liferay-ui:icon
 									image="../aui/question-sign"
 									message="deleted-user"
 								/>
-							</c:otherwise>
-						</c:choose>
+							</c:if>
 
-						<c:if test="<%= i != users.size() - 1 %>">
-							,
-						</c:if>
+							<%= ((i + 1) < users.size()) ? StringPool.COMMA : StringPool.BLANK %>
+						</span>
 
 					<%
 					}

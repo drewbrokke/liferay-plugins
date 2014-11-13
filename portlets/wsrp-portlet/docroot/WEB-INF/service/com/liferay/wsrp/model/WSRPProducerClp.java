@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -15,7 +15,6 @@
 package com.liferay.wsrp.model;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.lar.StagedModelType;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
@@ -435,7 +434,7 @@ public class WSRPProducerClp extends BaseModelImpl<WSRPProducer>
 	}
 
 	@Override
-	public void persist() throws SystemException {
+	public void persist() {
 		if (this.isNew()) {
 			WSRPProducerLocalServiceUtil.addWSRPProducer(this);
 		}
@@ -500,6 +499,10 @@ public class WSRPProducerClp extends BaseModelImpl<WSRPProducer>
 		else {
 			return false;
 		}
+	}
+
+	public Class<?> getClpSerializerClass() {
+		return _clpSerializerClass;
 	}
 
 	@Override
@@ -604,6 +607,7 @@ public class WSRPProducerClp extends BaseModelImpl<WSRPProducer>
 	private String _version;
 	private String _portletIds;
 	private BaseModel<?> _wsrpProducerRemoteModel;
+	private Class<?> _clpSerializerClass = com.liferay.wsrp.service.ClpSerializer.class;
 	private boolean _entityCacheEnabled;
 	private boolean _finderCacheEnabled;
 }

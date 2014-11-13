@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -181,14 +181,14 @@ catch (NoSuchRecordSetException nsrse) {
 			var A = AUI();
 
 			document.<portlet:namespace />fm.<portlet:namespace />recordSetId.value = recordSetId;
-			document.<portlet:namespace />fm.<portlet:namespace />formDDMTemplateId.value = "";
+			document.<portlet:namespace />fm.<portlet:namespace />formDDMTemplateId.value = '';
 
 			A.one('.displaying-record-set-id-holder').show();
 			A.one('.displaying-help-message-holder').hide();
 
 			var displayRecordSetId = A.one('.displaying-record-set-id');
 
-			displayRecordSetId.set('innerHTML', recordSetName + ' (<%= LanguageUtil.get(pageContext, "modified") %>)');
+			displayRecordSetId.set('innerHTML', recordSetName + ' (<%= LanguageUtil.get(request, "modified") %>)');
 			displayRecordSetId.addClass('modified');
 		},
 		['aui-base']

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -13,6 +13,8 @@
  */
 
 package com.liferay.calendar.model.impl;
+
+import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.calendar.model.Calendar;
 
@@ -34,10 +36,11 @@ import java.util.Date;
  * @see Calendar
  * @generated
  */
+@ProviderType
 public class CalendarCacheModel implements CacheModel<Calendar>, Externalizable {
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(33);
+		StringBundler sb = new StringBundler(35);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -63,6 +66,8 @@ public class CalendarCacheModel implements CacheModel<Calendar>, Externalizable 
 		sb.append(name);
 		sb.append(", description=");
 		sb.append(description);
+		sb.append(", timeZoneId=");
+		sb.append(timeZoneId);
 		sb.append(", color=");
 		sb.append(color);
 		sb.append(", defaultCalendar=");
@@ -130,6 +135,13 @@ public class CalendarCacheModel implements CacheModel<Calendar>, Externalizable 
 			calendarImpl.setDescription(description);
 		}
 
+		if (timeZoneId == null) {
+			calendarImpl.setTimeZoneId(StringPool.BLANK);
+		}
+		else {
+			calendarImpl.setTimeZoneId(timeZoneId);
+		}
+
 		calendarImpl.setColor(color);
 		calendarImpl.setDefaultCalendar(defaultCalendar);
 		calendarImpl.setEnableComments(enableComments);
@@ -154,6 +166,7 @@ public class CalendarCacheModel implements CacheModel<Calendar>, Externalizable 
 		calendarResourceId = objectInput.readLong();
 		name = objectInput.readUTF();
 		description = objectInput.readUTF();
+		timeZoneId = objectInput.readUTF();
 		color = objectInput.readInt();
 		defaultCalendar = objectInput.readBoolean();
 		enableComments = objectInput.readBoolean();
@@ -201,6 +214,13 @@ public class CalendarCacheModel implements CacheModel<Calendar>, Externalizable 
 			objectOutput.writeUTF(description);
 		}
 
+		if (timeZoneId == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(timeZoneId);
+		}
+
 		objectOutput.writeInt(color);
 		objectOutput.writeBoolean(defaultCalendar);
 		objectOutput.writeBoolean(enableComments);
@@ -219,6 +239,7 @@ public class CalendarCacheModel implements CacheModel<Calendar>, Externalizable 
 	public long calendarResourceId;
 	public String name;
 	public String description;
+	public String timeZoneId;
 	public int color;
 	public boolean defaultCalendar;
 	public boolean enableComments;

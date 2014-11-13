@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,7 +19,6 @@ import com.liferay.portal.kernel.bi.rules.Query;
 import com.liferay.portal.kernel.bi.rules.RulesEngineUtil;
 import com.liferay.portal.kernel.bi.rules.RulesResourceRetriever;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.resource.StringResourceRetriever;
 import com.liferay.portal.workflow.kaleo.model.KaleoCondition;
 import com.liferay.portal.workflow.kaleo.runtime.ExecutionContext;
@@ -40,7 +39,7 @@ public class DRLConditionEvaluator implements ConditionEvaluator {
 	public String evaluate(
 			KaleoCondition kaleoCondition, ExecutionContext executionContext,
 			ClassLoader... classloaders)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		List<Fact<?>> facts = RulesContextBuilder.buildRulesContext(
 			executionContext);

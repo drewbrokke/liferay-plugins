@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -13,6 +13,8 @@
  */
 
 package com.liferay.sync.model;
+
+import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.CacheModel;
@@ -37,6 +39,7 @@ import java.util.Date;
  * @see com.liferay.sync.model.impl.SyncDLFileVersionDiffModelImpl
  * @generated
  */
+@ProviderType
 public interface SyncDLFileVersionDiffModel extends BaseModel<SyncDLFileVersionDiff> {
 	/*
 	 * NOTE FOR DEVELOPERS:
@@ -101,18 +104,18 @@ public interface SyncDLFileVersionDiffModel extends BaseModel<SyncDLFileVersionD
 	public void setSourceFileVersionId(long sourceFileVersionId);
 
 	/**
-	 * Returns the destination file version ID of this sync d l file version diff.
+	 * Returns the target file version ID of this sync d l file version diff.
 	 *
-	 * @return the destination file version ID of this sync d l file version diff
+	 * @return the target file version ID of this sync d l file version diff
 	 */
-	public long getDestinationFileVersionId();
+	public long getTargetFileVersionId();
 
 	/**
-	 * Sets the destination file version ID of this sync d l file version diff.
+	 * Sets the target file version ID of this sync d l file version diff.
 	 *
-	 * @param destinationFileVersionId the destination file version ID of this sync d l file version diff
+	 * @param targetFileVersionId the target file version ID of this sync d l file version diff
 	 */
-	public void setDestinationFileVersionId(long destinationFileVersionId);
+	public void setTargetFileVersionId(long targetFileVersionId);
 
 	/**
 	 * Returns the data file entry ID of this sync d l file version diff.

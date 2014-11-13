@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -17,7 +17,6 @@ package com.liferay.opensocial.admin.lar;
 import com.liferay.opensocial.model.Gadget;
 import com.liferay.opensocial.service.GadgetLocalServiceUtil;
 import com.liferay.opensocial.service.permission.GadgetPermission;
-import com.liferay.opensocial.service.persistence.GadgetExportActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.lar.BasePortletDataHandler;
 import com.liferay.portal.kernel.lar.DataLevel;
@@ -74,7 +73,8 @@ public class AdminPortletDataHandler extends BasePortletDataHandler {
 			"group-id", String.valueOf(portletDataContext.getScopeGroupId()));
 
 		ActionableDynamicQuery actionableDynamicQuery =
-			new GadgetExportActionableDynamicQuery(portletDataContext);
+			GadgetLocalServiceUtil.getExportActionableDynamicQuery(
+				portletDataContext);
 
 		actionableDynamicQuery.performActions();
 
@@ -110,7 +110,8 @@ public class AdminPortletDataHandler extends BasePortletDataHandler {
 		throws Exception {
 
 		ActionableDynamicQuery actionableDynamicQuery =
-			new GadgetExportActionableDynamicQuery(portletDataContext);
+			GadgetLocalServiceUtil.getExportActionableDynamicQuery(
+				portletDataContext);
 
 		actionableDynamicQuery.performCount();
 	}

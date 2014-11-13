@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -72,7 +72,7 @@ String notificationTemplateBody = BeanPropertiesUtil.getString(calendarNotificat
 		<aui:input name="subject" value="<%= notificationTemplateSubject %>" />
 
 		<aui:field-wrapper label="body">
-			<liferay-ui:input-editor editorImpl="ckeditor" />
+			<liferay-ui:input-editor contents="<%= notificationTemplateBody %>" editorImpl="ckeditor" />
 
 			<aui:input name="body" type="hidden" value="<%= notificationTemplateBody %>" />
 		</aui:field-wrapper>
@@ -151,10 +151,6 @@ String notificationTemplateBody = BeanPropertiesUtil.getString(calendarNotificat
 </aui:form>
 
 <aui:script>
-	function <portlet:namespace />initEditor() {
-		return '<%= UnicodeFormatter.toString(notificationTemplateBody) %>';
-	}
-
 	function <portlet:namespace />updateCalendarNotificationTemplate() {
 		var notificationTemplateContentBody = document.getElementById('<portlet:namespace />body');
 

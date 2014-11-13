@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -108,7 +108,7 @@ public class MenuItem implements Serializable {
 		List<MenuItem> menuItems = new LinkedList<MenuItem>();
 
 		for (WikiPage wikiPage : wikiPages) {
-			if ((wikiPage.getParentPage() != null) && (curDepth == 1)) {
+			if ((wikiPage.fetchParentPage() != null) && (curDepth == 1)) {
 				continue;
 			}
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,6 +14,8 @@
 
 package com.liferay.calendar.model.impl;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.calendar.model.CalendarResource;
 import com.liferay.calendar.model.CalendarResourceModel;
 import com.liferay.calendar.model.CalendarResourceSoap;
@@ -21,7 +23,6 @@ import com.liferay.calendar.model.CalendarResourceSoap;
 import com.liferay.portal.LocaleException;
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSON;
 import com.liferay.portal.kernel.lar.StagedModelType;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -68,6 +69,7 @@ import java.util.TreeSet;
  * @generated
  */
 @JSON(strict = true)
+@ProviderType
 public class CalendarResourceModelImpl extends BaseModelImpl<CalendarResource>
 	implements CalendarResourceModel {
 	/*
@@ -110,14 +112,14 @@ public class CalendarResourceModelImpl extends BaseModelImpl<CalendarResource>
 	public static final boolean COLUMN_BITMASK_ENABLED = GetterUtil.getBoolean(com.liferay.util.service.ServiceProps.get(
 				"value.object.column.bitmask.enabled.com.liferay.calendar.model.CalendarResource"),
 			true);
-	public static long ACTIVE_COLUMN_BITMASK = 1L;
-	public static long CLASSNAMEID_COLUMN_BITMASK = 2L;
-	public static long CLASSPK_COLUMN_BITMASK = 4L;
-	public static long CODE_COLUMN_BITMASK = 8L;
-	public static long COMPANYID_COLUMN_BITMASK = 16L;
-	public static long GROUPID_COLUMN_BITMASK = 32L;
-	public static long RESOURCEBLOCKID_COLUMN_BITMASK = 64L;
-	public static long UUID_COLUMN_BITMASK = 128L;
+	public static final long ACTIVE_COLUMN_BITMASK = 1L;
+	public static final long CLASSNAMEID_COLUMN_BITMASK = 2L;
+	public static final long CLASSPK_COLUMN_BITMASK = 4L;
+	public static final long CODE_COLUMN_BITMASK = 8L;
+	public static final long COMPANYID_COLUMN_BITMASK = 16L;
+	public static final long GROUPID_COLUMN_BITMASK = 32L;
+	public static final long RESOURCEBLOCKID_COLUMN_BITMASK = 64L;
+	public static final long UUID_COLUMN_BITMASK = 128L;
 
 	/**
 	 * Converts the soap model instance into a normal model instance.
@@ -428,7 +430,7 @@ public class CalendarResourceModelImpl extends BaseModelImpl<CalendarResource>
 	}
 
 	@Override
-	public String getUserUuid() throws SystemException {
+	public String getUserUuid() {
 		try {
 			User user = UserLocalServiceUtil.getUserById(getUserId());
 
@@ -902,19 +904,28 @@ public class CalendarResourceModelImpl extends BaseModelImpl<CalendarResource>
 			return StringPool.BLANK;
 		}
 
-		return LocalizationUtil.getDefaultLanguageId(xml);
+		Locale defaultLocale = LocaleUtil.getSiteDefault();
+
+		return LocalizationUtil.getDefaultLanguageId(xml, defaultLocale);
 	}
 
 	@Override
 	public void prepareLocalizedFieldsForImport() throws LocaleException {
-		prepareLocalizedFieldsForImport(null);
+		Locale defaultLocale = LocaleUtil.fromLanguageId(getDefaultLanguageId());
+
+		Locale[] availableLocales = LocaleUtil.fromLanguageIds(getAvailableLanguageIds());
+
+		Locale defaultImportLocale = LocalizationUtil.getDefaultImportLocale(CalendarResource.class.getName(),
+				getPrimaryKey(), defaultLocale, availableLocales);
+
+		prepareLocalizedFieldsForImport(defaultImportLocale);
 	}
 
 	@Override
 	@SuppressWarnings("unused")
 	public void prepareLocalizedFieldsForImport(Locale defaultImportLocale)
 		throws LocaleException {
-		Locale defaultLocale = LocaleUtil.getDefault();
+		Locale defaultLocale = LocaleUtil.getSiteDefault();
 
 		String modelDefaultLanguageId = getDefaultLanguageId();
 
@@ -1267,8 +1278,8 @@ public class CalendarResourceModelImpl extends BaseModelImpl<CalendarResource>
 		return sb.toString();
 	}
 
-	private static ClassLoader _classLoader = CalendarResource.class.getClassLoader();
-	private static Class<?>[] _escapedModelInterfaces = new Class[] {
+	private static final ClassLoader _classLoader = CalendarResource.class.getClassLoader();
+	private static final Class<?>[] _escapedModelInterfaces = new Class[] {
 			CalendarResource.class
 		};
 	private String _uuid;

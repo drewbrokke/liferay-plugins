@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -13,6 +13,8 @@
  */
 
 package com.liferay.calendar.service;
+
+import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.bean.PortletBeanLocatorUtil;
 import com.liferay.portal.kernel.util.ReferenceRegistry;
@@ -32,6 +34,7 @@ import com.liferay.portal.service.InvokableLocalService;
  * @see com.liferay.calendar.service.impl.CalendarImporterLocalServiceImpl
  * @generated
  */
+@ProviderType
 public class CalendarImporterLocalServiceUtil {
 	/*
 	 * NOTE FOR DEVELOPERS:
@@ -48,13 +51,15 @@ public class CalendarImporterLocalServiceUtil {
 		return getService().getBeanIdentifier();
 	}
 
-	/**
-	* Sets the Spring bean ID for this bean.
-	*
-	* @param beanIdentifier the Spring bean ID for this bean
-	*/
-	public static void setBeanIdentifier(java.lang.String beanIdentifier) {
-		getService().setBeanIdentifier(beanIdentifier);
+	public static void importCalEvent(
+		com.liferay.portlet.calendar.model.CalEvent calEvent)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		getService().importCalEvent(calEvent);
+	}
+
+	public static void importCalEvents()
+		throws com.liferay.portal.kernel.exception.PortalException {
+		getService().importCalEvents();
 	}
 
 	public static java.lang.Object invokeMethod(java.lang.String name,
@@ -63,17 +68,13 @@ public class CalendarImporterLocalServiceUtil {
 		return getService().invokeMethod(name, parameterTypes, arguments);
 	}
 
-	public static void importCalEvent(
-		com.liferay.portlet.calendar.model.CalEvent calEvent)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException {
-		getService().importCalEvent(calEvent);
-	}
-
-	public static void importCalEvents()
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException {
-		getService().importCalEvents();
+	/**
+	* Sets the Spring bean ID for this bean.
+	*
+	* @param beanIdentifier the Spring bean ID for this bean
+	*/
+	public static void setBeanIdentifier(java.lang.String beanIdentifier) {
+		getService().setBeanIdentifier(beanIdentifier);
 	}
 
 	public static void clearService() {

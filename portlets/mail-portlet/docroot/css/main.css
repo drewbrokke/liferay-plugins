@@ -35,7 +35,6 @@
 
 	.draft-link, .message-link {
 		cursor: pointer;
-		cursor: hand;
 	}
 
 	.compose-message-container {
@@ -51,6 +50,17 @@
 		background-color: #FAFAFA;
 		color: #999;
 		margin: 1em 0;
+		overflow: auto;
+
+		.dl-horizontal {
+			dd {
+				margin-left: 60px;
+			}
+
+			dt {
+				width: 50px;
+			}
+		}
 	}
 
 	.message-pager {
@@ -80,9 +90,9 @@
 	}
 }
 
-.aui .mail-portlet .table-bordered {
+.mail-portlet .table-bordered {
 	th, td {
-	 	&.attachments {
+		&.attachments {
 			border-left: 0;
 		}
 	}

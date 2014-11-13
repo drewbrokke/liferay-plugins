@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -15,7 +15,6 @@
 package com.liferay.wsrp.admin.lar;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.lar.BaseStagedModelDataHandler;
 import com.liferay.portal.kernel.lar.ExportImportPathUtil;
 import com.liferay.portal.kernel.lar.PortletDataContext;
@@ -37,17 +36,24 @@ public class WSRPConsumerStagedModelDataHandler
 	@Override
 	public void deleteStagedModel(
 			String uuid, long groupId, String className, String extraData)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		Group group = GroupLocalServiceUtil.getGroup(groupId);
 
-		WSRPConsumer wsrpConsumer =
-			WSRPConsumerLocalServiceUtil.fetchWSRPConsumerByUuidAndCompanyId(
-				uuid, group.getCompanyId());
+		WSRPConsumer wsrpConsumer = fetchStagedModelByUuidAndCompanyId(
+			uuid, group.getCompanyId());
 
 		if (wsrpConsumer != null) {
 			WSRPConsumerLocalServiceUtil.deleteWSRPConsumer(wsrpConsumer);
 		}
+	}
+
+	@Override
+	public WSRPConsumer fetchStagedModelByUuidAndCompanyId(
+		String uuid, long companyId) {
+
+		return WSRPConsumerLocalServiceUtil.fetchWSRPConsumerByUuidAndCompanyId(
+			uuid, companyId);
 	}
 
 	@Override
@@ -85,10 +91,8 @@ public class WSRPConsumerStagedModelDataHandler
 
 		if (portletDataContext.isDataStrategyMirror()) {
 			WSRPConsumer existingWSRPConsumer =
-				WSRPConsumerLocalServiceUtil.
-					fetchWSRPConsumerByUuidAndCompanyId(
-						wsrpConsumer.getUuid(),
-						portletDataContext.getCompanyId());
+				fetchStagedModelByUuidAndCompanyId(
+					wsrpConsumer.getUuid(), portletDataContext.getCompanyId());
 
 			if (existingWSRPConsumer == null) {
 				serviceContext.setUuid(wsrpConsumer.getUuid());
@@ -129,22 +133,6 @@ public class WSRPConsumerStagedModelDataHandler
 
 		portletDataContext.importClassedModel(
 			wsrpConsumer, importedWSRPConsumer);
-	}
-
-	@Override
-	protected boolean validateMissingReference(
-			String uuid, long companyId, long groupId)
-		throws Exception {
-
-		WSRPConsumer wsrpConsumer =
-			WSRPConsumerLocalServiceUtil.fetchWSRPConsumerByUuidAndCompanyId(
-				uuid, companyId);
-
-		if (wsrpConsumer == null) {
-			return false;
-		}
-
-		return true;
 	}
 
 }

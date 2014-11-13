@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,6 +14,8 @@
 
 package com.liferay.so.activities.hook.social;
 
+import com.liferay.bookmarks.model.BookmarksEntry;
+import com.liferay.bookmarks.service.BookmarksEntryLocalServiceUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
@@ -23,8 +25,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portlet.asset.model.AssetRenderer;
-import com.liferay.portlet.bookmarks.model.BookmarksEntry;
-import com.liferay.portlet.bookmarks.service.BookmarksEntryLocalServiceUtil;
 import com.liferay.portlet.social.model.SocialActivity;
 import com.liferay.portlet.social.model.SocialActivityFeedEntry;
 import com.liferay.portlet.social.model.SocialActivitySet;
@@ -92,10 +92,6 @@ public class BookmarksActivityInterpreter extends SOSocialActivityInterpreter {
 
 		if (activitySet.getType() ==
 				SocialActivityKeyConstants.BOOKMARKS_UPDATE_ENTRY) {
-
-			if (!hasPermissions(activitySet, serviceContext)) {
-				return null;
-			}
 
 			return getBody(
 				activitySet.getClassName(), activitySet.getClassPK(),
@@ -165,8 +161,7 @@ public class BookmarksActivityInterpreter extends SOSocialActivityInterpreter {
 			activity.getClassName(), activity.getClassPK());
 
 		String body = StringUtil.shorten(
-			HtmlUtil.escape(
-				assetRenderer.getSummary(serviceContext.getLocale())), 200);
+			HtmlUtil.escape(assetRenderer.getSummary()), 200);
 
 		return new SocialActivityFeedEntry(title, body);
 	}

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,6 +14,8 @@
 
 package com.liferay.calendar.model.impl;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.calendar.model.CalendarBooking;
 import com.liferay.calendar.model.CalendarBookingModel;
 import com.liferay.calendar.model.CalendarBookingSoap;
@@ -22,7 +24,6 @@ import com.liferay.portal.LocaleException;
 import com.liferay.portal.NoSuchModelException;
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSON;
 import com.liferay.portal.kernel.lar.StagedModelType;
 import com.liferay.portal.kernel.trash.TrashHandler;
@@ -76,6 +77,7 @@ import java.util.TreeSet;
  * @generated
  */
 @JSON(strict = true)
+@ProviderType
 public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 	implements CalendarBookingModel {
 	/*
@@ -113,7 +115,7 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 			{ "statusByUserName", Types.VARCHAR },
 			{ "statusDate", Types.TIMESTAMP }
 		};
-	public static final String TABLE_SQL_CREATE = "create table CalendarBooking (uuid_ VARCHAR(75) null,calendarBookingId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,resourceBlockId LONG,calendarId LONG,calendarResourceId LONG,parentCalendarBookingId LONG,title STRING null,description STRING null,location STRING null,startTime LONG,endTime LONG,allDay BOOLEAN,recurrence STRING null,firstReminder LONG,firstReminderType VARCHAR(75) null,secondReminder LONG,secondReminderType VARCHAR(75) null,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null)";
+	public static final String TABLE_SQL_CREATE = "create table CalendarBooking (uuid_ VARCHAR(75) null,calendarBookingId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,resourceBlockId LONG,calendarId LONG,calendarResourceId LONG,parentCalendarBookingId LONG,title STRING null,description TEXT null,location STRING null,startTime LONG,endTime LONG,allDay BOOLEAN,recurrence STRING null,firstReminder LONG,firstReminderType VARCHAR(75) null,secondReminder LONG,secondReminderType VARCHAR(75) null,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null)";
 	public static final String TABLE_SQL_DROP = "drop table CalendarBooking";
 	public static final String ORDER_BY_JPQL = " ORDER BY calendarBooking.startTime ASC, calendarBooking.title ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY CalendarBooking.startTime ASC, CalendarBooking.title ASC";
@@ -129,16 +131,16 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 	public static final boolean COLUMN_BITMASK_ENABLED = GetterUtil.getBoolean(com.liferay.util.service.ServiceProps.get(
 				"value.object.column.bitmask.enabled.com.liferay.calendar.model.CalendarBooking"),
 			true);
-	public static long CALENDARID_COLUMN_BITMASK = 1L;
-	public static long CALENDARRESOURCEID_COLUMN_BITMASK = 2L;
-	public static long COMPANYID_COLUMN_BITMASK = 4L;
-	public static long GROUPID_COLUMN_BITMASK = 8L;
-	public static long PARENTCALENDARBOOKINGID_COLUMN_BITMASK = 16L;
-	public static long RESOURCEBLOCKID_COLUMN_BITMASK = 32L;
-	public static long STATUS_COLUMN_BITMASK = 64L;
-	public static long UUID_COLUMN_BITMASK = 128L;
-	public static long STARTTIME_COLUMN_BITMASK = 256L;
-	public static long TITLE_COLUMN_BITMASK = 512L;
+	public static final long CALENDARID_COLUMN_BITMASK = 1L;
+	public static final long CALENDARRESOURCEID_COLUMN_BITMASK = 2L;
+	public static final long COMPANYID_COLUMN_BITMASK = 4L;
+	public static final long GROUPID_COLUMN_BITMASK = 8L;
+	public static final long PARENTCALENDARBOOKINGID_COLUMN_BITMASK = 16L;
+	public static final long RESOURCEBLOCKID_COLUMN_BITMASK = 32L;
+	public static final long STATUS_COLUMN_BITMASK = 64L;
+	public static final long UUID_COLUMN_BITMASK = 128L;
+	public static final long STARTTIME_COLUMN_BITMASK = 256L;
+	public static final long TITLE_COLUMN_BITMASK = 512L;
 
 	/**
 	 * Converts the soap model instance into a normal model instance.
@@ -538,7 +540,7 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 	}
 
 	@Override
-	public String getUserUuid() throws SystemException {
+	public String getUserUuid() {
 		try {
 			User user = UserLocalServiceUtil.getUserById(getUserId());
 
@@ -1048,7 +1050,7 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 	}
 
 	@Override
-	public String getStatusByUserUuid() throws SystemException {
+	public String getStatusByUserUuid() {
 		try {
 			User user = UserLocalServiceUtil.getUserById(getStatusByUserId());
 
@@ -1097,7 +1099,7 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 	}
 
 	@Override
-	public TrashEntry getTrashEntry() throws PortalException, SystemException {
+	public TrashEntry getTrashEntry() throws PortalException {
 		if (!isInTrash()) {
 			return null;
 		}
@@ -1111,7 +1113,8 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 
 		TrashHandler trashHandler = getTrashHandler();
 
-		if (!Validator.isNull(trashHandler.getContainerModelClassName())) {
+		if (!Validator.isNull(trashHandler.getContainerModelClassName(
+						getPrimaryKey()))) {
 			ContainerModel containerModel = null;
 
 			try {
@@ -1128,7 +1131,8 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 					return trashedModel.getTrashEntry();
 				}
 
-				trashHandler = TrashHandlerRegistryUtil.getTrashHandler(trashHandler.getContainerModelClassName());
+				trashHandler = TrashHandlerRegistryUtil.getTrashHandler(trashHandler.getContainerModelClassName(
+							containerModel.getContainerModelId()));
 
 				if (trashHandler == null) {
 					return null;
@@ -1166,7 +1170,8 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 		TrashHandler trashHandler = getTrashHandler();
 
 		if ((trashHandler == null) ||
-				Validator.isNull(trashHandler.getContainerModelClassName())) {
+				Validator.isNull(trashHandler.getContainerModelClassName(
+						getPrimaryKey()))) {
 			return false;
 		}
 
@@ -1188,7 +1193,7 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 	}
 
 	@Override
-	public boolean isInTrashExplicitly() throws SystemException {
+	public boolean isInTrashExplicitly() {
 		if (!isInTrash()) {
 			return false;
 		}
@@ -1201,6 +1206,22 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 		}
 
 		return false;
+	}
+
+	@Override
+	public boolean isInTrashImplicitly() {
+		if (!isInTrash()) {
+			return false;
+		}
+
+		TrashEntry trashEntry = TrashEntryLocalServiceUtil.fetchEntry(getModelClassName(),
+				getTrashEntryClassPK());
+
+		if (trashEntry != null) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -1346,19 +1367,28 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 			return StringPool.BLANK;
 		}
 
-		return LocalizationUtil.getDefaultLanguageId(xml);
+		Locale defaultLocale = LocaleUtil.getSiteDefault();
+
+		return LocalizationUtil.getDefaultLanguageId(xml, defaultLocale);
 	}
 
 	@Override
 	public void prepareLocalizedFieldsForImport() throws LocaleException {
-		prepareLocalizedFieldsForImport(null);
+		Locale defaultLocale = LocaleUtil.fromLanguageId(getDefaultLanguageId());
+
+		Locale[] availableLocales = LocaleUtil.fromLanguageIds(getAvailableLanguageIds());
+
+		Locale defaultImportLocale = LocalizationUtil.getDefaultImportLocale(CalendarBooking.class.getName(),
+				getPrimaryKey(), defaultLocale, availableLocales);
+
+		prepareLocalizedFieldsForImport(defaultImportLocale);
 	}
 
 	@Override
 	@SuppressWarnings("unused")
 	public void prepareLocalizedFieldsForImport(Locale defaultImportLocale)
 		throws LocaleException {
-		Locale defaultLocale = LocaleUtil.getDefault();
+		Locale defaultLocale = LocaleUtil.getSiteDefault();
 
 		String modelDefaultLanguageId = getDefaultLanguageId();
 
@@ -1851,8 +1881,8 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 		return sb.toString();
 	}
 
-	private static ClassLoader _classLoader = CalendarBooking.class.getClassLoader();
-	private static Class<?>[] _escapedModelInterfaces = new Class[] {
+	private static final ClassLoader _classLoader = CalendarBooking.class.getClassLoader();
+	private static final Class<?>[] _escapedModelInterfaces = new Class[] {
 			CalendarBooking.class
 		};
 	private String _uuid;

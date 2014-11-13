@@ -8,12 +8,13 @@
 *.swp
 .ant_targets
 .ant-targets-build.xml
-.ivy
+.gh.json
 .sass-cache
 .sass_cache_*.css
 _sass_cache_*.css
 
 /.bnd
+/.ivy
 
 /*/*/bin
 /*/*/classes
@@ -29,4 +30,16 @@ _sass_cache_*.css
 /baseline-reports
 /build.*.properties
 /dist
+
+/hooks/*/test/integration/arquillian.xml
+
+/portlets/*/test/integration/arquillian.xml
+
+/themes/*/docroot/css
+/themes/*/docroot/images
+/themes/*/docroot/js
+/themes/*/docroot/layouttpl
+/themes/*/docroot/templates
+/themes/*/docroot/WEB-INF/lib
+
 /tools/*/*/*/lib

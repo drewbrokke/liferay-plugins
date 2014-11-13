@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -15,19 +15,19 @@
 package com.liferay.sync.service.persistence;
 
 import com.liferay.portal.kernel.dao.orm.BaseActionableDynamicQuery;
-import com.liferay.portal.kernel.exception.SystemException;
 
 import com.liferay.sync.model.SyncDLFileVersionDiff;
 import com.liferay.sync.service.SyncDLFileVersionDiffLocalServiceUtil;
 
 /**
  * @author Brian Wing Shun Chan
+ * @deprecated As of 7.0.0, replaced by {@link SyncDLFileVersionDiffLocalServiceUtil#getActionableDynamicQuery()}
  * @generated
  */
+@Deprecated
 public abstract class SyncDLFileVersionDiffActionableDynamicQuery
 	extends BaseActionableDynamicQuery {
-	public SyncDLFileVersionDiffActionableDynamicQuery()
-		throws SystemException {
+	public SyncDLFileVersionDiffActionableDynamicQuery() {
 		setBaseLocalService(SyncDLFileVersionDiffLocalServiceUtil.getService());
 		setClass(SyncDLFileVersionDiff.class);
 

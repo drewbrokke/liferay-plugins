@@ -163,7 +163,7 @@ AUI.add(
 
 						instance._contactsCheckBox = A.one('.contacts-result');
 
-						instance._checkAll = instance.byId('checkAllCheckbox');
+						instance._checkAll = instance.byId('checkAll');
 
 						instance._checkAll.on('click', instance._onCheckAll, instance);
 
@@ -446,7 +446,7 @@ AUI.add(
 						return new A.DataSource.IO(
 							{
 								ioConfig: {
-									method: "post"
+									method: 'POST'
 								},
 								on: {
 									request: function(event) {
@@ -638,7 +638,7 @@ AUI.add(
 												instance.addContactResults(this.get('responseData'));
 											}
 										},
-										dataType: 'json'
+										dataType: 'JSON'
 									}
 								);
 							}
@@ -723,7 +723,7 @@ AUI.add(
 												instance._editEntry(contact);
 											}
 										},
-										icon: 'edit',
+										icon: 'icon-edit',
 										label: Liferay.Language.get('edit')
 									},
 									{
@@ -732,7 +732,7 @@ AUI.add(
 												instance._deleteEntry(contact);
 											}
 										},
-										icon: 'delete',
+										icon: 'icon-remove',
 										label: Liferay.Language.get('delete')
 									}
 								]

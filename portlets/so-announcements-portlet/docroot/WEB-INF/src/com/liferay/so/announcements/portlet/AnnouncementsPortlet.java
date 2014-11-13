@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -20,6 +20,7 @@ package com.liferay.so.announcements.portlet;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
+import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -33,7 +34,6 @@ import com.liferay.portlet.announcements.EntryExpirationDateException;
 import com.liferay.portlet.announcements.EntryTitleException;
 import com.liferay.portlet.announcements.EntryURLException;
 import com.liferay.portlet.announcements.service.AnnouncementsEntryServiceUtil;
-import com.liferay.util.bridges.mvc.MVCPortlet;
 
 import java.util.Calendar;
 

@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -28,13 +28,14 @@ Map<String, OAuthService> oAuthServices = (Map<String, OAuthService>)renderReque
 
 <liferay-portlet:actionURL portletConfiguration="true" var="configurationActionURL" />
 
-<liferay-portlet:renderURL portletConfiguration="true" var="configurationRenderURL">
-	<portlet:param name="tabs2" value="<%= tabs2 %>" />
-</liferay-portlet:renderURL>
-
 <aui:form action="<%= configurationActionURL %>" method="post" name="fm">
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.UPDATE %>" />
 	<aui:input name="tabs2" type="hidden" value="<%= tabs2 %>" />
+
+	<liferay-portlet:renderURL portletConfiguration="true" var="configurationRenderURL">
+		<portlet:param name="tabs2" value="<%= tabs2 %>" />
+	</liferay-portlet:renderURL>
+
 	<aui:input name="redirect" type="hidden" value="<%= configurationRenderURL %>" />
 
 	<%
@@ -70,7 +71,7 @@ Map<String, OAuthService> oAuthServices = (Map<String, OAuthService>)renderReque
 	<c:choose>
 		<c:when test='<%= tabs2.equals("gadget") || tabs2Names.equals("gadget") %>'>
 			<aui:fieldset>
-				<aui:input cssClass="lfr-input-text-container" label="url" name="preferences--url--" type="text" value="<%= url %>" />
+				<aui:input label="url" name="preferences--url--" type="text" value="<%= url %>" wrapperCssClass="lfr-input-text-container" />
 			</aui:fieldset>
 
 			<aui:button-row>

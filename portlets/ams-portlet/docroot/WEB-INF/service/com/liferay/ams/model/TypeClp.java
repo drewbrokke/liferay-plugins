@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -18,7 +18,6 @@ import com.liferay.ams.service.ClpSerializer;
 import com.liferay.ams.service.TypeLocalServiceUtil;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
@@ -226,7 +225,7 @@ public class TypeClp extends BaseModelImpl<Type> implements Type {
 	}
 
 	@Override
-	public void persist() throws SystemException {
+	public void persist() {
 		if (this.isNew()) {
 			TypeLocalServiceUtil.addType(this);
 		}
@@ -285,6 +284,10 @@ public class TypeClp extends BaseModelImpl<Type> implements Type {
 		else {
 			return false;
 		}
+	}
+
+	public Class<?> getClpSerializerClass() {
+		return _clpSerializerClass;
 	}
 
 	@Override
@@ -347,6 +350,7 @@ public class TypeClp extends BaseModelImpl<Type> implements Type {
 	private long _groupId;
 	private String _name;
 	private BaseModel<?> _typeRemoteModel;
+	private Class<?> _clpSerializerClass = com.liferay.ams.service.ClpSerializer.class;
 	private boolean _entityCacheEnabled;
 	private boolean _finderCacheEnabled;
 }

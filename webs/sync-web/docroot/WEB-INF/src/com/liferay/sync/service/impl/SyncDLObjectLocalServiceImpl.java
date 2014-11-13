@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,9 +19,10 @@ import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.repository.model.Folder;
+import com.liferay.portlet.documentlibrary.model.DLFileEntry;
 import com.liferay.portlet.documentlibrary.model.DLFolderConstants;
+import com.liferay.sync.model.SyncConstants;
 import com.liferay.sync.model.SyncDLObject;
 import com.liferay.sync.service.base.SyncDLObjectLocalServiceBaseImpl;
 
@@ -43,14 +44,14 @@ public class SyncDLObjectLocalServiceImpl
 			String version, long size, String checksum, String event,
 			Date lockExpirationDate, long lockUserId, String lockUserName,
 			String type, long typePK, String typeUuid)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		if (!isDefaultRepository(parentFolderId)) {
 			return null;
 		}
 
-		SyncDLObject syncDLObject = syncDLObjectPersistence.fetchByTypePK(
-			typePK);
+		SyncDLObject syncDLObject = syncDLObjectPersistence.fetchByT_T(
+			type, typePK);
 
 		if (syncDLObject == null) {
 			long syncDLObjectId = counterLocalService.increment();
@@ -63,9 +64,48 @@ public class SyncDLObjectLocalServiceImpl
 			syncDLObject.setType(type);
 			syncDLObject.setTypePK(typePK);
 			syncDLObject.setTypeUuid(typeUuid);
+
+			if (type.equals(SyncConstants.TYPE_PRIVATE_WORKING_COPY)) {
+				SyncDLObject approvedSyncDLObject =
+					syncDLObjectPersistence.fetchByT_T(
+						SyncConstants.TYPE_FILE, typePK);
+
+				approvedSyncDLObject.setModifiedTime(modifiedTime);
+				approvedSyncDLObject.setLockExpirationDate(lockExpirationDate);
+				approvedSyncDLObject.setLockUserId(lockUserId);
+				approvedSyncDLObject.setLockUserName(lockUserName);
+
+				syncDLObjectPersistence.update(approvedSyncDLObject);
+			}
 		}
-		else if (syncDLObject.getModifiedTime() > modifiedTime) {
+		else if (syncDLObject.getModifiedTime() >= modifiedTime) {
 			return null;
+		}
+		else if (type.equals(SyncConstants.TYPE_FILE)) {
+			SyncDLObject pwcSyncDLObject = syncDLObjectPersistence.fetchByT_T(
+				SyncConstants.TYPE_PRIVATE_WORKING_COPY, typePK);
+
+			if (pwcSyncDLObject != null) {
+				DLFileEntry dlFileEntry =
+					dlFileEntryLocalService.fetchDLFileEntry(typePK);
+
+				if ((dlFileEntry == null) || !dlFileEntry.isCheckedOut()) {
+					syncDLObjectPersistence.remove(pwcSyncDLObject);
+				}
+			}
+		}
+		else if (type.equals(SyncConstants.TYPE_PRIVATE_WORKING_COPY)) {
+			if (event.equals(SyncConstants.EVENT_RESTORE) ||
+				event.equals(SyncConstants.EVENT_TRASH)) {
+
+				SyncDLObject approvedSyncDLObject =
+					syncDLObjectPersistence.fetchByT_T(
+						SyncConstants.TYPE_FILE, typePK);
+
+				approvedSyncDLObject.setEvent(event);
+
+				syncDLObjectPersistence.update(approvedSyncDLObject);
+			}
 		}
 
 		syncDLObject.setModifiedTime(modifiedTime);
@@ -88,12 +128,12 @@ public class SyncDLObjectLocalServiceImpl
 	}
 
 	@Override
-	public SyncDLObject fetchSyncDLObject(long typePK) throws SystemException {
-		return syncDLObjectPersistence.fetchByTypePK(typePK);
+	public void deleteSyncDLObjects(String version, String type) {
+		syncDLObjectPersistence.removeByV_T(version, type);
 	}
 
 	@Override
-	public long getLatestModifiedTime() throws SystemException {
+	public long getLatestModifiedTime() {
 		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
 			SyncDLObject.class, SyncDLObject.class.getClassLoader());
 
@@ -112,7 +152,7 @@ public class SyncDLObjectLocalServiceImpl
 	}
 
 	protected boolean isDefaultRepository(long folderId)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		if (folderId == DLFolderConstants.DEFAULT_PARENT_FOLDER_ID) {
 			return true;

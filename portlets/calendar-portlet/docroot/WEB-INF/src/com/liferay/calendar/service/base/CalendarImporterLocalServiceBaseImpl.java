@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -13,6 +13,8 @@
  */
 
 package com.liferay.calendar.service.base;
+
+import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.calendar.service.CalendarImporterLocalService;
 import com.liferay.calendar.service.persistence.CalendarBookingFinder;
@@ -67,6 +69,7 @@ import javax.sql.DataSource;
  * @see com.liferay.calendar.service.CalendarImporterLocalServiceUtil
  * @generated
  */
+@ProviderType
 public abstract class CalendarImporterLocalServiceBaseImpl
 	extends BaseLocalServiceImpl implements CalendarImporterLocalService,
 		IdentifiableBean {
@@ -1379,7 +1382,7 @@ public abstract class CalendarImporterLocalServiceBaseImpl
 	 *
 	 * @param sql the sql query
 	 */
-	protected void runSQL(String sql) throws SystemException {
+	protected void runSQL(String sql) {
 		try {
 			DataSource dataSource = InfrastructureUtil.getDataSource();
 

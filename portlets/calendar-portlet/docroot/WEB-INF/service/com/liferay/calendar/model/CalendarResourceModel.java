@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,12 +14,14 @@
 
 package com.liferay.calendar.model;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.portal.LocaleException;
 import com.liferay.portal.kernel.bean.AutoEscape;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.model.AttachedModel;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.CacheModel;
+import com.liferay.portal.model.LocalizedModel;
 import com.liferay.portal.model.StagedGroupedModel;
 import com.liferay.portal.service.ServiceContext;
 
@@ -44,8 +46,9 @@ import java.util.Map;
  * @see com.liferay.calendar.model.impl.CalendarResourceModelImpl
  * @generated
  */
+@ProviderType
 public interface CalendarResourceModel extends AttachedModel,
-	BaseModel<CalendarResource>, StagedGroupedModel {
+	BaseModel<CalendarResource>, LocalizedModel, StagedGroupedModel {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
@@ -149,10 +152,9 @@ public interface CalendarResourceModel extends AttachedModel,
 	 * Returns the user uuid of this calendar resource.
 	 *
 	 * @return the user uuid of this calendar resource
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public String getUserUuid() throws SystemException;
+	public String getUserUuid();
 
 	/**
 	 * Sets the user uuid of this calendar resource.
@@ -551,12 +553,16 @@ public interface CalendarResourceModel extends AttachedModel,
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext);
 
+	@Override
 	public String[] getAvailableLanguageIds();
 
+	@Override
 	public String getDefaultLanguageId();
 
+	@Override
 	public void prepareLocalizedFieldsForImport() throws LocaleException;
 
+	@Override
 	public void prepareLocalizedFieldsForImport(Locale defaultImportLocale)
 		throws LocaleException;
 
@@ -564,19 +570,20 @@ public interface CalendarResourceModel extends AttachedModel,
 	public Object clone();
 
 	@Override
-	public int compareTo(CalendarResource calendarResource);
+	public int compareTo(
+		com.liferay.calendar.model.CalendarResource calendarResource);
 
 	@Override
 	public int hashCode();
 
 	@Override
-	public CacheModel<CalendarResource> toCacheModel();
+	public CacheModel<com.liferay.calendar.model.CalendarResource> toCacheModel();
 
 	@Override
-	public CalendarResource toEscapedModel();
+	public com.liferay.calendar.model.CalendarResource toEscapedModel();
 
 	@Override
-	public CalendarResource toUnescapedModel();
+	public com.liferay.calendar.model.CalendarResource toUnescapedModel();
 
 	@Override
 	public String toString();

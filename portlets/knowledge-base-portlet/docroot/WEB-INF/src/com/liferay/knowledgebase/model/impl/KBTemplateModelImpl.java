@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,12 +14,14 @@
 
 package com.liferay.knowledgebase.model.impl;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.knowledgebase.model.KBTemplate;
 import com.liferay.knowledgebase.model.KBTemplateModel;
 import com.liferay.knowledgebase.model.KBTemplateSoap;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
-import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSON;
 import com.liferay.portal.kernel.lar.StagedModelType;
 import com.liferay.portal.kernel.util.DateUtil;
@@ -28,8 +30,10 @@ import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.model.CacheModel;
+import com.liferay.portal.model.User;
 import com.liferay.portal.model.impl.BaseModelImpl;
 import com.liferay.portal.service.ServiceContext;
+import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.util.PortalUtil;
 
 import com.liferay.portlet.expando.model.ExpandoBridge;
@@ -59,6 +63,7 @@ import java.util.Map;
  * @generated
  */
 @JSON(strict = true)
+@ProviderType
 public class KBTemplateModelImpl extends BaseModelImpl<KBTemplate>
 	implements KBTemplateModel {
 	/*
@@ -95,10 +100,10 @@ public class KBTemplateModelImpl extends BaseModelImpl<KBTemplate>
 	public static final boolean COLUMN_BITMASK_ENABLED = GetterUtil.getBoolean(com.liferay.util.service.ServiceProps.get(
 				"value.object.column.bitmask.enabled.com.liferay.knowledgebase.model.KBTemplate"),
 			true);
-	public static long COMPANYID_COLUMN_BITMASK = 1L;
-	public static long GROUPID_COLUMN_BITMASK = 2L;
-	public static long UUID_COLUMN_BITMASK = 4L;
-	public static long MODIFIEDDATE_COLUMN_BITMASK = 8L;
+	public static final long COMPANYID_COLUMN_BITMASK = 1L;
+	public static final long GROUPID_COLUMN_BITMASK = 2L;
+	public static final long UUID_COLUMN_BITMASK = 4L;
+	public static final long MODIFIEDDATE_COLUMN_BITMASK = 8L;
 
 	/**
 	 * Converts the soap model instance into a normal model instance.
@@ -360,13 +365,19 @@ public class KBTemplateModelImpl extends BaseModelImpl<KBTemplate>
 	}
 
 	@Override
-	public String getUserUuid() throws SystemException {
-		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
+	public String getUserUuid() {
+		try {
+			User user = UserLocalServiceUtil.getUserById(getUserId());
+
+			return user.getUuid();
+		}
+		catch (PortalException pe) {
+			return StringPool.BLANK;
+		}
 	}
 
 	@Override
 	public void setUserUuid(String userUuid) {
-		_userUuid = userUuid;
 	}
 
 	@JSON
@@ -712,8 +723,8 @@ public class KBTemplateModelImpl extends BaseModelImpl<KBTemplate>
 		return sb.toString();
 	}
 
-	private static ClassLoader _classLoader = KBTemplate.class.getClassLoader();
-	private static Class<?>[] _escapedModelInterfaces = new Class[] {
+	private static final ClassLoader _classLoader = KBTemplate.class.getClassLoader();
+	private static final Class<?>[] _escapedModelInterfaces = new Class[] {
 			KBTemplate.class
 		};
 	private String _uuid;
@@ -726,7 +737,6 @@ public class KBTemplateModelImpl extends BaseModelImpl<KBTemplate>
 	private long _originalCompanyId;
 	private boolean _setOriginalCompanyId;
 	private long _userId;
-	private String _userUuid;
 	private String _userName;
 	private Date _createDate;
 	private Date _modifiedDate;

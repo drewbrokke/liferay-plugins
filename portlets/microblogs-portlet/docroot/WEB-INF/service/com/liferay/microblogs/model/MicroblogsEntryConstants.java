@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -21,6 +21,16 @@ package com.liferay.microblogs.model;
  * @author Jonathan Lee
  */
 public class MicroblogsEntryConstants {
+
+	public static final int NOTIFICATION_TYPE_REPLY = 0;
+
+	public static final int NOTIFICATION_TYPE_REPLY_TO_REPLIED = 1;
+
+	public static final int NOTIFICATION_TYPE_REPLY_TO_TAGGED = 2;
+
+	public static final int NOTIFICATION_TYPE_TAG = 3;
+
+	public static final int NOTIFICATION_TYPE_UNKNOWN = -1;
 
 	public static final int TYPE_EVERYONE = 0;
 

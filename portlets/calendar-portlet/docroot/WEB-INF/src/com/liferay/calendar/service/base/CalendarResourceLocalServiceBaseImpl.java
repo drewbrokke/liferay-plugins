@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -13,6 +13,8 @@
  */
 
 package com.liferay.calendar.service.base;
+
+import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.calendar.model.CalendarResource;
 import com.liferay.calendar.service.CalendarResourceLocalService;
@@ -30,11 +32,21 @@ import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBFactoryUtil;
 import com.liferay.portal.kernel.dao.jdbc.SqlUpdate;
 import com.liferay.portal.kernel.dao.jdbc.SqlUpdateFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.DefaultActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
+import com.liferay.portal.kernel.dao.orm.Property;
+import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.lar.ExportImportHelperUtil;
+import com.liferay.portal.kernel.lar.ManifestSummary;
+import com.liferay.portal.kernel.lar.PortletDataContext;
+import com.liferay.portal.kernel.lar.StagedModelDataHandlerUtil;
+import com.liferay.portal.kernel.lar.StagedModelType;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.util.OrderByComparator;
@@ -65,6 +77,7 @@ import javax.sql.DataSource;
  * @see com.liferay.calendar.service.CalendarResourceLocalServiceUtil
  * @generated
  */
+@ProviderType
 public abstract class CalendarResourceLocalServiceBaseImpl
 	extends BaseLocalServiceImpl implements CalendarResourceLocalService,
 		IdentifiableBean {
@@ -79,12 +92,11 @@ public abstract class CalendarResourceLocalServiceBaseImpl
 	 *
 	 * @param calendarResource the calendar resource
 	 * @return the calendar resource that was added
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CalendarResource addCalendarResource(
-		CalendarResource calendarResource) throws SystemException {
+		CalendarResource calendarResource) {
 		calendarResource.setNew(true);
 
 		return calendarResourcePersistence.update(calendarResource);
@@ -107,12 +119,11 @@ public abstract class CalendarResourceLocalServiceBaseImpl
 	 * @param calendarResourceId the primary key of the calendar resource
 	 * @return the calendar resource that was removed
 	 * @throws PortalException if a calendar resource with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	public CalendarResource deleteCalendarResource(long calendarResourceId)
-		throws PortalException, SystemException {
+		throws PortalException {
 		return calendarResourcePersistence.remove(calendarResourceId);
 	}
 
@@ -122,13 +133,11 @@ public abstract class CalendarResourceLocalServiceBaseImpl
 	 * @param calendarResource the calendar resource
 	 * @return the calendar resource that was removed
 	 * @throws PortalException
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	public CalendarResource deleteCalendarResource(
-		CalendarResource calendarResource)
-		throws PortalException, SystemException {
+		CalendarResource calendarResource) throws PortalException {
 		return calendarResourcePersistence.remove(calendarResource);
 	}
 
@@ -145,12 +154,9 @@ public abstract class CalendarResourceLocalServiceBaseImpl
 	 *
 	 * @param dynamicQuery the dynamic query
 	 * @return the matching rows
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	@SuppressWarnings("rawtypes")
-	public List dynamicQuery(DynamicQuery dynamicQuery)
-		throws SystemException {
+	public <T> List<T> dynamicQuery(DynamicQuery dynamicQuery) {
 		return calendarResourcePersistence.findWithDynamicQuery(dynamicQuery);
 	}
 
@@ -165,12 +171,10 @@ public abstract class CalendarResourceLocalServiceBaseImpl
 	 * @param start the lower bound of the range of model instances
 	 * @param end the upper bound of the range of model instances (not inclusive)
 	 * @return the range of matching rows
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	@SuppressWarnings("rawtypes")
-	public List dynamicQuery(DynamicQuery dynamicQuery, int start, int end)
-		throws SystemException {
+	public <T> List<T> dynamicQuery(DynamicQuery dynamicQuery, int start,
+		int end) {
 		return calendarResourcePersistence.findWithDynamicQuery(dynamicQuery,
 			start, end);
 	}
@@ -187,12 +191,10 @@ public abstract class CalendarResourceLocalServiceBaseImpl
 	 * @param end the upper bound of the range of model instances (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @return the ordered range of matching rows
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	@SuppressWarnings("rawtypes")
-	public List dynamicQuery(DynamicQuery dynamicQuery, int start, int end,
-		OrderByComparator orderByComparator) throws SystemException {
+	public <T> List<T> dynamicQuery(DynamicQuery dynamicQuery, int start,
+		int end, OrderByComparator<T> orderByComparator) {
 		return calendarResourcePersistence.findWithDynamicQuery(dynamicQuery,
 			start, end, orderByComparator);
 	}
@@ -202,11 +204,9 @@ public abstract class CalendarResourceLocalServiceBaseImpl
 	 *
 	 * @param dynamicQuery the dynamic query
 	 * @return the number of rows that match the dynamic query
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public long dynamicQueryCount(DynamicQuery dynamicQuery)
-		throws SystemException {
+	public long dynamicQueryCount(DynamicQuery dynamicQuery) {
 		return calendarResourcePersistence.countWithDynamicQuery(dynamicQuery);
 	}
 
@@ -216,34 +216,17 @@ public abstract class CalendarResourceLocalServiceBaseImpl
 	 * @param dynamicQuery the dynamic query
 	 * @param projection the projection to apply to the query
 	 * @return the number of rows that match the dynamic query
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public long dynamicQueryCount(DynamicQuery dynamicQuery,
-		Projection projection) throws SystemException {
+		Projection projection) {
 		return calendarResourcePersistence.countWithDynamicQuery(dynamicQuery,
 			projection);
 	}
 
 	@Override
-	public CalendarResource fetchCalendarResource(long calendarResourceId)
-		throws SystemException {
+	public CalendarResource fetchCalendarResource(long calendarResourceId) {
 		return calendarResourcePersistence.fetchByPrimaryKey(calendarResourceId);
-	}
-
-	/**
-	 * Returns the calendar resource with the matching UUID and company.
-	 *
-	 * @param uuid the calendar resource's UUID
-	 * @param  companyId the primary key of the company
-	 * @return the matching calendar resource, or <code>null</code> if a matching calendar resource could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	@Override
-	public CalendarResource fetchCalendarResourceByUuidAndCompanyId(
-		String uuid, long companyId) throws SystemException {
-		return calendarResourcePersistence.fetchByUuid_C_First(uuid, companyId,
-			null);
 	}
 
 	/**
@@ -252,11 +235,10 @@ public abstract class CalendarResourceLocalServiceBaseImpl
 	 * @param uuid the calendar resource's UUID
 	 * @param groupId the primary key of the group
 	 * @return the matching calendar resource, or <code>null</code> if a matching calendar resource could not be found
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public CalendarResource fetchCalendarResourceByUuidAndGroupId(String uuid,
-		long groupId) throws SystemException {
+		long groupId) {
 		return calendarResourcePersistence.fetchByUUID_G(uuid, groupId);
 	}
 
@@ -266,34 +248,127 @@ public abstract class CalendarResourceLocalServiceBaseImpl
 	 * @param calendarResourceId the primary key of the calendar resource
 	 * @return the calendar resource
 	 * @throws PortalException if a calendar resource with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public CalendarResource getCalendarResource(long calendarResourceId)
-		throws PortalException, SystemException {
+		throws PortalException {
 		return calendarResourcePersistence.findByPrimaryKey(calendarResourceId);
 	}
 
 	@Override
-	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
-		throws PortalException, SystemException {
-		return calendarResourcePersistence.findByPrimaryKey(primaryKeyObj);
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		ActionableDynamicQuery actionableDynamicQuery = new DefaultActionableDynamicQuery();
+
+		actionableDynamicQuery.setBaseLocalService(com.liferay.calendar.service.CalendarResourceLocalServiceUtil.getService());
+		actionableDynamicQuery.setClass(CalendarResource.class);
+		actionableDynamicQuery.setClassLoader(getClassLoader());
+
+		actionableDynamicQuery.setPrimaryKeyPropertyName("calendarResourceId");
+
+		return actionableDynamicQuery;
+	}
+
+	protected void initActionableDynamicQuery(
+		ActionableDynamicQuery actionableDynamicQuery) {
+		actionableDynamicQuery.setBaseLocalService(com.liferay.calendar.service.CalendarResourceLocalServiceUtil.getService());
+		actionableDynamicQuery.setClass(CalendarResource.class);
+		actionableDynamicQuery.setClassLoader(getClassLoader());
+
+		actionableDynamicQuery.setPrimaryKeyPropertyName("calendarResourceId");
+	}
+
+	@Override
+	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
+		final PortletDataContext portletDataContext) {
+		final ExportActionableDynamicQuery exportActionableDynamicQuery = new ExportActionableDynamicQuery() {
+				@Override
+				public long performCount() throws PortalException {
+					ManifestSummary manifestSummary = portletDataContext.getManifestSummary();
+
+					StagedModelType stagedModelType = getStagedModelType();
+
+					long modelAdditionCount = super.performCount();
+
+					manifestSummary.addModelAdditionCount(stagedModelType.toString(),
+						modelAdditionCount);
+
+					long modelDeletionCount = ExportImportHelperUtil.getModelDeletionCount(portletDataContext,
+							stagedModelType);
+
+					manifestSummary.addModelDeletionCount(stagedModelType.toString(),
+						modelDeletionCount);
+
+					return modelAdditionCount;
+				}
+			};
+
+		initActionableDynamicQuery(exportActionableDynamicQuery);
+
+		exportActionableDynamicQuery.setAddCriteriaMethod(new ActionableDynamicQuery.AddCriteriaMethod() {
+				@Override
+				public void addCriteria(DynamicQuery dynamicQuery) {
+					portletDataContext.addDateRangeCriteria(dynamicQuery,
+						"modifiedDate");
+
+					StagedModelType stagedModelType = exportActionableDynamicQuery.getStagedModelType();
+
+					if (stagedModelType.getReferrerClassNameId() >= 0) {
+						Property classNameIdProperty = PropertyFactoryUtil.forName(
+								"classNameId");
+
+						dynamicQuery.add(classNameIdProperty.eq(
+								stagedModelType.getReferrerClassNameId()));
+					}
+				}
+			});
+
+		exportActionableDynamicQuery.setCompanyId(portletDataContext.getCompanyId());
+
+		exportActionableDynamicQuery.setGroupId(portletDataContext.getScopeGroupId());
+
+		exportActionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod() {
+				@Override
+				public void performAction(Object object)
+					throws PortalException {
+					CalendarResource stagedModel = (CalendarResource)object;
+
+					StagedModelDataHandlerUtil.exportStagedModel(portletDataContext,
+						stagedModel);
+				}
+			});
+		exportActionableDynamicQuery.setStagedModelType(new StagedModelType(
+				PortalUtil.getClassNameId(CalendarResource.class.getName())));
+
+		return exportActionableDynamicQuery;
 	}
 
 	/**
-	 * Returns the calendar resource with the matching UUID and company.
-	 *
-	 * @param uuid the calendar resource's UUID
-	 * @param  companyId the primary key of the company
-	 * @return the matching calendar resource
-	 * @throws PortalException if a matching calendar resource could not be found
-	 * @throws SystemException if a system exception occurred
+	 * @throws PortalException
 	 */
 	@Override
-	public CalendarResource getCalendarResourceByUuidAndCompanyId(String uuid,
-		long companyId) throws PortalException, SystemException {
-		return calendarResourcePersistence.findByUuid_C_First(uuid, companyId,
-			null);
+	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
+		throws PortalException {
+		return calendarResourceLocalService.deleteCalendarResource((CalendarResource)persistedModel);
+	}
+
+	@Override
+	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
+		throws PortalException {
+		return calendarResourcePersistence.findByPrimaryKey(primaryKeyObj);
+	}
+
+	@Override
+	public List<CalendarResource> getCalendarResourcesByUuidAndCompanyId(
+		String uuid, long companyId) {
+		return calendarResourcePersistence.findByUuid_C(uuid, companyId);
+	}
+
+	@Override
+	public List<CalendarResource> getCalendarResourcesByUuidAndCompanyId(
+		String uuid, long companyId, int start, int end,
+		OrderByComparator<CalendarResource> orderByComparator) {
+		return calendarResourcePersistence.findByUuid_C(uuid, companyId, start,
+			end, orderByComparator);
 	}
 
 	/**
@@ -303,11 +378,10 @@ public abstract class CalendarResourceLocalServiceBaseImpl
 	 * @param groupId the primary key of the group
 	 * @return the matching calendar resource
 	 * @throws PortalException if a matching calendar resource could not be found
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public CalendarResource getCalendarResourceByUuidAndGroupId(String uuid,
-		long groupId) throws PortalException, SystemException {
+		long groupId) throws PortalException {
 		return calendarResourcePersistence.findByUUID_G(uuid, groupId);
 	}
 
@@ -321,11 +395,9 @@ public abstract class CalendarResourceLocalServiceBaseImpl
 	 * @param start the lower bound of the range of calendar resources
 	 * @param end the upper bound of the range of calendar resources (not inclusive)
 	 * @return the range of calendar resources
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public List<CalendarResource> getCalendarResources(int start, int end)
-		throws SystemException {
+	public List<CalendarResource> getCalendarResources(int start, int end) {
 		return calendarResourcePersistence.findAll(start, end);
 	}
 
@@ -333,10 +405,9 @@ public abstract class CalendarResourceLocalServiceBaseImpl
 	 * Returns the number of calendar resources.
 	 *
 	 * @return the number of calendar resources
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public int getCalendarResourcesCount() throws SystemException {
+	public int getCalendarResourcesCount() {
 		return calendarResourcePersistence.countAll();
 	}
 
@@ -345,12 +416,11 @@ public abstract class CalendarResourceLocalServiceBaseImpl
 	 *
 	 * @param calendarResource the calendar resource
 	 * @return the calendar resource that was updated
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CalendarResource updateCalendarResource(
-		CalendarResource calendarResource) throws SystemException {
+		CalendarResource calendarResource) {
 		return calendarResourcePersistence.update(calendarResource);
 	}
 
@@ -932,7 +1002,7 @@ public abstract class CalendarResourceLocalServiceBaseImpl
 	 *
 	 * @param sql the sql query
 	 */
-	protected void runSQL(String sql) throws SystemException {
+	protected void runSQL(String sql) {
 		try {
 			DataSource dataSource = calendarResourcePersistence.getDataSource();
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -20,7 +20,6 @@ import com.liferay.calendar.service.CalendarBookingLocalServiceUtil;
 import com.liferay.calendar.service.permission.CalendarPermission;
 import com.liferay.calendar.util.ActionKeys;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.security.permission.PermissionChecker;
 import com.liferay.portal.service.ServiceContext;
 
@@ -39,7 +38,7 @@ public class CalendarBookingApprovalWorkflowImpl
 	@Override
 	public Map<Long, List<String>> getActionNames(
 			PermissionChecker permissionChecker, long[] calendarBookingIds)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		Map<Long, List<String>> actionNames =
 			new LinkedHashMap<Long, List<String>>();
@@ -74,7 +73,7 @@ public class CalendarBookingApprovalWorkflowImpl
 	public void invokeTransition(
 			long userId, CalendarBooking calendarBooking, int status,
 			ServiceContext serviceContext)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		if (status == CalendarBookingWorkflowConstants.STATUS_PENDING) {
 			if (isAutoApproveCalendarBooking(userId, calendarBooking)) {
@@ -93,7 +92,7 @@ public class CalendarBookingApprovalWorkflowImpl
 	public void startWorkflow(
 			long userId, CalendarBooking calendarBooking,
 			ServiceContext serviceContext)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		invokeTransition(
 			userId, calendarBooking,
@@ -102,7 +101,7 @@ public class CalendarBookingApprovalWorkflowImpl
 
 	protected boolean isAutoApproveCalendarBooking(
 			long userId, CalendarBooking calendarBooking)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		if (calendarBooking.getStatus() ==
 				CalendarBookingWorkflowConstants.STATUS_DENIED) {

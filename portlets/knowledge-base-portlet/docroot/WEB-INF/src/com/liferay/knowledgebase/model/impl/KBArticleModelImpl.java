@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,12 +14,14 @@
 
 package com.liferay.knowledgebase.model.impl;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.knowledgebase.model.KBArticle;
 import com.liferay.knowledgebase.model.KBArticleModel;
 import com.liferay.knowledgebase.model.KBArticleSoap;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
-import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSON;
 import com.liferay.portal.kernel.lar.StagedModelType;
 import com.liferay.portal.kernel.util.DateUtil;
@@ -29,8 +31,10 @@ import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.model.CacheModel;
+import com.liferay.portal.model.User;
 import com.liferay.portal.model.impl.BaseModelImpl;
 import com.liferay.portal.service.ServiceContext;
+import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.util.PortalUtil;
 
 import com.liferay.portlet.expando.model.ExpandoBridge;
@@ -60,6 +64,7 @@ import java.util.Map;
  * @generated
  */
 @JSON(strict = true)
+@ProviderType
 public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 	implements KBArticleModel {
 	/*
@@ -79,9 +84,12 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 			{ "createDate", Types.TIMESTAMP },
 			{ "modifiedDate", Types.TIMESTAMP },
 			{ "rootResourcePrimKey", Types.BIGINT },
+			{ "parentResourceClassNameId", Types.BIGINT },
 			{ "parentResourcePrimKey", Types.BIGINT },
+			{ "kbFolderId", Types.BIGINT },
 			{ "version", Types.INTEGER },
 			{ "title", Types.VARCHAR },
+			{ "urlTitle", Types.VARCHAR },
 			{ "content", Types.CLOB },
 			{ "description", Types.VARCHAR },
 			{ "priority", Types.DOUBLE },
@@ -89,12 +97,13 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 			{ "viewCount", Types.INTEGER },
 			{ "latest", Types.BOOLEAN },
 			{ "main", Types.BOOLEAN },
+			{ "sourceURL", Types.VARCHAR },
 			{ "status", Types.INTEGER },
 			{ "statusByUserId", Types.BIGINT },
 			{ "statusByUserName", Types.VARCHAR },
 			{ "statusDate", Types.TIMESTAMP }
 		};
-	public static final String TABLE_SQL_CREATE = "create table KBArticle (uuid_ VARCHAR(75) null,kbArticleId LONG not null primary key,resourcePrimKey LONG,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,rootResourcePrimKey LONG,parentResourcePrimKey LONG,version INTEGER,title STRING null,content TEXT null,description STRING null,priority DOUBLE,sections STRING null,viewCount INTEGER,latest BOOLEAN,main BOOLEAN,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null)";
+	public static final String TABLE_SQL_CREATE = "create table KBArticle (uuid_ VARCHAR(75) null,kbArticleId LONG not null primary key,resourcePrimKey LONG,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,rootResourcePrimKey LONG,parentResourceClassNameId LONG,parentResourcePrimKey LONG,kbFolderId LONG,version INTEGER,title STRING null,urlTitle VARCHAR(75) null,content TEXT null,description STRING null,priority DOUBLE,sections STRING null,viewCount INTEGER,latest BOOLEAN,main BOOLEAN,sourceURL STRING null,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null)";
 	public static final String TABLE_SQL_DROP = "drop table KBArticle";
 	public static final String ORDER_BY_JPQL = " ORDER BY kbArticle.modifiedDate DESC";
 	public static final String ORDER_BY_SQL = " ORDER BY KBArticle.modifiedDate DESC";
@@ -110,17 +119,19 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 	public static final boolean COLUMN_BITMASK_ENABLED = GetterUtil.getBoolean(com.liferay.util.service.ServiceProps.get(
 				"value.object.column.bitmask.enabled.com.liferay.knowledgebase.model.KBArticle"),
 			true);
-	public static long COMPANYID_COLUMN_BITMASK = 1L;
-	public static long GROUPID_COLUMN_BITMASK = 2L;
-	public static long LATEST_COLUMN_BITMASK = 4L;
-	public static long MAIN_COLUMN_BITMASK = 8L;
-	public static long PARENTRESOURCEPRIMKEY_COLUMN_BITMASK = 16L;
-	public static long RESOURCEPRIMKEY_COLUMN_BITMASK = 32L;
-	public static long SECTIONS_COLUMN_BITMASK = 64L;
-	public static long STATUS_COLUMN_BITMASK = 128L;
-	public static long UUID_COLUMN_BITMASK = 256L;
-	public static long VERSION_COLUMN_BITMASK = 512L;
-	public static long MODIFIEDDATE_COLUMN_BITMASK = 1024L;
+	public static final long COMPANYID_COLUMN_BITMASK = 1L;
+	public static final long GROUPID_COLUMN_BITMASK = 2L;
+	public static final long KBFOLDERID_COLUMN_BITMASK = 4L;
+	public static final long LATEST_COLUMN_BITMASK = 8L;
+	public static final long MAIN_COLUMN_BITMASK = 16L;
+	public static final long PARENTRESOURCEPRIMKEY_COLUMN_BITMASK = 32L;
+	public static final long RESOURCEPRIMKEY_COLUMN_BITMASK = 64L;
+	public static final long SECTIONS_COLUMN_BITMASK = 128L;
+	public static final long STATUS_COLUMN_BITMASK = 256L;
+	public static final long URLTITLE_COLUMN_BITMASK = 512L;
+	public static final long UUID_COLUMN_BITMASK = 1024L;
+	public static final long VERSION_COLUMN_BITMASK = 2048L;
+	public static final long MODIFIEDDATE_COLUMN_BITMASK = 4096L;
 
 	/**
 	 * Converts the soap model instance into a normal model instance.
@@ -145,9 +156,12 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 		model.setCreateDate(soapModel.getCreateDate());
 		model.setModifiedDate(soapModel.getModifiedDate());
 		model.setRootResourcePrimKey(soapModel.getRootResourcePrimKey());
+		model.setParentResourceClassNameId(soapModel.getParentResourceClassNameId());
 		model.setParentResourcePrimKey(soapModel.getParentResourcePrimKey());
+		model.setKbFolderId(soapModel.getKbFolderId());
 		model.setVersion(soapModel.getVersion());
 		model.setTitle(soapModel.getTitle());
+		model.setUrlTitle(soapModel.getUrlTitle());
 		model.setContent(soapModel.getContent());
 		model.setDescription(soapModel.getDescription());
 		model.setPriority(soapModel.getPriority());
@@ -155,6 +169,7 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 		model.setViewCount(soapModel.getViewCount());
 		model.setLatest(soapModel.getLatest());
 		model.setMain(soapModel.getMain());
+		model.setSourceURL(soapModel.getSourceURL());
 		model.setStatus(soapModel.getStatus());
 		model.setStatusByUserId(soapModel.getStatusByUserId());
 		model.setStatusByUserName(soapModel.getStatusByUserName());
@@ -233,9 +248,13 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("rootResourcePrimKey", getRootResourcePrimKey());
+		attributes.put("parentResourceClassNameId",
+			getParentResourceClassNameId());
 		attributes.put("parentResourcePrimKey", getParentResourcePrimKey());
+		attributes.put("kbFolderId", getKbFolderId());
 		attributes.put("version", getVersion());
 		attributes.put("title", getTitle());
+		attributes.put("urlTitle", getUrlTitle());
 		attributes.put("content", getContent());
 		attributes.put("description", getDescription());
 		attributes.put("priority", getPriority());
@@ -243,6 +262,7 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 		attributes.put("viewCount", getViewCount());
 		attributes.put("latest", getLatest());
 		attributes.put("main", getMain());
+		attributes.put("sourceURL", getSourceURL());
 		attributes.put("status", getStatus());
 		attributes.put("statusByUserId", getStatusByUserId());
 		attributes.put("statusByUserName", getStatusByUserName());
@@ -316,11 +336,24 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 			setRootResourcePrimKey(rootResourcePrimKey);
 		}
 
+		Long parentResourceClassNameId = (Long)attributes.get(
+				"parentResourceClassNameId");
+
+		if (parentResourceClassNameId != null) {
+			setParentResourceClassNameId(parentResourceClassNameId);
+		}
+
 		Long parentResourcePrimKey = (Long)attributes.get(
 				"parentResourcePrimKey");
 
 		if (parentResourcePrimKey != null) {
 			setParentResourcePrimKey(parentResourcePrimKey);
+		}
+
+		Long kbFolderId = (Long)attributes.get("kbFolderId");
+
+		if (kbFolderId != null) {
+			setKbFolderId(kbFolderId);
 		}
 
 		Integer version = (Integer)attributes.get("version");
@@ -333,6 +366,12 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 
 		if (title != null) {
 			setTitle(title);
+		}
+
+		String urlTitle = (String)attributes.get("urlTitle");
+
+		if (urlTitle != null) {
+			setUrlTitle(urlTitle);
 		}
 
 		String content = (String)attributes.get("content");
@@ -375,6 +414,12 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 
 		if (main != null) {
 			setMain(main);
+		}
+
+		String sourceURL = (String)attributes.get("sourceURL");
+
+		if (sourceURL != null) {
+			setSourceURL(sourceURL);
 		}
 
 		Integer status = (Integer)attributes.get("status");
@@ -523,13 +568,19 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 	}
 
 	@Override
-	public String getUserUuid() throws SystemException {
-		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
+	public String getUserUuid() {
+		try {
+			User user = UserLocalServiceUtil.getUserById(getUserId());
+
+			return user.getUuid();
+		}
+		catch (PortalException pe) {
+			return StringPool.BLANK;
+		}
 	}
 
 	@Override
 	public void setUserUuid(String userUuid) {
-		_userUuid = userUuid;
 	}
 
 	@JSON
@@ -585,6 +636,17 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 
 	@JSON
 	@Override
+	public long getParentResourceClassNameId() {
+		return _parentResourceClassNameId;
+	}
+
+	@Override
+	public void setParentResourceClassNameId(long parentResourceClassNameId) {
+		_parentResourceClassNameId = parentResourceClassNameId;
+	}
+
+	@JSON
+	@Override
 	public long getParentResourcePrimKey() {
 		return _parentResourcePrimKey;
 	}
@@ -604,6 +666,29 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 
 	public long getOriginalParentResourcePrimKey() {
 		return _originalParentResourcePrimKey;
+	}
+
+	@JSON
+	@Override
+	public long getKbFolderId() {
+		return _kbFolderId;
+	}
+
+	@Override
+	public void setKbFolderId(long kbFolderId) {
+		_columnBitmask |= KBFOLDERID_COLUMN_BITMASK;
+
+		if (!_setOriginalKbFolderId) {
+			_setOriginalKbFolderId = true;
+
+			_originalKbFolderId = _kbFolderId;
+		}
+
+		_kbFolderId = kbFolderId;
+	}
+
+	public long getOriginalKbFolderId() {
+		return _originalKbFolderId;
 	}
 
 	@JSON
@@ -643,6 +728,32 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 	@Override
 	public void setTitle(String title) {
 		_title = title;
+	}
+
+	@JSON
+	@Override
+	public String getUrlTitle() {
+		if (_urlTitle == null) {
+			return StringPool.BLANK;
+		}
+		else {
+			return _urlTitle;
+		}
+	}
+
+	@Override
+	public void setUrlTitle(String urlTitle) {
+		_columnBitmask |= URLTITLE_COLUMN_BITMASK;
+
+		if (_originalUrlTitle == null) {
+			_originalUrlTitle = _urlTitle;
+		}
+
+		_urlTitle = urlTitle;
+	}
+
+	public String getOriginalUrlTitle() {
+		return GetterUtil.getString(_originalUrlTitle);
 	}
 
 	@JSON
@@ -783,6 +894,22 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 
 	@JSON
 	@Override
+	public String getSourceURL() {
+		if (_sourceURL == null) {
+			return StringPool.BLANK;
+		}
+		else {
+			return _sourceURL;
+		}
+	}
+
+	@Override
+	public void setSourceURL(String sourceURL) {
+		_sourceURL = sourceURL;
+	}
+
+	@JSON
+	@Override
 	public int getStatus() {
 		return _status;
 	}
@@ -816,14 +943,19 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 	}
 
 	@Override
-	public String getStatusByUserUuid() throws SystemException {
-		return PortalUtil.getUserValue(getStatusByUserId(), "uuid",
-			_statusByUserUuid);
+	public String getStatusByUserUuid() {
+		try {
+			User user = UserLocalServiceUtil.getUserById(getStatusByUserId());
+
+			return user.getUuid();
+		}
+		catch (PortalException pe) {
+			return StringPool.BLANK;
+		}
 	}
 
 	@Override
 	public void setStatusByUserUuid(String statusByUserUuid) {
-		_statusByUserUuid = statusByUserUuid;
 	}
 
 	@JSON
@@ -989,9 +1121,12 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 		kbArticleImpl.setCreateDate(getCreateDate());
 		kbArticleImpl.setModifiedDate(getModifiedDate());
 		kbArticleImpl.setRootResourcePrimKey(getRootResourcePrimKey());
+		kbArticleImpl.setParentResourceClassNameId(getParentResourceClassNameId());
 		kbArticleImpl.setParentResourcePrimKey(getParentResourcePrimKey());
+		kbArticleImpl.setKbFolderId(getKbFolderId());
 		kbArticleImpl.setVersion(getVersion());
 		kbArticleImpl.setTitle(getTitle());
+		kbArticleImpl.setUrlTitle(getUrlTitle());
 		kbArticleImpl.setContent(getContent());
 		kbArticleImpl.setDescription(getDescription());
 		kbArticleImpl.setPriority(getPriority());
@@ -999,6 +1134,7 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 		kbArticleImpl.setViewCount(getViewCount());
 		kbArticleImpl.setLatest(getLatest());
 		kbArticleImpl.setMain(getMain());
+		kbArticleImpl.setSourceURL(getSourceURL());
 		kbArticleImpl.setStatus(getStatus());
 		kbArticleImpl.setStatusByUserId(getStatusByUserId());
 		kbArticleImpl.setStatusByUserName(getStatusByUserName());
@@ -1084,9 +1220,15 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 
 		kbArticleModelImpl._setOriginalParentResourcePrimKey = false;
 
+		kbArticleModelImpl._originalKbFolderId = kbArticleModelImpl._kbFolderId;
+
+		kbArticleModelImpl._setOriginalKbFolderId = false;
+
 		kbArticleModelImpl._originalVersion = kbArticleModelImpl._version;
 
 		kbArticleModelImpl._setOriginalVersion = false;
+
+		kbArticleModelImpl._originalUrlTitle = kbArticleModelImpl._urlTitle;
 
 		kbArticleModelImpl._originalSections = kbArticleModelImpl._sections;
 
@@ -1155,7 +1297,11 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 
 		kbArticleCacheModel.rootResourcePrimKey = getRootResourcePrimKey();
 
+		kbArticleCacheModel.parentResourceClassNameId = getParentResourceClassNameId();
+
 		kbArticleCacheModel.parentResourcePrimKey = getParentResourcePrimKey();
+
+		kbArticleCacheModel.kbFolderId = getKbFolderId();
 
 		kbArticleCacheModel.version = getVersion();
 
@@ -1165,6 +1311,14 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 
 		if ((title != null) && (title.length() == 0)) {
 			kbArticleCacheModel.title = null;
+		}
+
+		kbArticleCacheModel.urlTitle = getUrlTitle();
+
+		String urlTitle = kbArticleCacheModel.urlTitle;
+
+		if ((urlTitle != null) && (urlTitle.length() == 0)) {
+			kbArticleCacheModel.urlTitle = null;
 		}
 
 		kbArticleCacheModel.content = getContent();
@@ -1199,6 +1353,14 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 
 		kbArticleCacheModel.main = getMain();
 
+		kbArticleCacheModel.sourceURL = getSourceURL();
+
+		String sourceURL = kbArticleCacheModel.sourceURL;
+
+		if ((sourceURL != null) && (sourceURL.length() == 0)) {
+			kbArticleCacheModel.sourceURL = null;
+		}
+
 		kbArticleCacheModel.status = getStatus();
 
 		kbArticleCacheModel.statusByUserId = getStatusByUserId();
@@ -1225,7 +1387,7 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(49);
+		StringBundler sb = new StringBundler(57);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -1247,12 +1409,18 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 		sb.append(getModifiedDate());
 		sb.append(", rootResourcePrimKey=");
 		sb.append(getRootResourcePrimKey());
+		sb.append(", parentResourceClassNameId=");
+		sb.append(getParentResourceClassNameId());
 		sb.append(", parentResourcePrimKey=");
 		sb.append(getParentResourcePrimKey());
+		sb.append(", kbFolderId=");
+		sb.append(getKbFolderId());
 		sb.append(", version=");
 		sb.append(getVersion());
 		sb.append(", title=");
 		sb.append(getTitle());
+		sb.append(", urlTitle=");
+		sb.append(getUrlTitle());
 		sb.append(", content=");
 		sb.append(getContent());
 		sb.append(", description=");
@@ -1267,6 +1435,8 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 		sb.append(getLatest());
 		sb.append(", main=");
 		sb.append(getMain());
+		sb.append(", sourceURL=");
+		sb.append(getSourceURL());
 		sb.append(", status=");
 		sb.append(getStatus());
 		sb.append(", statusByUserId=");
@@ -1282,7 +1452,7 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(76);
+		StringBundler sb = new StringBundler(88);
 
 		sb.append("<model><model-name>");
 		sb.append("com.liferay.knowledgebase.model.KBArticle");
@@ -1329,8 +1499,16 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 		sb.append(getRootResourcePrimKey());
 		sb.append("]]></column-value></column>");
 		sb.append(
+			"<column><column-name>parentResourceClassNameId</column-name><column-value><![CDATA[");
+		sb.append(getParentResourceClassNameId());
+		sb.append("]]></column-value></column>");
+		sb.append(
 			"<column><column-name>parentResourcePrimKey</column-name><column-value><![CDATA[");
 		sb.append(getParentResourcePrimKey());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>kbFolderId</column-name><column-value><![CDATA[");
+		sb.append(getKbFolderId());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>version</column-name><column-value><![CDATA[");
@@ -1339,6 +1517,10 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 		sb.append(
 			"<column><column-name>title</column-name><column-value><![CDATA[");
 		sb.append(getTitle());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>urlTitle</column-name><column-value><![CDATA[");
+		sb.append(getUrlTitle());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>content</column-name><column-value><![CDATA[");
@@ -1369,6 +1551,10 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 		sb.append(getMain());
 		sb.append("]]></column-value></column>");
 		sb.append(
+			"<column><column-name>sourceURL</column-name><column-value><![CDATA[");
+		sb.append(getSourceURL());
+		sb.append("]]></column-value></column>");
+		sb.append(
 			"<column><column-name>status</column-name><column-value><![CDATA[");
 		sb.append(getStatus());
 		sb.append("]]></column-value></column>");
@@ -1390,8 +1576,8 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 		return sb.toString();
 	}
 
-	private static ClassLoader _classLoader = KBArticle.class.getClassLoader();
-	private static Class<?>[] _escapedModelInterfaces = new Class[] {
+	private static final ClassLoader _classLoader = KBArticle.class.getClassLoader();
+	private static final Class<?>[] _escapedModelInterfaces = new Class[] {
 			KBArticle.class
 		};
 	private String _uuid;
@@ -1407,18 +1593,23 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 	private long _originalCompanyId;
 	private boolean _setOriginalCompanyId;
 	private long _userId;
-	private String _userUuid;
 	private String _userName;
 	private Date _createDate;
 	private Date _modifiedDate;
 	private long _rootResourcePrimKey;
+	private long _parentResourceClassNameId;
 	private long _parentResourcePrimKey;
 	private long _originalParentResourcePrimKey;
 	private boolean _setOriginalParentResourcePrimKey;
+	private long _kbFolderId;
+	private long _originalKbFolderId;
+	private boolean _setOriginalKbFolderId;
 	private int _version;
 	private int _originalVersion;
 	private boolean _setOriginalVersion;
 	private String _title;
+	private String _urlTitle;
+	private String _originalUrlTitle;
 	private String _content;
 	private String _description;
 	private double _priority;
@@ -1431,11 +1622,11 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 	private boolean _main;
 	private boolean _originalMain;
 	private boolean _setOriginalMain;
+	private String _sourceURL;
 	private int _status;
 	private int _originalStatus;
 	private boolean _setOriginalStatus;
 	private long _statusByUserId;
-	private String _statusByUserUuid;
 	private String _statusByUserName;
 	private Date _statusDate;
 	private long _columnBitmask;

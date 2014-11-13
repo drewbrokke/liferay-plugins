@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,7 +19,13 @@ package com.liferay.notifications.util;
  */
 public class PortletPropsKeys {
 
-	public static final String NOTIFICATIONS_DOCKBAR_DISPLAY_ENABLED =
-		"notifications.dockbar.display.enabled";
+	public static final String USER_NOTIFICATION_DOCKBAR_SPLIT =
+		"user.notifications.dockbar.split";
+
+	public static final String USER_NOTIFICATION_ENTRY =
+		"user.notification.entry";
+
+	public static final String USER_NOTIFICATIONS_DOCKBAR_DISPLAY_ENABLED =
+		"user.notifications.dockbar.display.enabled";
 
 }

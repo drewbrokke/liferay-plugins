@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -18,7 +18,6 @@
 package com.liferay.privatemessaging.hook.upgrade.v1_0_1;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.model.Company;
 import com.liferay.portal.model.Group;
@@ -57,7 +56,7 @@ public class UpgradeResourcePermission extends UpgradeProcess {
 	}
 
 	private void upgradeDLFolderResourcePermission(Company company, Group group)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		Repository repository = RepositoryLocalServiceUtil.fetchRepository(
 			group.getGroupId(), PortletKeys.MESSAGE_BOARDS);
@@ -85,7 +84,7 @@ public class UpgradeResourcePermission extends UpgradeProcess {
 	}
 
 	private void upgradeDLResourcePermission(Company company, Group group)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		int count =
 			ResourcePermissionLocalServiceUtil.getResourcePermissionsCount(

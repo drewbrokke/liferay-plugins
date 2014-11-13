@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -17,6 +17,9 @@ package com.liferay.chat.video;
 import com.liferay.portal.kernel.json.JSONObject;
 
 /**
+ * Represents SDP description WebRTC mail, providing a destination WebRTC client
+ * an SDP description (either a call or an answer) from a source WebRTC client.
+ *
  * @author Philippe Proulx
  */
 public class DescriptionWebRTCSDPMail extends WebRTCMail {

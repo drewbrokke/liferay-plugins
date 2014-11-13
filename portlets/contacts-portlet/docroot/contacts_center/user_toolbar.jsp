@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -198,7 +198,7 @@ else if (SocialRelationLocalServiceUtil.hasRelation(themeDisplay.getUserId(), us
 						width: 600
 					},
 					id: '<%= PortalUtil.getPortletNamespace(PortletKeys.PRIVATE_MESSAGING) %>Dialog',
-					title: '<%= UnicodeLanguageUtil.get(pageContext, "new-message") %>',
+					title: '<%= UnicodeLanguageUtil.get(request, "new-message") %>',
 					uri: uri
 				}
 			);
@@ -208,11 +208,6 @@ else if (SocialRelationLocalServiceUtil.hasRelation(themeDisplay.getUserId(), us
 </aui:script>
 
 <aui:script use="aui-base,aui-io-request-deprecated">
-	<liferay-portlet:renderURL var="viewSummaryURL" windowState="<%= LiferayWindowState.EXCLUSIVE.toString() %>">
-		<portlet:param name="mvcPath" value="/contacts_center/view_user.jsp" />
-		<portlet:param name="userId" value="<%= String.valueOf(user2.getUserId()) %>" />
-	</liferay-portlet:renderURL>
-
 	var contactAction = A.one('.contacts-portlet .contacts-action-content');
 
 	if (contactAction) {
@@ -237,8 +232,12 @@ else if (SocialRelationLocalServiceUtil.hasRelation(themeDisplay.getUserId(), us
 									);
 								}
 
-								contactProfile.io.set('uri', '<%= viewSummaryURL %>');
+								<liferay-portlet:renderURL var="viewSummaryURL" windowState="<%= LiferayWindowState.EXCLUSIVE.toString() %>">
+									<portlet:param name="mvcPath" value="/contacts_center/view_user.jsp" />
+									<portlet:param name="userId" value="<%= String.valueOf(user2.getUserId()) %>" />
+								</liferay-portlet:renderURL>
 
+								contactProfile.io.set('uri', '<%= viewSummaryURL %>');
 								contactProfile.io.start();
 							}
 						}

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -13,6 +13,8 @@
  */
 
 package com.liferay.sync.service;
+
+import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.bean.PortletBeanLocatorUtil;
 import com.liferay.portal.kernel.util.ReferenceRegistry;
@@ -32,23 +34,38 @@ import com.liferay.portal.service.InvokableLocalService;
  * @see com.liferay.sync.service.impl.SyncDLObjectLocalServiceImpl
  * @generated
  */
+@ProviderType
 public class SyncDLObjectLocalServiceUtil {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
 	 * Never modify this class directly. Add custom service methods to {@link com.liferay.sync.service.impl.SyncDLObjectLocalServiceImpl} and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static com.liferay.sync.model.SyncDLObject addSyncDLObject(
+		long companyId, long modifiedTime, long repositoryId,
+		long parentFolderId, java.lang.String name, java.lang.String extension,
+		java.lang.String mimeType, java.lang.String description,
+		java.lang.String changeLog, java.lang.String extraSettings,
+		java.lang.String version, long size, java.lang.String checksum,
+		java.lang.String event, java.util.Date lockExpirationDate,
+		long lockUserId, java.lang.String lockUserName, java.lang.String type,
+		long typePK, java.lang.String typeUuid)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService()
+				   .addSyncDLObject(companyId, modifiedTime, repositoryId,
+			parentFolderId, name, extension, mimeType, description, changeLog,
+			extraSettings, version, size, checksum, event, lockExpirationDate,
+			lockUserId, lockUserName, type, typePK, typeUuid);
+	}
 
 	/**
 	* Adds the sync d l object to the database. Also notifies the appropriate model listeners.
 	*
 	* @param syncDLObject the sync d l object
 	* @return the sync d l object that was added
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.sync.model.SyncDLObject addSyncDLObject(
-		com.liferay.sync.model.SyncDLObject syncDLObject)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.sync.model.SyncDLObject syncDLObject) {
 		return getService().addSyncDLObject(syncDLObject);
 	}
 
@@ -64,18 +81,12 @@ public class SyncDLObjectLocalServiceUtil {
 	}
 
 	/**
-	* Deletes the sync d l object with the primary key from the database. Also notifies the appropriate model listeners.
-	*
-	* @param syncDLObjectId the primary key of the sync d l object
-	* @return the sync d l object that was removed
-	* @throws PortalException if a sync d l object with the primary key could not be found
-	* @throws SystemException if a system exception occurred
+	* @throws PortalException
 	*/
-	public static com.liferay.sync.model.SyncDLObject deleteSyncDLObject(
-		long syncDLObjectId)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException {
-		return getService().deleteSyncDLObject(syncDLObjectId);
+	public static com.liferay.portal.model.PersistedModel deletePersistedModel(
+		com.liferay.portal.model.PersistedModel persistedModel)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService().deletePersistedModel(persistedModel);
 	}
 
 	/**
@@ -83,12 +94,28 @@ public class SyncDLObjectLocalServiceUtil {
 	*
 	* @param syncDLObject the sync d l object
 	* @return the sync d l object that was removed
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.sync.model.SyncDLObject deleteSyncDLObject(
-		com.liferay.sync.model.SyncDLObject syncDLObject)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.sync.model.SyncDLObject syncDLObject) {
 		return getService().deleteSyncDLObject(syncDLObject);
+	}
+
+	/**
+	* Deletes the sync d l object with the primary key from the database. Also notifies the appropriate model listeners.
+	*
+	* @param syncDLObjectId the primary key of the sync d l object
+	* @return the sync d l object that was removed
+	* @throws PortalException if a sync d l object with the primary key could not be found
+	*/
+	public static com.liferay.sync.model.SyncDLObject deleteSyncDLObject(
+		long syncDLObjectId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService().deleteSyncDLObject(syncDLObjectId);
+	}
+
+	public static void deleteSyncDLObjects(java.lang.String version,
+		java.lang.String type) {
+		getService().deleteSyncDLObjects(version, type);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery() {
@@ -100,12 +127,9 @@ public class SyncDLObjectLocalServiceUtil {
 	*
 	* @param dynamicQuery the dynamic query
 	* @return the matching rows
-	* @throws SystemException if a system exception occurred
 	*/
-	@SuppressWarnings("rawtypes")
-	public static java.util.List dynamicQuery(
-		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery)
-		throws com.liferay.portal.kernel.exception.SystemException {
+	public static <T> java.util.List<T> dynamicQuery(
+		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery) {
 		return getService().dynamicQuery(dynamicQuery);
 	}
 
@@ -120,12 +144,10 @@ public class SyncDLObjectLocalServiceUtil {
 	* @param start the lower bound of the range of model instances
 	* @param end the upper bound of the range of model instances (not inclusive)
 	* @return the range of matching rows
-	* @throws SystemException if a system exception occurred
 	*/
-	@SuppressWarnings("rawtypes")
-	public static java.util.List dynamicQuery(
+	public static <T> java.util.List<T> dynamicQuery(
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery, int start,
-		int end) throws com.liferay.portal.kernel.exception.SystemException {
+		int end) {
 		return getService().dynamicQuery(dynamicQuery, start, end);
 	}
 
@@ -141,14 +163,11 @@ public class SyncDLObjectLocalServiceUtil {
 	* @param end the upper bound of the range of model instances (not inclusive)
 	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	* @return the ordered range of matching rows
-	* @throws SystemException if a system exception occurred
 	*/
-	@SuppressWarnings("rawtypes")
-	public static java.util.List dynamicQuery(
+	public static <T> java.util.List<T> dynamicQuery(
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery, int start,
 		int end,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.util.OrderByComparator<T> orderByComparator) {
 		return getService()
 				   .dynamicQuery(dynamicQuery, start, end, orderByComparator);
 	}
@@ -158,11 +177,9 @@ public class SyncDLObjectLocalServiceUtil {
 	*
 	* @param dynamicQuery the dynamic query
 	* @return the number of rows that match the dynamic query
-	* @throws SystemException if a system exception occurred
 	*/
 	public static long dynamicQueryCount(
-		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery) {
 		return getService().dynamicQueryCount(dynamicQuery);
 	}
 
@@ -172,19 +189,39 @@ public class SyncDLObjectLocalServiceUtil {
 	* @param dynamicQuery the dynamic query
 	* @param projection the projection to apply to the query
 	* @return the number of rows that match the dynamic query
-	* @throws SystemException if a system exception occurred
 	*/
 	public static long dynamicQueryCount(
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery,
-		com.liferay.portal.kernel.dao.orm.Projection projection)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.dao.orm.Projection projection) {
 		return getService().dynamicQueryCount(dynamicQuery, projection);
 	}
 
 	public static com.liferay.sync.model.SyncDLObject fetchSyncDLObject(
-		long syncDLObjectId)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		long syncDLObjectId) {
 		return getService().fetchSyncDLObject(syncDLObjectId);
+	}
+
+	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
+		return getService().getActionableDynamicQuery();
+	}
+
+	/**
+	* Returns the Spring bean ID for this bean.
+	*
+	* @return the Spring bean ID for this bean
+	*/
+	public static java.lang.String getBeanIdentifier() {
+		return getService().getBeanIdentifier();
+	}
+
+	public static long getLatestModifiedTime() {
+		return getService().getLatestModifiedTime();
+	}
+
+	public static com.liferay.portal.model.PersistedModel getPersistedModel(
+		java.io.Serializable primaryKeyObj)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService().getPersistedModel(primaryKeyObj);
 	}
 
 	/**
@@ -193,20 +230,11 @@ public class SyncDLObjectLocalServiceUtil {
 	* @param syncDLObjectId the primary key of the sync d l object
 	* @return the sync d l object
 	* @throws PortalException if a sync d l object with the primary key could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.sync.model.SyncDLObject getSyncDLObject(
 		long syncDLObjectId)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException {
+		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService().getSyncDLObject(syncDLObjectId);
-	}
-
-	public static com.liferay.portal.model.PersistedModel getPersistedModel(
-		java.io.Serializable primaryKeyObj)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException {
-		return getService().getPersistedModel(primaryKeyObj);
 	}
 
 	/**
@@ -219,11 +247,9 @@ public class SyncDLObjectLocalServiceUtil {
 	* @param start the lower bound of the range of sync d l objects
 	* @param end the upper bound of the range of sync d l objects (not inclusive)
 	* @return the range of sync d l objects
-	* @throws SystemException if a system exception occurred
 	*/
 	public static java.util.List<com.liferay.sync.model.SyncDLObject> getSyncDLObjects(
-		int start, int end)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		int start, int end) {
 		return getService().getSyncDLObjects(start, end);
 	}
 
@@ -231,33 +257,15 @@ public class SyncDLObjectLocalServiceUtil {
 	* Returns the number of sync d l objects.
 	*
 	* @return the number of sync d l objects
-	* @throws SystemException if a system exception occurred
 	*/
-	public static int getSyncDLObjectsCount()
-		throws com.liferay.portal.kernel.exception.SystemException {
+	public static int getSyncDLObjectsCount() {
 		return getService().getSyncDLObjectsCount();
 	}
 
-	/**
-	* Updates the sync d l object in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
-	*
-	* @param syncDLObject the sync d l object
-	* @return the sync d l object that was updated
-	* @throws SystemException if a system exception occurred
-	*/
-	public static com.liferay.sync.model.SyncDLObject updateSyncDLObject(
-		com.liferay.sync.model.SyncDLObject syncDLObject)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return getService().updateSyncDLObject(syncDLObject);
-	}
-
-	/**
-	* Returns the Spring bean ID for this bean.
-	*
-	* @return the Spring bean ID for this bean
-	*/
-	public static java.lang.String getBeanIdentifier() {
-		return getService().getBeanIdentifier();
+	public static java.lang.Object invokeMethod(java.lang.String name,
+		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
+		throws java.lang.Throwable {
+		return getService().invokeMethod(name, parameterTypes, arguments);
 	}
 
 	/**
@@ -269,33 +277,15 @@ public class SyncDLObjectLocalServiceUtil {
 		getService().setBeanIdentifier(beanIdentifier);
 	}
 
-	public static java.lang.Object invokeMethod(java.lang.String name,
-		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
-		throws java.lang.Throwable {
-		return getService().invokeMethod(name, parameterTypes, arguments);
-	}
-
-	public static com.liferay.sync.model.SyncDLObject addSyncDLObject(
-		long companyId, long modifiedTime, long repositoryId,
-		long parentFolderId, java.lang.String name, java.lang.String extension,
-		java.lang.String mimeType, java.lang.String description,
-		java.lang.String changeLog, java.lang.String extraSettings,
-		java.lang.String version, long size, java.lang.String checksum,
-		java.lang.String event, java.util.Date lockExpirationDate,
-		long lockUserId, java.lang.String lockUserName, java.lang.String type,
-		long typePK, java.lang.String typeUuid)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException {
-		return getService()
-				   .addSyncDLObject(companyId, modifiedTime, repositoryId,
-			parentFolderId, name, extension, mimeType, description, changeLog,
-			extraSettings, version, size, checksum, event, lockExpirationDate,
-			lockUserId, lockUserName, type, typePK, typeUuid);
-	}
-
-	public static long getLatestModifiedTime()
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return getService().getLatestModifiedTime();
+	/**
+	* Updates the sync d l object in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
+	*
+	* @param syncDLObject the sync d l object
+	* @return the sync d l object that was updated
+	*/
+	public static com.liferay.sync.model.SyncDLObject updateSyncDLObject(
+		com.liferay.sync.model.SyncDLObject syncDLObject) {
+		return getService().updateSyncDLObject(syncDLObject);
 	}
 
 	public static void clearService() {

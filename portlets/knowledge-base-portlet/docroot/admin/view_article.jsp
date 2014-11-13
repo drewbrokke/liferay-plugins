@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,6 +16,8 @@
 
 <%@ include file="/admin/init.jsp" %>
 
-<liferay-util:include page="/admin/top_tabs.jsp" servletContext="<%= application %>" />
+<c:if test="<%= redirect.equals(currentURL) %>">
+	<liferay-util:include page="/admin/top_tabs.jsp" servletContext="<%= application %>" />
+</c:if>
 
 <liferay-util:include page="/admin/common/view_article.jsp" servletContext="<%= application %>" />

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -18,15 +18,12 @@
 package com.liferay.so.hook.service.impl;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
-import com.liferay.portal.kernel.notifications.NotificationEvent;
-import com.liferay.portal.kernel.notifications.NotificationEventFactoryUtil;
 import com.liferay.portal.kernel.notifications.UserNotificationManagerUtil;
 import com.liferay.portal.kernel.process.ProcessCallable;
 import com.liferay.portal.kernel.process.ProcessException;
@@ -83,7 +80,7 @@ public class SOAnnouncementsEntryLocalServiceImpl
 			int expirationDateMonth, int expirationDateDay,
 			int expirationDateYear, int expirationDateHour,
 			int expirationDateMinute, int priority, boolean alert)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		AnnouncementsEntry announcementEntry = super.addEntry(
 			userId, classNameId, classPK, title, content, url, type,
@@ -104,15 +101,13 @@ public class SOAnnouncementsEntryLocalServiceImpl
 	}
 
 	@Override
-	public void checkEntries() throws PortalException, SystemException {
+	public void checkEntries() throws PortalException {
 		super.checkEntries();
 
 		sendNotificationEvent();
 	}
 
-	protected void sendNotificationEvent()
-		throws PortalException, SystemException {
-
+	protected void sendNotificationEvent() throws PortalException {
 		Date now = new Date();
 
 		if (_previousCheckDate == null) {
@@ -140,7 +135,7 @@ public class SOAnnouncementsEntryLocalServiceImpl
 	}
 
 	protected void sendNotificationEvent(AnnouncementsEntry announcementEntry)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		JSONObject notificationEventJSONObject =
 			JSONFactoryUtil.createJSONObject();
@@ -193,7 +188,7 @@ public class SOAnnouncementsEntryLocalServiceImpl
 		protected void sendUserNotifications(
 				AnnouncementsEntry announcementEntry,
 				JSONObject notificationEventJSONObject)
-			throws PortalException, SystemException {
+			throws PortalException {
 
 			int count = 0;
 			long teamId = 0;
@@ -290,18 +285,11 @@ public class SOAnnouncementsEntryLocalServiceImpl
 							0,
 							UserNotificationDeliveryConstants.TYPE_WEBSITE)) {
 
-						NotificationEvent notificationEvent =
-							NotificationEventFactoryUtil.
-								createNotificationEvent(
-									System.currentTimeMillis(),
-									PortletKeys.SO_ANNOUNCEMENTS,
-									notificationEventJSONObject);
-
-						notificationEvent.setDeliveryRequired(0);
-
 						UserNotificationEventLocalServiceUtil.
-							addUserNotificationEvent(
-								user.getUserId(), notificationEvent);
+							sendUserNotificationEvents(
+								user.getUserId(), PortletKeys.SO_ANNOUNCEMENTS,
+								UserNotificationDeliveryConstants.TYPE_WEBSITE,
+								notificationEventJSONObject);
 					}
 				}
 			}

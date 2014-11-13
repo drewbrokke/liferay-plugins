@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -20,16 +20,17 @@ import com.liferay.marketplace.AppVersionException;
 import com.liferay.marketplace.model.App;
 import com.liferay.marketplace.model.Module;
 import com.liferay.marketplace.service.base.AppLocalServiceBaseImpl;
+import com.liferay.marketplace.util.BundleUtil;
 import com.liferay.marketplace.util.comparator.AppTitleComparator;
 import com.liferay.portal.kernel.deploy.DeployManagerUtil;
 import com.liferay.portal.kernel.deploy.auto.context.AutoDeploymentContext;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.plugin.PluginPackage;
 import com.liferay.portal.kernel.servlet.ServletContextPool;
 import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PropertiesUtil;
 import com.liferay.portal.kernel.util.ReleaseInfo;
@@ -56,6 +57,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
@@ -64,6 +67,7 @@ import javax.servlet.ServletContext;
 
 /**
  * @author Ryan Park
+ * @author Joan Kim
  */
 public class AppLocalServiceImpl extends AppLocalServiceBaseImpl {
 
@@ -74,7 +78,7 @@ public class AppLocalServiceImpl extends AppLocalServiceBaseImpl {
 	}
 
 	@Override
-	public App deleteApp(App app) throws SystemException {
+	public App deleteApp(App app) {
 
 		// App
 
@@ -106,19 +110,19 @@ public class AppLocalServiceImpl extends AppLocalServiceBaseImpl {
 	}
 
 	@Override
-	public App deleteApp(long appId) throws PortalException, SystemException {
+	public App deleteApp(long appId) throws PortalException {
 		App app = appPersistence.findByPrimaryKey(appId);
 
 		return deleteApp(app);
 	}
 
 	@Override
-	public App fetchRemoteApp(long remoteAppId) throws SystemException {
+	public App fetchRemoteApp(long remoteAppId) {
 		return appPersistence.fetchByRemoteAppId(remoteAppId);
 	}
 
 	@Override
-	public List<App> getApps(String category) throws SystemException {
+	public List<App> getApps(String category) {
 		return appPersistence.findByCategory(category);
 	}
 
@@ -171,7 +175,7 @@ public class AppLocalServiceImpl extends AppLocalServiceBaseImpl {
 	}
 
 	@Override
-	public List<App> getInstalledApps() throws SystemException {
+	public List<App> getInstalledApps() {
 		if (_installedApps != null) {
 			return _installedApps;
 		}
@@ -244,9 +248,7 @@ public class AppLocalServiceImpl extends AppLocalServiceBaseImpl {
 	}
 
 	@Override
-	public void installApp(long remoteAppId)
-		throws PortalException, SystemException {
-
+	public void installApp(long remoteAppId) throws PortalException {
 		App app = appPersistence.findByRemoteAppId(remoteAppId);
 
 		if (!DLStoreUtil.hasFile(
@@ -283,22 +285,16 @@ public class AppLocalServiceImpl extends AppLocalServiceBaseImpl {
 			while (enu.hasMoreElements()) {
 				ZipEntry zipEntry = enu.nextElement();
 
-				AutoDeploymentContext autoDeploymentContext =
-					new AutoDeploymentContext();
-
 				String fileName = zipEntry.getName();
 
-				if (!fileName.endsWith(".war") &&
+				if (!fileName.endsWith(".jar") &&
+					!fileName.endsWith(".war") &&
 					!fileName.endsWith(".xml") &&
 					!fileName.endsWith(".zip") &&
 					!fileName.equals("liferay-marketplace.properties")) {
 
 					continue;
 				}
-
-				String contextName = getContextName(fileName);
-
-				autoDeploymentContext.setContext(contextName);
 
 				if (_log.isInfoEnabled()) {
 					_log.info(
@@ -326,12 +322,44 @@ public class AppLocalServiceImpl extends AppLocalServiceBaseImpl {
 
 						FileUtil.write(pluginPackageFile, zipInputStream);
 
+						String bundleSymbolicName = StringPool.BLANK;
+						String bundleVersion = StringPool.BLANK;
+						String contextName = StringPool.BLANK;
+
+						AutoDeploymentContext autoDeploymentContext =
+							new AutoDeploymentContext();
+
+						if (fileName.endsWith(".jar")) {
+							Manifest manifest = BundleUtil.getManifest(
+								pluginPackageFile);
+
+							Attributes attributes =
+								manifest.getMainAttributes();
+
+							bundleSymbolicName = GetterUtil.getString(
+								attributes.getValue("Bundle-SymbolicName"));
+							bundleVersion = GetterUtil.getString(
+								attributes.getValue("Bundle-Version"));
+							contextName = GetterUtil.getString(
+								attributes.getValue("Web-ContextPath"));
+						}
+						else {
+							contextName = getContextName(fileName);
+
+							autoDeploymentContext.setContext(contextName);
+						}
+
 						autoDeploymentContext.setFile(pluginPackageFile);
 
 						DeployManagerUtil.deploy(autoDeploymentContext);
 
-						moduleLocalService.addModule(
-							app.getUserId(), app.getAppId(), contextName);
+						if (Validator.isNotNull(bundleSymbolicName) ||
+							Validator.isNotNull(contextName)) {
+
+							moduleLocalService.addModule(
+								app.getUserId(), app.getAppId(),
+								bundleSymbolicName, bundleVersion, contextName);
+						}
 					}
 				}
 				finally {
@@ -372,7 +400,7 @@ public class AppLocalServiceImpl extends AppLocalServiceBaseImpl {
 
 	@Override
 	public void processMarketplaceProperties(Properties properties)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		long[] supersedesRemoteAppIds = StringUtil.split(
 			properties.getProperty("supersedes-remote-app-ids"), 0L);
@@ -388,9 +416,7 @@ public class AppLocalServiceImpl extends AppLocalServiceBaseImpl {
 	}
 
 	@Override
-	public void uninstallApp(long remoteAppId)
-		throws PortalException, SystemException {
-
+	public void uninstallApp(long remoteAppId) throws PortalException {
 		clearInstalledAppsCache();
 
 		App app = appPersistence.findByRemoteAppId(remoteAppId);
@@ -399,6 +425,15 @@ public class AppLocalServiceImpl extends AppLocalServiceBaseImpl {
 
 		for (Module module : modules) {
 			moduleLocalService.deleteModule(module.getModuleId());
+
+			if (Validator.isNotNull(module.getBundleSymbolicName()) &&
+				Validator.isNotNull(module.getBundleVersion())) {
+
+				BundleUtil.uninstallBundle(
+					module.getBundleSymbolicName(), module.getBundleVersion());
+
+				continue;
+			}
 
 			if (hasDependentApp(module)) {
 				continue;
@@ -416,7 +451,7 @@ public class AppLocalServiceImpl extends AppLocalServiceBaseImpl {
 	@Override
 	public App updateApp(
 			long userId, long remoteAppId, String version, File file)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		Properties properties = getMarketplaceProperties(file);
 
@@ -439,7 +474,7 @@ public class AppLocalServiceImpl extends AppLocalServiceBaseImpl {
 	public App updateApp(
 			long userId, long remoteAppId, String title, String description,
 			String category, String iconURL, String version, File file)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		// App
 
@@ -551,9 +586,7 @@ public class AppLocalServiceImpl extends AppLocalServiceBaseImpl {
 		}
 	}
 
-	protected boolean hasDependentApp(Module module)
-		throws PortalException, SystemException {
-
+	protected boolean hasDependentApp(Module module) throws PortalException {
 		List<Module> modules = modulePersistence.findByContextName(
 			module.getContextName());
 
@@ -573,7 +606,7 @@ public class AppLocalServiceImpl extends AppLocalServiceBaseImpl {
 	}
 
 	protected void validate(String title, String version)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		if (Validator.isNull(title)) {
 			throw new AppTitleException();

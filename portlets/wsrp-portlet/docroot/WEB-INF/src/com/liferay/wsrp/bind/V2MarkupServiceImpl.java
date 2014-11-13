@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -38,6 +38,7 @@ import com.liferay.portal.model.LayoutTypePortlet;
 import com.liferay.portal.service.LayoutLocalServiceUtil;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.PortletKeys;
+import com.liferay.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.util.Encryptor;
 import com.liferay.util.axis.ServletUtil;
 import com.liferay.wsrp.model.WSRPProducer;
@@ -556,6 +557,9 @@ public class V2MarkupServiceImpl
 				LayoutLocalServiceUtil.updateLayout(
 					layout.getGroupId(), layout.isPrivateLayout(),
 					layout.getLayoutId(), layout.getTypeSettings());
+
+				PortletPreferencesFactoryUtil.getLayoutPortletSetup(
+					layout, portletId);
 			}
 
 			return layout;
@@ -693,7 +697,7 @@ public class V2MarkupServiceImpl
 	}
 
 	protected String getURL(
-			String lifecycle, String resourceId, MimeRequest mimeRequest,
+			String lifecycle, String resourceID, MimeRequest mimeRequest,
 			PortletContext portletContext, WSRPProducer wsrpProducer)
 		throws Exception {
 
@@ -742,9 +746,9 @@ public class V2MarkupServiceImpl
 		sb.append("&p_p_mode=");
 		sb.append(HttpUtil.encodeURL(portletMode));
 
-		if (lifecycle.equals("2") && Validator.isNotNull(resourceId)) {
+		if (lifecycle.equals("2") && Validator.isNotNull(resourceID)) {
 			sb.append("&p_p_resource_id=");
-			sb.append(resourceId);
+			sb.append(resourceID);
 		}
 
 		sb.append("&p_p_isolated=1");

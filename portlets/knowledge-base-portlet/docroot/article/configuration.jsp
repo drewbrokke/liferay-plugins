@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -46,31 +46,29 @@ if (PortalUtil.isRSSFeedsEnabled()) {
 	<aui:fieldset>
 		<c:choose>
 			<c:when test='<%= tabs2.equals("general") %>'>
-				<div class="input-append kb-field-wrapper">
-					<aui:field-wrapper label="article">
+				<div class="form-group kb-field-wrapper">
 
-						<%
-						KBArticle kbArticle = null;
+					<%
+					KBArticle kbArticle = null;
 
-						try {
-							kbArticle = KBArticleLocalServiceUtil.getLatestKBArticle(resourcePrimKey, WorkflowConstants.STATUS_APPROVED);
-						}
-						catch (NoSuchArticleException nsae) {
-						}
-						%>
+					try {
+						kbArticle = KBArticleLocalServiceUtil.getLatestKBArticle(resourcePrimKey, WorkflowConstants.STATUS_APPROVED);
+					}
+					catch (NoSuchArticleException nsae) {
+					}
+					%>
 
-						<liferay-ui:input-resource id="configurationKBArticle" url="<%= (kbArticle != null) ? kbArticle.getTitle() : StringPool.BLANK %>" />
+					<aui:input label="article" name="configurationKBArticle" type="resource" value="<%= (kbArticle != null) ? kbArticle.getTitle() : StringPool.BLANK %>" />
 
-						<liferay-portlet:renderURL portletName="<%= portletResource %>" var="selectConfigurationKBArticleURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-							<portlet:param name="mvcPath" value="/article/select_configuration_article.jsp" />
-						</liferay-portlet:renderURL>
+					<liferay-portlet:renderURL portletName="<%= portletResource %>" var="selectConfigurationKBArticleURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
+						<portlet:param name="mvcPath" value="/article/select_configuration_article.jsp" />
+					</liferay-portlet:renderURL>
 
-						<%
-						String taglibOnClick = "var selectConfigurationKBArticleWindow = window.open('" + selectConfigurationKBArticleURL + "&" + HtmlUtil.escapeJS(PortalUtil.getPortletNamespace(portletResource)) + "&selResourcePrimKey=' + document." + renderResponse.getNamespace() + "fm." + renderResponse.getNamespace() + "resourcePrimKey.value, 'selectConfigurationKBArticle', 'directories=no,height=640,location=no,menubar=no,resizable=yes,scrollbars=yes,status=no,toolbar=no,width=680'); void(''); selectConfigurationKBArticleWindow.focus();";
-						%>
+					<%
+					String taglibOnClick = "var selectConfigurationKBArticleWindow = window.open('" + selectConfigurationKBArticleURL + "&" + HtmlUtil.escapeJS(PortalUtil.getPortletNamespace(portletResource)) + "&selResourcePrimKey=' + document." + renderResponse.getNamespace() + "fm." + renderResponse.getNamespace() + "resourcePrimKey.value, 'selectConfigurationKBArticle', 'directories=no,height=640,location=no,menubar=no,resizable=yes,scrollbars=yes,status=no,toolbar=no,width=680'); void(''); selectConfigurationKBArticleWindow.focus();";
+					%>
 
-						<aui:button onClick="<%= taglibOnClick %>" value="select" />
-					</aui:field-wrapper>
+					<aui:button onClick="<%= taglibOnClick %>" value="select" />
 				</div>
 			</c:when>
 			<c:when test='<%= tabs2.equals("display-settings") %>'>
@@ -78,13 +76,24 @@ if (PortalUtil.isRSSFeedsEnabled()) {
 
 				<aui:input label="enable-ratings" name="preferences--enableKBArticleRatings--" type="checkbox" value="<%= enableKBArticleRatings %>" />
 
+				<div class="kb-ratings-type" id="<portlet:namespace />ratingsType">
+					<aui:input checked='<%= kbArticleRatingsType.equals("stars") %>' label="use-star-ratings" name="preferences--kbArticleRatingsType--" type="radio" value="stars" />
+					<aui:input checked='<%= kbArticleRatingsType.equals("thumbs") %>' label="use-thumbs-up-thumbs-down" name="preferences--kbArticleRatingsType--" type="radio" value="thumbs" />
+				</div>
+
 				<aui:input label="show-asset-entries" name="preferences--showKBArticleAssetEntries--" type="checkbox" value="<%= showKBArticleAssetEntries %>" />
 
-				<aui:input label="enable-comments" name="preferences--enableKBArticleKBComments--" type="checkbox" value="<%= enableKBArticleKBComments %>" />
-
-				<aui:input label="show-comments" name="preferences--showKBArticleKBComments--" type="checkbox" value="<%= showKBArticleKBComments %>" />
+				<aui:input label="enable-related-assets" name="preferences--enableKBArticleAssetLinks--" type="checkbox" value="<%= enableKBArticleAssetLinks %>" />
 
 				<aui:input label="enable-view-count-increment" name="preferences--enableKBArticleViewCountIncrement--" type="checkbox" value="<%= enableKBArticleViewCountIncrement %>" />
+
+				<aui:input label="enable-subscriptions" name="preferences--enableKBArticleSubscriptions--" type="checkbox" value="<%= enableKBArticleSubscriptions %>" />
+
+				<aui:input label="enable-history" name="preferences--enableKBArticleHistory--" type="checkbox" value="<%= enableKBArticleHistory %>" />
+
+				<aui:input label="enable-print" name="preferences--enableKBArticlePrint--" type="checkbox" value="<%= enableKBArticlePrint %>" />
+
+				<aui:input label="enable-social-bookmarks" name="preferences--enableSocialBookmarks--" type="checkbox" value="<%= enableSocialBookmarks %>" />
 			</c:when>
 			<c:when test='<%= tabs2.equals("rss") %>'>
 				<liferay-ui:rss-settings
@@ -102,11 +111,18 @@ if (PortalUtil.isRSSFeedsEnabled()) {
 	</aui:fieldset>
 </aui:form>
 
-<c:if test='<%= tabs2.equals("general") %>'>
-	<aui:script>
-		function <portlet:namespace />selectConfigurationKBArticle(resourcePrimKey, title) {
-			document.<portlet:namespace />fm.<portlet:namespace />resourcePrimKey.value = resourcePrimKey;
-			document.getElementById("<portlet:namespace />configurationKBArticle").value = title;
-		}
-	</aui:script>
-</c:if>
+<c:choose>
+	<c:when test='<%= tabs2.equals("general") %>'>
+		<aui:script>
+			function <portlet:namespace />selectConfigurationKBArticle(resourcePrimKey, title) {
+				document.<portlet:namespace />fm.<portlet:namespace />resourcePrimKey.value = resourcePrimKey;
+				document.getElementById('<portlet:namespace />configurationKBArticle').value = title;
+			}
+		</aui:script>
+	</c:when>
+	<c:when test='<%= tabs2.equals("display-settings") %>'>
+		<aui:script>
+			Liferay.Util.toggleBoxes('<portlet:namespace />enableKBArticleRatingsCheckbox', '<portlet:namespace />ratingsType');
+		</aui:script>
+	</c:when>
+</c:choose>

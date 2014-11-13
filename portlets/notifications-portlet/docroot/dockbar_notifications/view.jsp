@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,113 +16,144 @@
 
 <%@ include file="/init.jsp" %>
 
-<c:if test="<%= PortletPropsValues.NOTIFICATIONS_DOCKBAR_DISPLAY_ENABLED %>">
+<c:if test="<%= PortletPropsValues.USER_NOTIFICATIONS_DOCKBAR_DISPLAY_ENABLED %>">
 
 	<%
-	int newUserNotificationsCount = UserNotificationEventLocalServiceUtil.getDeliveredUserNotificationEventsCount(themeDisplay.getUserId(), false);
-	int unreadUserNotificationsCount = UserNotificationEventLocalServiceUtil.getArchivedUserNotificationEventsCount(themeDisplay.getUserId(), false);
+	int newActionableUserNotificationsCount = UserNotificationEventLocalServiceUtil.getDeliveredUserNotificationEventsCount(themeDisplay.getUserId(), UserNotificationDeliveryConstants.TYPE_WEBSITE, false, true);
+	int newNonactionableUserNotificationsCount = UserNotificationEventLocalServiceUtil.getDeliveredUserNotificationEventsCount(themeDisplay.getUserId(), UserNotificationDeliveryConstants.TYPE_WEBSITE, false, false);
+	int newUserNotificationsCount = UserNotificationEventLocalServiceUtil.getDeliveredUserNotificationEventsCount(themeDisplay.getUserId(), UserNotificationDeliveryConstants.TYPE_WEBSITE, false);
+	int unreadActionableUserNotificationsCount = UserNotificationEventLocalServiceUtil.getArchivedUserNotificationEventsCount(themeDisplay.getUserId(), UserNotificationDeliveryConstants.TYPE_WEBSITE, true, false);
+	int unreadNonactionableUserNotificationsCount = UserNotificationEventLocalServiceUtil.getArchivedUserNotificationEventsCount(themeDisplay.getUserId(), UserNotificationDeliveryConstants.TYPE_WEBSITE, false, false);
+	int unreadUserNotificationsCount = UserNotificationEventLocalServiceUtil.getArchivedUserNotificationEventsCount(themeDisplay.getUserId(), UserNotificationDeliveryConstants.TYPE_WEBSITE, false);
+
+	long notificationsPlid = themeDisplay.getPlid();
+
+	if (layout.isTypeControlPanel()) {
+		notificationsPlid = LayoutLocalServiceUtil.getDefaultPlid(user.getGroupId(), true);
+
+		if (notificationsPlid == LayoutConstants.DEFAULT_PLID) {
+			Group guestGroup = GroupLocalServiceUtil.getGroup(user.getCompanyId(), GroupConstants.GUEST);
+
+			notificationsPlid = LayoutLocalServiceUtil.getDefaultPlid(guestGroup.getGroupId(), false);
+		}
+	}
 	%>
 
-	<li class="dockbar-user-notifications dropdown toggle-controls" id="<portlet:namespace />userNotifications">
-		<a class="dropdown-toggle user-notification-link" href="javascript:;">
-			<span class='user-notifications-count <%= (newUserNotificationsCount > 0) ? "alert" : StringPool.BLANK %>' id="<portlet:namespace />userNotificationsCount"><%= unreadUserNotificationsCount %></span>
-		</a>
+	<c:choose>
+		<c:when test="<%= PortletPropsValues.USER_NOTIFICATION_DOCKBAR_SPLIT %>">
+			<li class="actionable-container dockbar-user-notifications dropdown split toggle-controls" id="<portlet:namespace />actionableUserNotifications">
+				<a class="dropdown-toggle user-notification-link" href="javascript:;">
 
-		<ul class="dropdown-menu pull-right user-notifications-list"></ul>
+					<%
+					String actionablableCssClass = StringPool.BLANK;
 
-		<aui:script use="aui-base,aui-io-plugin-deprecated,liferay-poller">
-			var userNotifications = A.one('#<portlet:namespace />userNotifications');
-
-			var userNotificationsCount = userNotifications.one('#<portlet:namespace />userNotificationsCount');
-
-			var onPollerUpdate = function(response, chunkId) {
-				var newUserNotificationsCount = Number(response.newUserNotificationsCount);
-				var unreadUserNotificationsCount = Number(response.unreadUserNotificationsCount);
-
-				userNotificationsCount.toggleClass('alert', (newUserNotificationsCount > 0));
-
-				userNotificationsCount.setHTML(unreadUserNotificationsCount);
-			}
-
-			A.on(
-				'domready',
-				function() {
-					Liferay.Poller.addListener('<%= PortletKeys.DOCKBAR_NOTIFICATIONS %>', onPollerUpdate, this);
-				}
-			);
-
-			var userNotificationsList = userNotifications.one('.dropdown-menu');
-
-			if (!userNotificationsList.io) {
-				userNotificationsList.plug(
-					A.Plugin.IO,
-					{
-						autoLoad: false
+					if (unreadActionableUserNotificationsCount == 0) {
+						actionablableCssClass += "hide";
 					}
-				);
-			}
 
-			userNotifications.on(
-				'click',
-				function(event) {
-					var currentTarget = event.currentTarget;
-
-					var target = event.target;
-
-					var handle = Liferay.Data['<portlet:namespace />userNotificationsHandle'];
-
-					if (!target.hasClass('user-notification') && !target.ancestor('.user-notification')) {
-						currentTarget.toggleClass('open');
-
-						var menuOpen = currentTarget.hasClass('open');
-
-						if (menuOpen && !handle) {
-							handle = currentTarget.on(
-								'clickoutside',
-								function(event) {
-									Liferay.Data['<portlet:namespace />userNotificationsHandle'] = null;
-
-									handle.detach();
-
-									currentTarget.removeClass('open');
-								}
-							);
-						}
-						else if (handle) {
-							handle.detach();
-
-							handle = null;
-						}
-
-						Liferay.Data['<portlet:namespace />userNotificationsHandle'] = handle;
-
-						if (menuOpen) {
-							<portlet:renderURL var="unreadURL" windowState="<%= LiferayWindowState.EXCLUSIVE.toString() %>">
-								<portlet:param name="mvcPath" value="/notifications/view_entries.jsp" />
-								<portlet:param name="filter" value="unread" />
-								<portlet:param name="fullView" value="false" />
-							</portlet:renderURL>
-
-							userNotificationsList.io.set('uri', '<%= unreadURL %>');
-
-							userNotificationsList.io.start();
-
-							A.io.request('<liferay-portlet:actionURL name="setDelivered" />');
-
-							userNotificationsCount.removeClass('alert');
-						}
-
+					if (newActionableUserNotificationsCount > 0) {
+						actionablableCssClass += StringPool.SPACE;
+						actionablableCssClass += "alert";
 					}
-				}
-			);
+					%>
 
-			userNotificationsList.delegate(
-				'click',
-				function(event) {
-					Liferay.Notifications.viewNotification(event);
-				},
-				'.user-notification .user-notification-link'
-			);
-		</aui:script>
-	</li>
+					<span class="actionable-user-notifications-count <%= actionablableCssClass %>" id="<portlet:namespace />actionableUserNotificationsCount"><%= unreadActionableUserNotificationsCount %></span>
+				</a>
+
+				<div class="dockbar-user-notifications-container">
+					<ul class="dropdown-menu pull-right user-notifications-list">
+						<%@ include file="/dockbar_notifications/actionable_notifications.jspf" %>
+					</ul>
+				</div>
+			</li>
+
+			<li class="dockbar-user-notifications dropdown nonactionable-container split toggle-controls" id="<portlet:namespace />nonactionableUserNotifications">
+				<a class="dropdown-toggle user-notification-link" href="javascript:;">
+
+					<%
+					String nonActionablableCssClass = StringPool.BLANK;
+
+					if (unreadNonactionableUserNotificationsCount == 0) {
+						nonActionablableCssClass += "hide";
+					}
+
+					if (newNonactionableUserNotificationsCount > 0) {
+						nonActionablableCssClass += StringPool.SPACE;
+						nonActionablableCssClass += "alert";
+					}
+					%>
+
+					<span class="nonactionable-user-notifications-count <%= nonActionablableCssClass %>" id="<portlet:namespace />nonactionableUserNotificationsCount"><%= unreadNonactionableUserNotificationsCount %></span>
+				</a>
+
+				<div class="dockbar-user-notifications-container">
+					<ul class="dropdown-menu pull-right user-notifications-list">
+						<%@ include file="/dockbar_notifications/nonactionable_notifications.jspf" %>
+					</ul>
+				</div>
+			</li>
+		</c:when>
+		<c:otherwise>
+			<li class="actionable-container dockbar-user-notifications dropdown nonactionable-container toggle-controls" id="<portlet:namespace />userNotifications">
+				<a class="dropdown-toggle user-notification-link" href="javascript:;">
+					<span class='user-notifications-count <%= (newUserNotificationsCount > 0) ? "alert" : StringPool.BLANK %>' id="<portlet:namespace />userNotificationsCount"><%= unreadUserNotificationsCount %></span>
+				</a>
+
+				<div class="dockbar-user-notifications-container">
+					<ul class="dropdown-menu pull-right user-notifications-list">
+						<%@ include file="/dockbar_notifications/nonactionable_notifications.jspf" %>
+
+						<%@ include file="/dockbar_notifications/actionable_notifications.jspf" %>
+					</ul>
+				</div>
+			</li>
+		</c:otherwise>
+	</c:choose>
+
+	<aui:script use="aui-base,liferay-plugin-dockbar-notifications,liferay-plugin-notifications-list">
+		var nonactionableNotificationsList = new Liferay.NotificationsList(
+			{
+				actionable: <%= false %>,
+				baseActionURL: '<%= PortletURLFactoryUtil.create(request, portletDisplay.getId(), themeDisplay.getPlid(), PortletRequest.ACTION_PHASE) %>',
+				baseRenderURL: '<%= PortletURLFactoryUtil.create(request, portletDisplay.getId(), themeDisplay.getPlid(), PortletRequest.RENDER_PHASE) %>',
+				baseResourceURL: '<%= PortletURLFactoryUtil.create(request, portletDisplay.getId(), themeDisplay.getPlid(), PortletRequest.RESOURCE_PHASE) %>',
+				delta: <%= dockbarViewDelta %>,
+				fullView: <%= false %>,
+				markAllAsReadNode: '.mark-all-as-read',
+				namespace: '<portlet:namespace />',
+				notificationsContainer: '.dockbar-user-notifications .dockbar-user-notifications-container .user-notifications-list .nonactionable',
+				notificationsCount: '.count',
+				notificationsNode: '.user-notifications',
+				portletKey: '<%= portletDisplay.getId() %>',
+				start: 0
+			}
+		);
+
+		var actionableNotificationsList = new Liferay.NotificationsList(
+			{
+				actionable: <%= true %>,
+				baseActionURL: '<%= PortletURLFactoryUtil.create(request, portletDisplay.getId(), themeDisplay.getPlid(), PortletRequest.ACTION_PHASE) %>',
+				baseRenderURL: '<%= PortletURLFactoryUtil.create(request, portletDisplay.getId(), themeDisplay.getPlid(), PortletRequest.RENDER_PHASE) %>',
+				baseResourceURL: '<%= PortletURLFactoryUtil.create(request, portletDisplay.getId(), themeDisplay.getPlid(), PortletRequest.RESOURCE_PHASE) %>',
+				delta: <%= dockbarViewDelta %>,
+				fullView: <%= false %>,
+				namespace: '<portlet:namespace />',
+				notificationsContainer: '.dockbar-user-notifications .dockbar-user-notifications-container .user-notifications-list .actionable',
+				notificationsCount: '.count',
+				notificationsNode: '.user-notifications',
+				portletKey: '<%= portletDisplay.getId() %>',
+				start: 0
+			}
+		);
+
+		new Liferay.DockbarNotifications(
+			{
+				actionableNotificationsList: actionableNotificationsList,
+				baseActionURL: '<%= PortletURLFactoryUtil.create(request, portletDisplay.getId(), themeDisplay.getPlid(), PortletRequest.ACTION_PHASE) %>',
+				baseResourceURL: '<%= PortletURLFactoryUtil.create(request, portletDisplay.getId(), themeDisplay.getPlid(), PortletRequest.RESOURCE_PHASE) %>',
+				nonactionableNotificationsList: nonactionableNotificationsList,
+				portletKey: '<%= portletDisplay.getId() %>'
+			}
+		);
+	</aui:script>
 </c:if>

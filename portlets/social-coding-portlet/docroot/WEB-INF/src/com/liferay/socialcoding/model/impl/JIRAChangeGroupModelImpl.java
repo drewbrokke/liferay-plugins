@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -13,6 +13,8 @@
  */
 
 package com.liferay.socialcoding.model.impl;
+
+import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.util.DateUtil;
@@ -51,6 +53,7 @@ import java.util.Map;
  * @see com.liferay.socialcoding.model.JIRAChangeGroupModel
  * @generated
  */
+@ProviderType
 public class JIRAChangeGroupModelImpl extends BaseModelImpl<JIRAChangeGroup>
 	implements JIRAChangeGroupModel {
 	/*
@@ -81,9 +84,9 @@ public class JIRAChangeGroupModelImpl extends BaseModelImpl<JIRAChangeGroup>
 	public static final boolean COLUMN_BITMASK_ENABLED = GetterUtil.getBoolean(com.liferay.util.service.ServiceProps.get(
 				"value.object.column.bitmask.enabled.com.liferay.socialcoding.model.JIRAChangeGroup"),
 			true);
-	public static long JIRAISSUEID_COLUMN_BITMASK = 1L;
-	public static long JIRAUSERID_COLUMN_BITMASK = 2L;
-	public static long CREATEDATE_COLUMN_BITMASK = 4L;
+	public static final long JIRAISSUEID_COLUMN_BITMASK = 1L;
+	public static final long JIRAUSERID_COLUMN_BITMASK = 2L;
+	public static final long CREATEDATE_COLUMN_BITMASK = 4L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(com.liferay.util.service.ServiceProps.get(
 				"lock.expiration.time.com.liferay.socialcoding.model.JIRAChangeGroup"));
 
@@ -413,8 +416,8 @@ public class JIRAChangeGroupModelImpl extends BaseModelImpl<JIRAChangeGroup>
 		return sb.toString();
 	}
 
-	private static ClassLoader _classLoader = JIRAChangeGroup.class.getClassLoader();
-	private static Class<?>[] _escapedModelInterfaces = new Class[] {
+	private static final ClassLoader _classLoader = JIRAChangeGroup.class.getClassLoader();
+	private static final Class<?>[] _escapedModelInterfaces = new Class[] {
 			JIRAChangeGroup.class
 		};
 	private long _jiraChangeGroupId;

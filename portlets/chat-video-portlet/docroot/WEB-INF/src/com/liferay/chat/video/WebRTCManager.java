@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -24,6 +24,10 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * Manages <a href="http://en.wikipedia.org/wiki/WebRTC">Web Real-Time
+ * Communication</a> (WebRTC) clients by connecting them, checking and updating
+ * client connection states, and managing client mail.
+ *
  * @author Philippe Proulx
  */
 public class WebRTCManager {
@@ -134,6 +138,10 @@ public class WebRTCManager {
 			sourceWebRTCClient, destinationWebRTCClient, messageJSONObject);
 	}
 
+	/**
+	 * Checks the presence of all registered WebRTC clients. This method should
+	 * be called by a message listener.
+	 */
 	public void checkWebRTCClients() {
 		long time = System.currentTimeMillis();
 
@@ -150,6 +158,10 @@ public class WebRTCManager {
 		}
 	}
 
+	/**
+	 * Checks the WebRTC client connection states for timeout handling. This
+	 * method should be called by a message listener.
+	 */
 	public void checkWebRTCConnectionsStates() {
 		for (WebRTCClient webRTCClient : _webRTCClients.values()) {
 			for (WebRTCClient otherWebRTCClient :
@@ -250,11 +262,11 @@ public class WebRTCManager {
 	}
 
 	public void pushICECandidateWebRTCMail(
-		long sourceUserId, long destinationUserId, String ice) {
+		long sourceUserId, long destinationUserId, String candidate) {
 
 		JSONObject messageJSONObject = JSONFactoryUtil.createJSONObject();
 
-		messageJSONObject.put("ice", ice);
+		messageJSONObject.put("candidate", candidate);
 
 		WebRTCMail webRTCMail = new ICECandidateWebRTCMail(
 			sourceUserId, messageJSONObject);
@@ -285,7 +297,11 @@ public class WebRTCManager {
 
 		for (WebRTCClient otherWebRTCClient : webRTCClients) {
 			WebRTCConnection webRTCConnection =
-				webRTCClient.getWebRTCConnection(webRTCClient);
+				webRTCClient.getWebRTCConnection(otherWebRTCClient);
+
+			if (webRTCConnection == null) {
+				continue;
+			}
 
 			WebRTCConnection.State state = webRTCConnection.getState();
 
@@ -304,8 +320,6 @@ public class WebRTCManager {
 		addWebRTCClient(userId);
 
 		WebRTCClient webRTCClient = getWebRTCClient(userId);
-
-		webRTCClient.removeBilateralWebRTCConnections();
 
 		webRTCClient.setAvailable(available);
 	}

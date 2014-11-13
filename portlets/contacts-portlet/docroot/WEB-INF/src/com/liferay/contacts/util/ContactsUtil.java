@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -19,7 +19,6 @@ package com.liferay.contacts.util;
 
 import com.liferay.contacts.model.Entry;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -103,7 +102,7 @@ public class ContactsUtil {
 	}
 
 	public static JSONObject getUserJSONObject(long userId, User user)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 
@@ -196,7 +195,7 @@ public class ContactsUtil {
 
 			ListType listType = address.getType();
 
-			sb.append(StringUtil.toUpperCase(listType.getName()));
+			sb.append(StringUtil.toUpperCase(_getVCardListTypeName(listType)));
 
 			sb.append(StringPool.COLON);
 			sb.append(StringPool.SEMICOLON);
@@ -391,7 +390,7 @@ public class ContactsUtil {
 
 			ListType listType = phone.getType();
 
-			sb.append(StringUtil.toUpperCase(listType.getName()));
+			sb.append(StringUtil.toUpperCase(_getVCardListTypeName(listType)));
 
 			sb.append(StringPool.COLON);
 			sb.append(phone.getNumber());
@@ -401,6 +400,19 @@ public class ContactsUtil {
 		}
 
 		return sb.toString();
+	}
+
+	private static String _getVCardListTypeName(ListType listType) {
+		String listTypeName = listType.getName();
+
+		if (StringUtil.equalsIgnoreCase(listTypeName, "business")) {
+			listTypeName = "work";
+		}
+		else if (StringUtil.equalsIgnoreCase(listTypeName, "personal")) {
+			listTypeName = "home";
+		}
+
+		return listTypeName;
 	}
 
 	private static String _getWebsites(User user) throws Exception {
@@ -414,7 +426,7 @@ public class ContactsUtil {
 
 			ListType listType = website.getType();
 
-			sb.append(StringUtil.toUpperCase(listType.getName()));
+			sb.append(StringUtil.toUpperCase(_getVCardListTypeName(listType)));
 
 			sb.append(StringPool.COLON);
 

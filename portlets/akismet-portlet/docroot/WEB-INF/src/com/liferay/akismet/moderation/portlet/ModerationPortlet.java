@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -18,6 +18,7 @@ import com.liferay.akismet.util.AkismetConstants;
 import com.liferay.akismet.util.AkismetUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.portlet.LiferayPortletURL;
+import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -44,7 +45,6 @@ import com.liferay.portlet.wiki.NoSuchPageException;
 import com.liferay.portlet.wiki.model.WikiNode;
 import com.liferay.portlet.wiki.model.WikiPage;
 import com.liferay.portlet.wiki.service.WikiPageLocalServiceUtil;
-import com.liferay.util.bridges.mvc.MVCPortlet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -213,11 +213,11 @@ public class ModerationPortlet extends MVCPortlet {
 		}
 
 		if (!wikiPageLinks.isEmpty()) {
-			SessionMessages.add(actionRequest, "requestProcessed");
-
 			SessionMessages.add(
 				actionRequest, "anotherUserHasMadeChangesToThesePages",
 				StringUtil.merge(wikiPageLinks, "<br />"));
+
+			addSuccessMessage(actionRequest, actionResponse);
 
 			super.sendRedirect(actionRequest, actionResponse);
 		}

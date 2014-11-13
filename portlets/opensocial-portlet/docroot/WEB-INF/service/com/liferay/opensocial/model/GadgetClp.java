@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -18,7 +18,6 @@ import com.liferay.opensocial.service.ClpSerializer;
 import com.liferay.opensocial.service.GadgetLocalServiceUtil;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.lar.StagedModelType;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
@@ -387,7 +386,7 @@ public class GadgetClp extends BaseModelImpl<Gadget> implements Gadget {
 	}
 
 	@Override
-	public void persist() throws SystemException {
+	public void persist() {
 		if (this.isNew()) {
 			GadgetLocalServiceUtil.addGadget(this);
 		}
@@ -451,6 +450,10 @@ public class GadgetClp extends BaseModelImpl<Gadget> implements Gadget {
 		else {
 			return false;
 		}
+	}
+
+	public Class<?> getClpSerializerClass() {
+		return _clpSerializerClass;
 	}
 
 	@Override
@@ -548,6 +551,7 @@ public class GadgetClp extends BaseModelImpl<Gadget> implements Gadget {
 	private String _url;
 	private String _portletCategoryNames;
 	private BaseModel<?> _gadgetRemoteModel;
+	private Class<?> _clpSerializerClass = com.liferay.opensocial.service.ClpSerializer.class;
 	private boolean _entityCacheEnabled;
 	private boolean _finderCacheEnabled;
 }

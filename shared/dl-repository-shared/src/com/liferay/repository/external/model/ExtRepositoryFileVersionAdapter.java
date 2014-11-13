@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -15,10 +15,10 @@
 package com.liferay.repository.external.model;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.lar.StagedModelType;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileVersion;
+import com.liferay.portal.kernel.repository.model.RepositoryModelOperation;
 import com.liferay.portal.kernel.util.MimeTypesUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -52,13 +52,20 @@ public class ExtRepositoryFileVersionAdapter
 	}
 
 	@Override
+	public void execute(RepositoryModelOperation repositoryModelOperation)
+		throws PortalException {
+
+		repositoryModelOperation.execute(this);
+	}
+
+	@Override
 	public String getChangeLog() {
 		return _extRepositoryFileVersion.getChangeLog();
 	}
 
 	@Override
 	public InputStream getContentStream(boolean incrementCounter)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		ExtRepositoryAdapter extRepositoryAdapter = getRepository();
 
@@ -82,13 +89,18 @@ public class ExtRepositoryFileVersionAdapter
 
 	@Override
 	@SuppressWarnings("unused")
-	public FileEntry getFileEntry() throws PortalException, SystemException {
+	public FileEntry getFileEntry() throws PortalException {
 		return _extRepositoryFileEntryAdapter;
 	}
 
 	@Override
 	public long getFileEntryId() {
 		return _extRepositoryFileEntryAdapter.getFileEntryId();
+	}
+
+	@Override
+	public String getFileName() {
+		return DLUtil.getSanitizedFileName(getTitle(), getExtension());
 	}
 
 	@Override
@@ -143,8 +155,7 @@ public class ExtRepositoryFileVersionAdapter
 	}
 
 	@Override
-	@SuppressWarnings("unused")
-	public String getStatusByUserUuid() throws SystemException {
+	public String getStatusByUserUuid() {
 		return getUserUuid();
 	}
 

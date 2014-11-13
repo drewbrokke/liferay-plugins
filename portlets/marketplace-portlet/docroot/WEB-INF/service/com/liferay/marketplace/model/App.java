@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,6 +14,8 @@
 
 package com.liferay.marketplace.model;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.portal.model.PersistedModel;
 
 /**
@@ -25,6 +27,7 @@ import com.liferay.portal.model.PersistedModel;
  * @see com.liferay.marketplace.model.impl.AppModelImpl
  * @generated
  */
+@ProviderType
 public interface App extends AppModel, PersistedModel {
 	/*
 	 * NOTE FOR DEVELOPERS:
@@ -33,8 +36,7 @@ public interface App extends AppModel, PersistedModel {
 	 */
 	public java.lang.String[] addContextName(java.lang.String contextName);
 
-	public java.lang.String[] getContextNames()
-		throws com.liferay.portal.kernel.exception.SystemException;
+	public java.lang.String[] getContextNames();
 
 	public java.lang.String getFileDir();
 
@@ -43,9 +45,7 @@ public interface App extends AppModel, PersistedModel {
 	public java.lang.String getFilePath();
 
 	public boolean isDownloaded()
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException;
+		throws com.liferay.portal.kernel.exception.PortalException;
 
-	public boolean isInstalled()
-		throws com.liferay.portal.kernel.exception.SystemException;
+	public boolean isInstalled();
 }

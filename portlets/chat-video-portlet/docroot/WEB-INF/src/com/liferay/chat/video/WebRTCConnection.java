@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -15,6 +15,11 @@
 package com.liferay.chat.video;
 
 /**
+ * Represents a <a href="http://en.wikipedia.org/wiki/WebRTC">Web Real-Time
+ * Communication</a> (WebRTC) connection between two clients. It is owned by
+ * both connected clients, but still holds a reference to the original (source)
+ * caller. The connections are thread-safe.
+ *
  * @author Philippe Proulx
  */
 public class WebRTCConnection {

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -35,9 +35,11 @@ public class TestBlobEntryLocalServiceClp implements TestBlobEntryLocalService {
 
 		_methodParameterTypes1 = new String[] { "long" };
 
-		_methodName2 = "deleteTestBlobEntry";
+		_methodName2 = "deletePersistedModel";
 
-		_methodParameterTypes2 = new String[] { "long" };
+		_methodParameterTypes2 = new String[] {
+				"com.liferay.portal.model.PersistedModel"
+			};
 
 		_methodName3 = "deleteTestBlobEntry";
 
@@ -45,85 +47,92 @@ public class TestBlobEntryLocalServiceClp implements TestBlobEntryLocalService {
 				"com.liferay.testblob.model.TestBlobEntry"
 			};
 
-		_methodName4 = "dynamicQuery";
+		_methodName4 = "deleteTestBlobEntry";
 
-		_methodParameterTypes4 = new String[] {  };
+		_methodParameterTypes4 = new String[] { "long" };
 
 		_methodName5 = "dynamicQuery";
 
-		_methodParameterTypes5 = new String[] {
-				"com.liferay.portal.kernel.dao.orm.DynamicQuery"
-			};
+		_methodParameterTypes5 = new String[] {  };
 
 		_methodName6 = "dynamicQuery";
 
 		_methodParameterTypes6 = new String[] {
-				"com.liferay.portal.kernel.dao.orm.DynamicQuery", "int", "int"
+				"com.liferay.portal.kernel.dao.orm.DynamicQuery"
 			};
 
 		_methodName7 = "dynamicQuery";
 
 		_methodParameterTypes7 = new String[] {
-				"com.liferay.portal.kernel.dao.orm.DynamicQuery", "int", "int",
-				"com.liferay.portal.kernel.util.OrderByComparator"
+				"com.liferay.portal.kernel.dao.orm.DynamicQuery", "int", "int"
 			};
 
-		_methodName8 = "dynamicQueryCount";
+		_methodName8 = "dynamicQuery";
 
 		_methodParameterTypes8 = new String[] {
-				"com.liferay.portal.kernel.dao.orm.DynamicQuery"
+				"com.liferay.portal.kernel.dao.orm.DynamicQuery", "int", "int",
+				"com.liferay.portal.kernel.util.OrderByComparator"
 			};
 
 		_methodName9 = "dynamicQueryCount";
 
 		_methodParameterTypes9 = new String[] {
+				"com.liferay.portal.kernel.dao.orm.DynamicQuery"
+			};
+
+		_methodName10 = "dynamicQueryCount";
+
+		_methodParameterTypes10 = new String[] {
 				"com.liferay.portal.kernel.dao.orm.DynamicQuery",
 				"com.liferay.portal.kernel.dao.orm.Projection"
 			};
 
-		_methodName10 = "fetchTestBlobEntry";
-
-		_methodParameterTypes10 = new String[] { "long" };
-
-		_methodName11 = "getTestBlobEntry";
+		_methodName11 = "fetchTestBlobEntry";
 
 		_methodParameterTypes11 = new String[] { "long" };
 
-		_methodName12 = "getPersistedModel";
+		_methodName12 = "getActionableDynamicQuery";
 
-		_methodParameterTypes12 = new String[] { "java.io.Serializable" };
+		_methodParameterTypes12 = new String[] {  };
 
-		_methodName13 = "getTestBlobEntries";
+		_methodName13 = "getBeanIdentifier";
 
-		_methodParameterTypes13 = new String[] { "int", "int" };
+		_methodParameterTypes13 = new String[] {  };
 
-		_methodName14 = "getTestBlobEntriesCount";
+		_methodName14 = "getBlobFieldBlobModel";
 
-		_methodParameterTypes14 = new String[] {  };
+		_methodParameterTypes14 = new String[] { "java.io.Serializable" };
 
-		_methodName15 = "updateTestBlobEntry";
+		_methodName15 = "getPersistedModel";
 
-		_methodParameterTypes15 = new String[] {
-				"com.liferay.testblob.model.TestBlobEntry"
-			};
+		_methodParameterTypes15 = new String[] { "java.io.Serializable" };
 
-		_methodName16 = "getBlobFieldBlobModel";
+		_methodName16 = "getTestBlobEntries";
 
-		_methodParameterTypes16 = new String[] { "java.io.Serializable" };
+		_methodParameterTypes16 = new String[] { "int", "int" };
 
-		_methodName17 = "getBeanIdentifier";
+		_methodName17 = "getTestBlobEntriesCount";
 
 		_methodParameterTypes17 = new String[] {  };
 
-		_methodName18 = "setBeanIdentifier";
+		_methodName18 = "getTestBlobEntry";
 
-		_methodParameterTypes18 = new String[] { "java.lang.String" };
+		_methodParameterTypes18 = new String[] { "long" };
+
+		_methodName20 = "setBeanIdentifier";
+
+		_methodParameterTypes20 = new String[] { "java.lang.String" };
+
+		_methodName21 = "updateTestBlobEntry";
+
+		_methodParameterTypes21 = new String[] {
+				"com.liferay.testblob.model.TestBlobEntry"
+			};
 	}
 
 	@Override
 	public com.liferay.testblob.model.TestBlobEntry addTestBlobEntry(
-		com.liferay.testblob.model.TestBlobEntry testBlobEntry)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.testblob.model.TestBlobEntry testBlobEntry) {
 		Object returnObj = null;
 
 		try {
@@ -133,10 +142,6 @@ public class TestBlobEntryLocalServiceClp implements TestBlobEntryLocalService {
 		}
 		catch (Throwable t) {
 			t = ClpSerializer.translateThrowable(t);
-
-			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
-				throw (com.liferay.portal.kernel.exception.SystemException)t;
-			}
 
 			if (t instanceof RuntimeException) {
 				throw (RuntimeException)t;
@@ -175,15 +180,15 @@ public class TestBlobEntryLocalServiceClp implements TestBlobEntryLocalService {
 	}
 
 	@Override
-	public com.liferay.testblob.model.TestBlobEntry deleteTestBlobEntry(
-		long testBlobEntryId)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException {
+	public com.liferay.portal.model.PersistedModel deletePersistedModel(
+		com.liferay.portal.model.PersistedModel persistedModel)
+		throws com.liferay.portal.kernel.exception.PortalException {
 		Object returnObj = null;
 
 		try {
 			returnObj = _invokableLocalService.invokeMethod(_methodName2,
-					_methodParameterTypes2, new Object[] { testBlobEntryId });
+					_methodParameterTypes2,
+					new Object[] { ClpSerializer.translateInput(persistedModel) });
 		}
 		catch (Throwable t) {
 			t = ClpSerializer.translateThrowable(t);
@@ -192,9 +197,30 @@ public class TestBlobEntryLocalServiceClp implements TestBlobEntryLocalService {
 				throw (com.liferay.portal.kernel.exception.PortalException)t;
 			}
 
-			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
-				throw (com.liferay.portal.kernel.exception.SystemException)t;
+			if (t instanceof RuntimeException) {
+				throw (RuntimeException)t;
 			}
+			else {
+				throw new RuntimeException(t.getClass().getName() +
+					" is not a valid exception");
+			}
+		}
+
+		return (com.liferay.portal.model.PersistedModel)ClpSerializer.translateOutput(returnObj);
+	}
+
+	@Override
+	public com.liferay.testblob.model.TestBlobEntry deleteTestBlobEntry(
+		com.liferay.testblob.model.TestBlobEntry testBlobEntry) {
+		Object returnObj = null;
+
+		try {
+			returnObj = _invokableLocalService.invokeMethod(_methodName3,
+					_methodParameterTypes3,
+					new Object[] { ClpSerializer.translateInput(testBlobEntry) });
+		}
+		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
 
 			if (t instanceof RuntimeException) {
 				throw (RuntimeException)t;
@@ -210,20 +236,19 @@ public class TestBlobEntryLocalServiceClp implements TestBlobEntryLocalService {
 
 	@Override
 	public com.liferay.testblob.model.TestBlobEntry deleteTestBlobEntry(
-		com.liferay.testblob.model.TestBlobEntry testBlobEntry)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		long testBlobEntryId)
+		throws com.liferay.portal.kernel.exception.PortalException {
 		Object returnObj = null;
 
 		try {
-			returnObj = _invokableLocalService.invokeMethod(_methodName3,
-					_methodParameterTypes3,
-					new Object[] { ClpSerializer.translateInput(testBlobEntry) });
+			returnObj = _invokableLocalService.invokeMethod(_methodName4,
+					_methodParameterTypes4, new Object[] { testBlobEntryId });
 		}
 		catch (Throwable t) {
 			t = ClpSerializer.translateThrowable(t);
 
-			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
-				throw (com.liferay.portal.kernel.exception.SystemException)t;
+			if (t instanceof com.liferay.portal.kernel.exception.PortalException) {
+				throw (com.liferay.portal.kernel.exception.PortalException)t;
 			}
 
 			if (t instanceof RuntimeException) {
@@ -243,8 +268,8 @@ public class TestBlobEntryLocalServiceClp implements TestBlobEntryLocalService {
 		Object returnObj = null;
 
 		try {
-			returnObj = _invokableLocalService.invokeMethod(_methodName4,
-					_methodParameterTypes4, new Object[] {  });
+			returnObj = _invokableLocalService.invokeMethod(_methodName5,
+					_methodParameterTypes5, new Object[] {  });
 		}
 		catch (Throwable t) {
 			t = ClpSerializer.translateThrowable(t);
@@ -262,23 +287,17 @@ public class TestBlobEntryLocalServiceClp implements TestBlobEntryLocalService {
 	}
 
 	@Override
-	@SuppressWarnings("rawtypes")
-	public java.util.List dynamicQuery(
-		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery)
-		throws com.liferay.portal.kernel.exception.SystemException {
+	public <T> java.util.List<T> dynamicQuery(
+		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery) {
 		Object returnObj = null;
 
 		try {
-			returnObj = _invokableLocalService.invokeMethod(_methodName5,
-					_methodParameterTypes5,
+			returnObj = _invokableLocalService.invokeMethod(_methodName6,
+					_methodParameterTypes6,
 					new Object[] { ClpSerializer.translateInput(dynamicQuery) });
 		}
 		catch (Throwable t) {
 			t = ClpSerializer.translateThrowable(t);
-
-			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
-				throw (com.liferay.portal.kernel.exception.SystemException)t;
-			}
 
 			if (t instanceof RuntimeException) {
 				throw (RuntimeException)t;
@@ -289,19 +308,18 @@ public class TestBlobEntryLocalServiceClp implements TestBlobEntryLocalService {
 			}
 		}
 
-		return (java.util.List)ClpSerializer.translateOutput(returnObj);
+		return (java.util.List<T>)ClpSerializer.translateOutput(returnObj);
 	}
 
 	@Override
-	@SuppressWarnings("rawtypes")
-	public java.util.List dynamicQuery(
+	public <T> java.util.List<T> dynamicQuery(
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery, int start,
-		int end) throws com.liferay.portal.kernel.exception.SystemException {
+		int end) {
 		Object returnObj = null;
 
 		try {
-			returnObj = _invokableLocalService.invokeMethod(_methodName6,
-					_methodParameterTypes6,
+			returnObj = _invokableLocalService.invokeMethod(_methodName7,
+					_methodParameterTypes7,
 					new Object[] {
 						ClpSerializer.translateInput(dynamicQuery),
 						
@@ -313,10 +331,6 @@ public class TestBlobEntryLocalServiceClp implements TestBlobEntryLocalService {
 		catch (Throwable t) {
 			t = ClpSerializer.translateThrowable(t);
 
-			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
-				throw (com.liferay.portal.kernel.exception.SystemException)t;
-			}
-
 			if (t instanceof RuntimeException) {
 				throw (RuntimeException)t;
 			}
@@ -326,21 +340,19 @@ public class TestBlobEntryLocalServiceClp implements TestBlobEntryLocalService {
 			}
 		}
 
-		return (java.util.List)ClpSerializer.translateOutput(returnObj);
+		return (java.util.List<T>)ClpSerializer.translateOutput(returnObj);
 	}
 
 	@Override
-	@SuppressWarnings("rawtypes")
-	public java.util.List dynamicQuery(
+	public <T> java.util.List<T> dynamicQuery(
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery, int start,
 		int end,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.util.OrderByComparator<T> orderByComparator) {
 		Object returnObj = null;
 
 		try {
-			returnObj = _invokableLocalService.invokeMethod(_methodName7,
-					_methodParameterTypes7,
+			returnObj = _invokableLocalService.invokeMethod(_methodName8,
+					_methodParameterTypes8,
 					new Object[] {
 						ClpSerializer.translateInput(dynamicQuery),
 						
@@ -354,10 +366,6 @@ public class TestBlobEntryLocalServiceClp implements TestBlobEntryLocalService {
 		catch (Throwable t) {
 			t = ClpSerializer.translateThrowable(t);
 
-			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
-				throw (com.liferay.portal.kernel.exception.SystemException)t;
-			}
-
 			if (t instanceof RuntimeException) {
 				throw (RuntimeException)t;
 			}
@@ -367,26 +375,21 @@ public class TestBlobEntryLocalServiceClp implements TestBlobEntryLocalService {
 			}
 		}
 
-		return (java.util.List)ClpSerializer.translateOutput(returnObj);
+		return (java.util.List<T>)ClpSerializer.translateOutput(returnObj);
 	}
 
 	@Override
 	public long dynamicQueryCount(
-		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery) {
 		Object returnObj = null;
 
 		try {
-			returnObj = _invokableLocalService.invokeMethod(_methodName8,
-					_methodParameterTypes8,
+			returnObj = _invokableLocalService.invokeMethod(_methodName9,
+					_methodParameterTypes9,
 					new Object[] { ClpSerializer.translateInput(dynamicQuery) });
 		}
 		catch (Throwable t) {
 			t = ClpSerializer.translateThrowable(t);
-
-			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
-				throw (com.liferay.portal.kernel.exception.SystemException)t;
-			}
 
 			if (t instanceof RuntimeException) {
 				throw (RuntimeException)t;
@@ -403,13 +406,12 @@ public class TestBlobEntryLocalServiceClp implements TestBlobEntryLocalService {
 	@Override
 	public long dynamicQueryCount(
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery,
-		com.liferay.portal.kernel.dao.orm.Projection projection)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.dao.orm.Projection projection) {
 		Object returnObj = null;
 
 		try {
-			returnObj = _invokableLocalService.invokeMethod(_methodName9,
-					_methodParameterTypes9,
+			returnObj = _invokableLocalService.invokeMethod(_methodName10,
+					_methodParameterTypes10,
 					new Object[] {
 						ClpSerializer.translateInput(dynamicQuery),
 						
@@ -418,10 +420,6 @@ public class TestBlobEntryLocalServiceClp implements TestBlobEntryLocalService {
 		}
 		catch (Throwable t) {
 			t = ClpSerializer.translateThrowable(t);
-
-			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
-				throw (com.liferay.portal.kernel.exception.SystemException)t;
-			}
 
 			if (t instanceof RuntimeException) {
 				throw (RuntimeException)t;
@@ -437,38 +435,7 @@ public class TestBlobEntryLocalServiceClp implements TestBlobEntryLocalService {
 
 	@Override
 	public com.liferay.testblob.model.TestBlobEntry fetchTestBlobEntry(
-		long testBlobEntryId)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		Object returnObj = null;
-
-		try {
-			returnObj = _invokableLocalService.invokeMethod(_methodName10,
-					_methodParameterTypes10, new Object[] { testBlobEntryId });
-		}
-		catch (Throwable t) {
-			t = ClpSerializer.translateThrowable(t);
-
-			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
-				throw (com.liferay.portal.kernel.exception.SystemException)t;
-			}
-
-			if (t instanceof RuntimeException) {
-				throw (RuntimeException)t;
-			}
-			else {
-				throw new RuntimeException(t.getClass().getName() +
-					" is not a valid exception");
-			}
-		}
-
-		return (com.liferay.testblob.model.TestBlobEntry)ClpSerializer.translateOutput(returnObj);
-	}
-
-	@Override
-	public com.liferay.testblob.model.TestBlobEntry getTestBlobEntry(
-		long testBlobEntryId)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException {
+		long testBlobEntryId) {
 		Object returnObj = null;
 
 		try {
@@ -478,14 +445,6 @@ public class TestBlobEntryLocalServiceClp implements TestBlobEntryLocalService {
 		catch (Throwable t) {
 			t = ClpSerializer.translateThrowable(t);
 
-			if (t instanceof com.liferay.portal.kernel.exception.PortalException) {
-				throw (com.liferay.portal.kernel.exception.PortalException)t;
-			}
-
-			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
-				throw (com.liferay.portal.kernel.exception.SystemException)t;
-			}
-
 			if (t instanceof RuntimeException) {
 				throw (RuntimeException)t;
 			}
@@ -499,15 +458,85 @@ public class TestBlobEntryLocalServiceClp implements TestBlobEntryLocalService {
 	}
 
 	@Override
-	public com.liferay.portal.model.PersistedModel getPersistedModel(
-		java.io.Serializable primaryKeyObj)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException {
+	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		Object returnObj = null;
 
 		try {
 			returnObj = _invokableLocalService.invokeMethod(_methodName12,
-					_methodParameterTypes12,
+					_methodParameterTypes12, new Object[] {  });
+		}
+		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
+			if (t instanceof RuntimeException) {
+				throw (RuntimeException)t;
+			}
+			else {
+				throw new RuntimeException(t.getClass().getName() +
+					" is not a valid exception");
+			}
+		}
+
+		return (com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery)ClpSerializer.translateOutput(returnObj);
+	}
+
+	@Override
+	public java.lang.String getBeanIdentifier() {
+		Object returnObj = null;
+
+		try {
+			returnObj = _invokableLocalService.invokeMethod(_methodName13,
+					_methodParameterTypes13, new Object[] {  });
+		}
+		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
+			if (t instanceof RuntimeException) {
+				throw (RuntimeException)t;
+			}
+			else {
+				throw new RuntimeException(t.getClass().getName() +
+					" is not a valid exception");
+			}
+		}
+
+		return (java.lang.String)ClpSerializer.translateOutput(returnObj);
+	}
+
+	@Override
+	public com.liferay.testblob.model.TestBlobEntryBlobFieldBlobModel getBlobFieldBlobModel(
+		java.io.Serializable primaryKey) {
+		Object returnObj = null;
+
+		try {
+			returnObj = _invokableLocalService.invokeMethod(_methodName14,
+					_methodParameterTypes14,
+					new Object[] { ClpSerializer.translateInput(primaryKey) });
+		}
+		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
+			if (t instanceof RuntimeException) {
+				throw (RuntimeException)t;
+			}
+			else {
+				throw new RuntimeException(t.getClass().getName() +
+					" is not a valid exception");
+			}
+		}
+
+		return (com.liferay.testblob.model.TestBlobEntryBlobFieldBlobModel)ClpSerializer.translateOutput(returnObj);
+	}
+
+	@Override
+	public com.liferay.portal.model.PersistedModel getPersistedModel(
+		java.io.Serializable primaryKeyObj)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		Object returnObj = null;
+
+		try {
+			returnObj = _invokableLocalService.invokeMethod(_methodName15,
+					_methodParameterTypes15,
 					new Object[] { ClpSerializer.translateInput(primaryKeyObj) });
 		}
 		catch (Throwable t) {
@@ -515,10 +544,6 @@ public class TestBlobEntryLocalServiceClp implements TestBlobEntryLocalService {
 
 			if (t instanceof com.liferay.portal.kernel.exception.PortalException) {
 				throw (com.liferay.portal.kernel.exception.PortalException)t;
-			}
-
-			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
-				throw (com.liferay.portal.kernel.exception.SystemException)t;
 			}
 
 			if (t instanceof RuntimeException) {
@@ -535,20 +560,15 @@ public class TestBlobEntryLocalServiceClp implements TestBlobEntryLocalService {
 
 	@Override
 	public java.util.List<com.liferay.testblob.model.TestBlobEntry> getTestBlobEntries(
-		int start, int end)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		int start, int end) {
 		Object returnObj = null;
 
 		try {
-			returnObj = _invokableLocalService.invokeMethod(_methodName13,
-					_methodParameterTypes13, new Object[] { start, end });
+			returnObj = _invokableLocalService.invokeMethod(_methodName16,
+					_methodParameterTypes16, new Object[] { start, end });
 		}
 		catch (Throwable t) {
 			t = ClpSerializer.translateThrowable(t);
-
-			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
-				throw (com.liferay.portal.kernel.exception.SystemException)t;
-			}
 
 			if (t instanceof RuntimeException) {
 				throw (RuntimeException)t;
@@ -563,95 +583,7 @@ public class TestBlobEntryLocalServiceClp implements TestBlobEntryLocalService {
 	}
 
 	@Override
-	public int getTestBlobEntriesCount()
-		throws com.liferay.portal.kernel.exception.SystemException {
-		Object returnObj = null;
-
-		try {
-			returnObj = _invokableLocalService.invokeMethod(_methodName14,
-					_methodParameterTypes14, new Object[] {  });
-		}
-		catch (Throwable t) {
-			t = ClpSerializer.translateThrowable(t);
-
-			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
-				throw (com.liferay.portal.kernel.exception.SystemException)t;
-			}
-
-			if (t instanceof RuntimeException) {
-				throw (RuntimeException)t;
-			}
-			else {
-				throw new RuntimeException(t.getClass().getName() +
-					" is not a valid exception");
-			}
-		}
-
-		return ((Integer)returnObj).intValue();
-	}
-
-	@Override
-	public com.liferay.testblob.model.TestBlobEntry updateTestBlobEntry(
-		com.liferay.testblob.model.TestBlobEntry testBlobEntry)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		Object returnObj = null;
-
-		try {
-			returnObj = _invokableLocalService.invokeMethod(_methodName15,
-					_methodParameterTypes15,
-					new Object[] { ClpSerializer.translateInput(testBlobEntry) });
-		}
-		catch (Throwable t) {
-			t = ClpSerializer.translateThrowable(t);
-
-			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
-				throw (com.liferay.portal.kernel.exception.SystemException)t;
-			}
-
-			if (t instanceof RuntimeException) {
-				throw (RuntimeException)t;
-			}
-			else {
-				throw new RuntimeException(t.getClass().getName() +
-					" is not a valid exception");
-			}
-		}
-
-		return (com.liferay.testblob.model.TestBlobEntry)ClpSerializer.translateOutput(returnObj);
-	}
-
-	@Override
-	public com.liferay.testblob.model.TestBlobEntryBlobFieldBlobModel getBlobFieldBlobModel(
-		java.io.Serializable primaryKey)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		Object returnObj = null;
-
-		try {
-			returnObj = _invokableLocalService.invokeMethod(_methodName16,
-					_methodParameterTypes16,
-					new Object[] { ClpSerializer.translateInput(primaryKey) });
-		}
-		catch (Throwable t) {
-			t = ClpSerializer.translateThrowable(t);
-
-			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
-				throw (com.liferay.portal.kernel.exception.SystemException)t;
-			}
-
-			if (t instanceof RuntimeException) {
-				throw (RuntimeException)t;
-			}
-			else {
-				throw new RuntimeException(t.getClass().getName() +
-					" is not a valid exception");
-			}
-		}
-
-		return (com.liferay.testblob.model.TestBlobEntryBlobFieldBlobModel)ClpSerializer.translateOutput(returnObj);
-	}
-
-	@Override
-	public java.lang.String getBeanIdentifier() {
+	public int getTestBlobEntriesCount() {
 		Object returnObj = null;
 
 		try {
@@ -670,14 +602,50 @@ public class TestBlobEntryLocalServiceClp implements TestBlobEntryLocalService {
 			}
 		}
 
-		return (java.lang.String)ClpSerializer.translateOutput(returnObj);
+		return ((Integer)returnObj).intValue();
+	}
+
+	@Override
+	public com.liferay.testblob.model.TestBlobEntry getTestBlobEntry(
+		long testBlobEntryId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		Object returnObj = null;
+
+		try {
+			returnObj = _invokableLocalService.invokeMethod(_methodName18,
+					_methodParameterTypes18, new Object[] { testBlobEntryId });
+		}
+		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
+			if (t instanceof com.liferay.portal.kernel.exception.PortalException) {
+				throw (com.liferay.portal.kernel.exception.PortalException)t;
+			}
+
+			if (t instanceof RuntimeException) {
+				throw (RuntimeException)t;
+			}
+			else {
+				throw new RuntimeException(t.getClass().getName() +
+					" is not a valid exception");
+			}
+		}
+
+		return (com.liferay.testblob.model.TestBlobEntry)ClpSerializer.translateOutput(returnObj);
+	}
+
+	@Override
+	public java.lang.Object invokeMethod(java.lang.String name,
+		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
+		throws java.lang.Throwable {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void setBeanIdentifier(java.lang.String beanIdentifier) {
 		try {
-			_invokableLocalService.invokeMethod(_methodName18,
-				_methodParameterTypes18,
+			_invokableLocalService.invokeMethod(_methodName20,
+				_methodParameterTypes20,
 				new Object[] { ClpSerializer.translateInput(beanIdentifier) });
 		}
 		catch (Throwable t) {
@@ -694,10 +662,28 @@ public class TestBlobEntryLocalServiceClp implements TestBlobEntryLocalService {
 	}
 
 	@Override
-	public java.lang.Object invokeMethod(java.lang.String name,
-		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
-		throws java.lang.Throwable {
-		throw new UnsupportedOperationException();
+	public com.liferay.testblob.model.TestBlobEntry updateTestBlobEntry(
+		com.liferay.testblob.model.TestBlobEntry testBlobEntry) {
+		Object returnObj = null;
+
+		try {
+			returnObj = _invokableLocalService.invokeMethod(_methodName21,
+					_methodParameterTypes21,
+					new Object[] { ClpSerializer.translateInput(testBlobEntry) });
+		}
+		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
+			if (t instanceof RuntimeException) {
+				throw (RuntimeException)t;
+			}
+			else {
+				throw new RuntimeException(t.getClass().getName() +
+					" is not a valid exception");
+			}
+		}
+
+		return (com.liferay.testblob.model.TestBlobEntry)ClpSerializer.translateOutput(returnObj);
 	}
 
 	private InvokableLocalService _invokableLocalService;
@@ -739,4 +725,8 @@ public class TestBlobEntryLocalServiceClp implements TestBlobEntryLocalService {
 	private String[] _methodParameterTypes17;
 	private String _methodName18;
 	private String[] _methodParameterTypes18;
+	private String _methodName20;
+	private String[] _methodParameterTypes20;
+	private String _methodName21;
+	private String[] _methodParameterTypes21;
 }

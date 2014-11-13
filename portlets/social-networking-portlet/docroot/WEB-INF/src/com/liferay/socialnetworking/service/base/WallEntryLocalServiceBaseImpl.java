@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -20,6 +20,8 @@ import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBFactoryUtil;
 import com.liferay.portal.kernel.dao.jdbc.SqlUpdate;
 import com.liferay.portal.kernel.dao.jdbc.SqlUpdateFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.DefaultActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.Projection;
@@ -73,12 +75,10 @@ public abstract class WallEntryLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 *
 	 * @param wallEntry the wall entry
 	 * @return the wall entry that was added
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
-	public WallEntry addWallEntry(WallEntry wallEntry)
-		throws SystemException {
+	public WallEntry addWallEntry(WallEntry wallEntry) {
 		wallEntry.setNew(true);
 
 		return wallEntryPersistence.update(wallEntry);
@@ -101,12 +101,11 @@ public abstract class WallEntryLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 * @param wallEntryId the primary key of the wall entry
 	 * @return the wall entry that was removed
 	 * @throws PortalException if a wall entry with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	public WallEntry deleteWallEntry(long wallEntryId)
-		throws PortalException, SystemException {
+		throws PortalException {
 		return wallEntryPersistence.remove(wallEntryId);
 	}
 
@@ -116,12 +115,11 @@ public abstract class WallEntryLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 * @param wallEntry the wall entry
 	 * @return the wall entry that was removed
 	 * @throws PortalException
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	public WallEntry deleteWallEntry(WallEntry wallEntry)
-		throws PortalException, SystemException {
+		throws PortalException {
 		return wallEntryPersistence.remove(wallEntry);
 	}
 
@@ -138,12 +136,9 @@ public abstract class WallEntryLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 *
 	 * @param dynamicQuery the dynamic query
 	 * @return the matching rows
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	@SuppressWarnings("rawtypes")
-	public List dynamicQuery(DynamicQuery dynamicQuery)
-		throws SystemException {
+	public <T> List<T> dynamicQuery(DynamicQuery dynamicQuery) {
 		return wallEntryPersistence.findWithDynamicQuery(dynamicQuery);
 	}
 
@@ -158,12 +153,10 @@ public abstract class WallEntryLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 * @param start the lower bound of the range of model instances
 	 * @param end the upper bound of the range of model instances (not inclusive)
 	 * @return the range of matching rows
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	@SuppressWarnings("rawtypes")
-	public List dynamicQuery(DynamicQuery dynamicQuery, int start, int end)
-		throws SystemException {
+	public <T> List<T> dynamicQuery(DynamicQuery dynamicQuery, int start,
+		int end) {
 		return wallEntryPersistence.findWithDynamicQuery(dynamicQuery, start,
 			end);
 	}
@@ -180,12 +173,10 @@ public abstract class WallEntryLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 * @param end the upper bound of the range of model instances (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @return the ordered range of matching rows
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	@SuppressWarnings("rawtypes")
-	public List dynamicQuery(DynamicQuery dynamicQuery, int start, int end,
-		OrderByComparator orderByComparator) throws SystemException {
+	public <T> List<T> dynamicQuery(DynamicQuery dynamicQuery, int start,
+		int end, OrderByComparator<T> orderByComparator) {
 		return wallEntryPersistence.findWithDynamicQuery(dynamicQuery, start,
 			end, orderByComparator);
 	}
@@ -195,11 +186,9 @@ public abstract class WallEntryLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 *
 	 * @param dynamicQuery the dynamic query
 	 * @return the number of rows that match the dynamic query
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public long dynamicQueryCount(DynamicQuery dynamicQuery)
-		throws SystemException {
+	public long dynamicQueryCount(DynamicQuery dynamicQuery) {
 		return wallEntryPersistence.countWithDynamicQuery(dynamicQuery);
 	}
 
@@ -209,17 +198,16 @@ public abstract class WallEntryLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 * @param dynamicQuery the dynamic query
 	 * @param projection the projection to apply to the query
 	 * @return the number of rows that match the dynamic query
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public long dynamicQueryCount(DynamicQuery dynamicQuery,
-		Projection projection) throws SystemException {
+		Projection projection) {
 		return wallEntryPersistence.countWithDynamicQuery(dynamicQuery,
 			projection);
 	}
 
 	@Override
-	public WallEntry fetchWallEntry(long wallEntryId) throws SystemException {
+	public WallEntry fetchWallEntry(long wallEntryId) {
 		return wallEntryPersistence.fetchByPrimaryKey(wallEntryId);
 	}
 
@@ -229,17 +217,46 @@ public abstract class WallEntryLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 * @param wallEntryId the primary key of the wall entry
 	 * @return the wall entry
 	 * @throws PortalException if a wall entry with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public WallEntry getWallEntry(long wallEntryId)
-		throws PortalException, SystemException {
+	public WallEntry getWallEntry(long wallEntryId) throws PortalException {
 		return wallEntryPersistence.findByPrimaryKey(wallEntryId);
 	}
 
 	@Override
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		ActionableDynamicQuery actionableDynamicQuery = new DefaultActionableDynamicQuery();
+
+		actionableDynamicQuery.setBaseLocalService(com.liferay.socialnetworking.service.WallEntryLocalServiceUtil.getService());
+		actionableDynamicQuery.setClass(WallEntry.class);
+		actionableDynamicQuery.setClassLoader(getClassLoader());
+
+		actionableDynamicQuery.setPrimaryKeyPropertyName("wallEntryId");
+
+		return actionableDynamicQuery;
+	}
+
+	protected void initActionableDynamicQuery(
+		ActionableDynamicQuery actionableDynamicQuery) {
+		actionableDynamicQuery.setBaseLocalService(com.liferay.socialnetworking.service.WallEntryLocalServiceUtil.getService());
+		actionableDynamicQuery.setClass(WallEntry.class);
+		actionableDynamicQuery.setClassLoader(getClassLoader());
+
+		actionableDynamicQuery.setPrimaryKeyPropertyName("wallEntryId");
+	}
+
+	/**
+	 * @throws PortalException
+	 */
+	@Override
+	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
+		throws PortalException {
+		return wallEntryLocalService.deleteWallEntry((WallEntry)persistedModel);
+	}
+
+	@Override
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
-		throws PortalException, SystemException {
+		throws PortalException {
 		return wallEntryPersistence.findByPrimaryKey(primaryKeyObj);
 	}
 
@@ -253,11 +270,9 @@ public abstract class WallEntryLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 * @param start the lower bound of the range of wall entries
 	 * @param end the upper bound of the range of wall entries (not inclusive)
 	 * @return the range of wall entries
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public List<WallEntry> getWallEntries(int start, int end)
-		throws SystemException {
+	public List<WallEntry> getWallEntries(int start, int end) {
 		return wallEntryPersistence.findAll(start, end);
 	}
 
@@ -265,10 +280,9 @@ public abstract class WallEntryLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 * Returns the number of wall entries.
 	 *
 	 * @return the number of wall entries
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public int getWallEntriesCount() throws SystemException {
+	public int getWallEntriesCount() {
 		return wallEntryPersistence.countAll();
 	}
 
@@ -277,12 +291,10 @@ public abstract class WallEntryLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 *
 	 * @param wallEntry the wall entry
 	 * @return the wall entry that was updated
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
-	public WallEntry updateWallEntry(WallEntry wallEntry)
-		throws SystemException {
+	public WallEntry updateWallEntry(WallEntry wallEntry) {
 		return wallEntryPersistence.update(wallEntry);
 	}
 
@@ -637,7 +649,7 @@ public abstract class WallEntryLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 *
 	 * @param sql the sql query
 	 */
-	protected void runSQL(String sql) throws SystemException {
+	protected void runSQL(String sql) {
 		try {
 			DataSource dataSource = wallEntryPersistence.getDataSource();
 

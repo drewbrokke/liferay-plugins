@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,6 +14,8 @@
 
 package com.liferay.calendar.service;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.portal.service.ServiceWrapper;
 
 /**
@@ -23,6 +25,7 @@ import com.liferay.portal.service.ServiceWrapper;
  * @see CalendarImporterLocalService
  * @generated
  */
+@ProviderType
 public class CalendarImporterLocalServiceWrapper
 	implements CalendarImporterLocalService,
 		ServiceWrapper<CalendarImporterLocalService> {
@@ -41,14 +44,17 @@ public class CalendarImporterLocalServiceWrapper
 		return _calendarImporterLocalService.getBeanIdentifier();
 	}
 
-	/**
-	* Sets the Spring bean ID for this bean.
-	*
-	* @param beanIdentifier the Spring bean ID for this bean
-	*/
 	@Override
-	public void setBeanIdentifier(java.lang.String beanIdentifier) {
-		_calendarImporterLocalService.setBeanIdentifier(beanIdentifier);
+	public void importCalEvent(
+		com.liferay.portlet.calendar.model.CalEvent calEvent)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		_calendarImporterLocalService.importCalEvent(calEvent);
+	}
+
+	@Override
+	public void importCalEvents()
+		throws com.liferay.portal.kernel.exception.PortalException {
+		_calendarImporterLocalService.importCalEvents();
 	}
 
 	@Override
@@ -59,19 +65,14 @@ public class CalendarImporterLocalServiceWrapper
 			arguments);
 	}
 
+	/**
+	* Sets the Spring bean ID for this bean.
+	*
+	* @param beanIdentifier the Spring bean ID for this bean
+	*/
 	@Override
-	public void importCalEvent(
-		com.liferay.portlet.calendar.model.CalEvent calEvent)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException {
-		_calendarImporterLocalService.importCalEvent(calEvent);
-	}
-
-	@Override
-	public void importCalEvents()
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException {
-		_calendarImporterLocalService.importCalEvents();
+	public void setBeanIdentifier(java.lang.String beanIdentifier) {
+		_calendarImporterLocalService.setBeanIdentifier(beanIdentifier);
 	}
 
 	/**

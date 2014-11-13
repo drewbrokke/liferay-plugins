@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -15,7 +15,6 @@
 package com.liferay.sync.service.impl;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
@@ -40,8 +39,8 @@ public class SyncDLFileVersionDiffLocalServiceImpl
 	@Override
 	public SyncDLFileVersionDiff addSyncDLFileVersionDiff(
 			long fileEntryId, long sourceFileVersionId,
-			long destinationFileVersionId, File file)
-		throws PortalException, SystemException {
+			long targetFileVersionId, File file)
+		throws PortalException {
 
 		long syncDLFileVersionDiffId = counterLocalService.increment();
 
@@ -50,13 +49,12 @@ public class SyncDLFileVersionDiffLocalServiceImpl
 
 		syncDLFileVersionDiff.setFileEntryId(fileEntryId);
 		syncDLFileVersionDiff.setSourceFileVersionId(sourceFileVersionId);
-		syncDLFileVersionDiff.setDestinationFileVersionId(
-			destinationFileVersionId);
+		syncDLFileVersionDiff.setTargetFileVersionId(targetFileVersionId);
 
 		FileEntry fileEntry = dlAppService.getFileEntry(fileEntryId);
 
 		String dataFileName = getDataFileName(
-			fileEntryId, sourceFileVersionId, destinationFileVersionId);
+			fileEntryId, sourceFileVersionId, targetFileVersionId);
 
 		FileEntry dataFileEntry = PortletFileRepositoryUtil.addPortletFileEntry(
 			fileEntry.getGroupId(), fileEntry.getUserId(),
@@ -86,9 +84,7 @@ public class SyncDLFileVersionDiffLocalServiceImpl
 	}
 
 	@Override
-	public void deleteExpiredSyncDLFileVersionDiffs()
-		throws PortalException, SystemException {
-
+	public void deleteExpiredSyncDLFileVersionDiffs() throws PortalException {
 		List<SyncDLFileVersionDiff> syncDLFileVersionDiffs =
 			syncDLFileVersionDiffPersistence.findByExpirationDate(new Date());
 
@@ -105,17 +101,15 @@ public class SyncDLFileVersionDiffLocalServiceImpl
 
 	@Override
 	public SyncDLFileVersionDiff fetchSyncDLFileVersionDiff(
-			long fileEntryId, long sourceFileVersionId,
-			long destinationFileVersionId)
-		throws SystemException {
+		long fileEntryId, long sourceFileVersionId, long targetFileVersionId) {
 
-		return syncDLFileVersionDiffPersistence.fetchByS_S_D(
-			fileEntryId, sourceFileVersionId, destinationFileVersionId);
+		return syncDLFileVersionDiffPersistence.fetchByF_S_T(
+			fileEntryId, sourceFileVersionId, targetFileVersionId);
 	}
 
 	@Override
 	public void refreshExpirationDate(long syncDLFileVersionDiffId)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		SyncDLFileVersionDiff syncDLFileVersionDiff =
 			syncDLFileVersionDiffPersistence.findByPrimaryKey(
@@ -134,8 +128,7 @@ public class SyncDLFileVersionDiffLocalServiceImpl
 	}
 
 	protected String getDataFileName(
-		long fileEntryId, long sourceFileVersionId,
-		long destinationFileVersionId) {
+		long fileEntryId, long sourceFileVersionId, long targetFileVersionId) {
 
 		StringBundler sb = new StringBundler(5);
 
@@ -143,7 +136,7 @@ public class SyncDLFileVersionDiffLocalServiceImpl
 		sb.append(StringPool.UNDERLINE);
 		sb.append(sourceFileVersionId);
 		sb.append(StringPool.UNDERLINE);
-		sb.append(destinationFileVersionId);
+		sb.append(targetFileVersionId);
 
 		return sb.toString();
 	}

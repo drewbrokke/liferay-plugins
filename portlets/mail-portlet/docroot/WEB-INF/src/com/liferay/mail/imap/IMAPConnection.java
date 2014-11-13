@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -46,9 +46,9 @@ public class IMAPConnection {
 	}
 
 	public IMAPConnection(
-			String incomingHostName, int incomingPort, boolean incomingSecure,
-			String outgoingHostName, int outgoingPort, boolean outgoingSecure,
-			String login, String password) {
+		String incomingHostName, int incomingPort, boolean incomingSecure,
+		String outgoingHostName, int outgoingPort, boolean outgoingSecure,
+		String login, String password) {
 
 		_incomingHostName = incomingHostName;
 		_incomingPort = incomingPort;
@@ -204,13 +204,9 @@ public class IMAPConnection {
 	}
 
 	protected void testIncomingConnection() throws MailException {
-		StopWatch stopWatch = null;
+		StopWatch stopWatch = new StopWatch();
 
-		if (_log.isDebugEnabled()) {
-			stopWatch = new StopWatch();
-
-			stopWatch.start();
-		}
+		stopWatch.start();
 
 		try {
 			Store store = getStore(false);
@@ -233,13 +229,9 @@ public class IMAPConnection {
 	}
 
 	protected void testOutgoingConnection() throws MailException {
-		StopWatch stopWatch = null;
+		StopWatch stopWatch = new StopWatch();
 
-		if (_log.isDebugEnabled()) {
-			stopWatch = new StopWatch();
-
-			stopWatch.start();
-		}
+		stopWatch.start();
 
 		try {
 			Transport transport = getTransport();

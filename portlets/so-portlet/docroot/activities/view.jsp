@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -183,7 +183,7 @@ portletURL.setParameter("tabs1", tabs1);
 
 									A.Array.each(
 										responseData.comments,
-										function(item, index, collection) {
+										function(item, index) {
 											Liferay.SO.Activities.addNewComment(commentsList, item);
 										}
 									);
@@ -192,7 +192,7 @@ portletURL.setParameter("tabs1", tabs1);
 								}
 							}
 						},
-						dataType: 'json'
+						dataType: 'JSON'
 					}
 				);
 			}
@@ -205,7 +205,7 @@ portletURL.setParameter("tabs1", tabs1);
 	socialActivities.delegate(
 		'click',
 		function(event) {
-			if (confirm('<%= UnicodeLanguageUtil.get(pageContext,"are-you-sure-you-want-to-delete-the-selected-entry") %>')) {
+			if (confirm('<%= UnicodeLanguageUtil.get(request,"are-you-sure-you-want-to-delete-the-selected-entry") %>')) {
 				var currentTarget = event.currentTarget;
 
 				var activityFooter = currentTarget.ancestor('.activity-footer');
@@ -247,17 +247,17 @@ portletURL.setParameter("tabs1", tabs1);
 									}
 
 									if (messagesCount > 1) {
-										commentText += ' <%= UnicodeLanguageUtil.get(pageContext, "comments") %>';
+										commentText += ' <%= UnicodeLanguageUtil.get(request, "comments") %>';
 									}
 									else {
-										commentText += ' <%= UnicodeLanguageUtil.get(pageContext, "comment") %>';
+										commentText += ' <%= UnicodeLanguageUtil.get(request, "comment") %>';
 									}
 
 									viewComments.html(commentText);
 								}
 							}
 						},
-						dataType: 'json',
+						dataType: 'JSON',
 						form: {
 							id: form
 						}
@@ -342,7 +342,7 @@ portletURL.setParameter("tabs1", tabs1);
 										}
 									}
 								},
-								dataType: 'json',
+								dataType: 'JSON',
 								form: {
 									id: editForm
 								}
@@ -379,7 +379,7 @@ portletURL.setParameter("tabs1", tabs1);
 						width: 400
 					},
 					id: '<portlet:namespace />Dialog',
-					title: '<%= UnicodeLanguageUtil.get(pageContext, "repost") %>',
+					title: '<%= UnicodeLanguageUtil.get(request, "repost") %>',
 					uri: uri
 				}
 			);
@@ -393,6 +393,13 @@ portletURL.setParameter("tabs1", tabs1);
 			Liferay.SO.Activities.toggleEntry(event, '<portlet:namespace />');
 		},
 		'.toggle-entry'
+	);
+
+	Liferay.on(
+		'microblogPosted',
+		function(event) {
+			Liferay.Portlet.refresh('#p_p_id<portlet:namespace />');
+		}
 	);
 
 	Liferay.on(

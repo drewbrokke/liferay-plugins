@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,6 +14,8 @@
 
 package com.liferay.calendar.model.impl;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.calendar.model.Calendar;
 import com.liferay.calendar.model.CalendarModel;
 import com.liferay.calendar.model.CalendarSoap;
@@ -21,7 +23,6 @@ import com.liferay.calendar.model.CalendarSoap;
 import com.liferay.portal.LocaleException;
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSON;
 import com.liferay.portal.kernel.lar.StagedModelType;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -68,6 +69,7 @@ import java.util.TreeSet;
  * @generated
  */
 @JSON(strict = true)
+@ProviderType
 public class CalendarModelImpl extends BaseModelImpl<Calendar>
 	implements CalendarModel {
 	/*
@@ -89,12 +91,13 @@ public class CalendarModelImpl extends BaseModelImpl<Calendar>
 			{ "calendarResourceId", Types.BIGINT },
 			{ "name", Types.VARCHAR },
 			{ "description", Types.VARCHAR },
+			{ "timeZoneId", Types.VARCHAR },
 			{ "color", Types.INTEGER },
 			{ "defaultCalendar", Types.BOOLEAN },
 			{ "enableComments", Types.BOOLEAN },
 			{ "enableRatings", Types.BOOLEAN }
 		};
-	public static final String TABLE_SQL_CREATE = "create table Calendar (uuid_ VARCHAR(75) null,calendarId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,resourceBlockId LONG,calendarResourceId LONG,name STRING null,description STRING null,color INTEGER,defaultCalendar BOOLEAN,enableComments BOOLEAN,enableRatings BOOLEAN)";
+	public static final String TABLE_SQL_CREATE = "create table Calendar (uuid_ VARCHAR(75) null,calendarId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,resourceBlockId LONG,calendarResourceId LONG,name STRING null,description STRING null,timeZoneId VARCHAR(75) null,color INTEGER,defaultCalendar BOOLEAN,enableComments BOOLEAN,enableRatings BOOLEAN)";
 	public static final String TABLE_SQL_DROP = "drop table Calendar";
 	public static final String ORDER_BY_JPQL = " ORDER BY calendar.name ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY Calendar.name ASC";
@@ -110,13 +113,13 @@ public class CalendarModelImpl extends BaseModelImpl<Calendar>
 	public static final boolean COLUMN_BITMASK_ENABLED = GetterUtil.getBoolean(com.liferay.util.service.ServiceProps.get(
 				"value.object.column.bitmask.enabled.com.liferay.calendar.model.Calendar"),
 			true);
-	public static long CALENDARRESOURCEID_COLUMN_BITMASK = 1L;
-	public static long COMPANYID_COLUMN_BITMASK = 2L;
-	public static long DEFAULTCALENDAR_COLUMN_BITMASK = 4L;
-	public static long GROUPID_COLUMN_BITMASK = 8L;
-	public static long RESOURCEBLOCKID_COLUMN_BITMASK = 16L;
-	public static long UUID_COLUMN_BITMASK = 32L;
-	public static long NAME_COLUMN_BITMASK = 64L;
+	public static final long CALENDARRESOURCEID_COLUMN_BITMASK = 1L;
+	public static final long COMPANYID_COLUMN_BITMASK = 2L;
+	public static final long DEFAULTCALENDAR_COLUMN_BITMASK = 4L;
+	public static final long GROUPID_COLUMN_BITMASK = 8L;
+	public static final long RESOURCEBLOCKID_COLUMN_BITMASK = 16L;
+	public static final long UUID_COLUMN_BITMASK = 32L;
+	public static final long NAME_COLUMN_BITMASK = 64L;
 
 	/**
 	 * Converts the soap model instance into a normal model instance.
@@ -143,6 +146,7 @@ public class CalendarModelImpl extends BaseModelImpl<Calendar>
 		model.setCalendarResourceId(soapModel.getCalendarResourceId());
 		model.setName(soapModel.getName());
 		model.setDescription(soapModel.getDescription());
+		model.setTimeZoneId(soapModel.getTimeZoneId());
 		model.setColor(soapModel.getColor());
 		model.setDefaultCalendar(soapModel.getDefaultCalendar());
 		model.setEnableComments(soapModel.getEnableComments());
@@ -223,6 +227,7 @@ public class CalendarModelImpl extends BaseModelImpl<Calendar>
 		attributes.put("calendarResourceId", getCalendarResourceId());
 		attributes.put("name", getName());
 		attributes.put("description", getDescription());
+		attributes.put("timeZoneId", getTimeZoneId());
 		attributes.put("color", getColor());
 		attributes.put("defaultCalendar", getDefaultCalendar());
 		attributes.put("enableComments", getEnableComments());
@@ -306,6 +311,12 @@ public class CalendarModelImpl extends BaseModelImpl<Calendar>
 
 		if (description != null) {
 			setDescription(description);
+		}
+
+		String timeZoneId = (String)attributes.get("timeZoneId");
+
+		if (timeZoneId != null) {
+			setTimeZoneId(timeZoneId);
 		}
 
 		Integer color = (Integer)attributes.get("color");
@@ -426,7 +437,7 @@ public class CalendarModelImpl extends BaseModelImpl<Calendar>
 	}
 
 	@Override
-	public String getUserUuid() throws SystemException {
+	public String getUserUuid() {
 		try {
 			User user = UserLocalServiceUtil.getUserById(getUserId());
 
@@ -731,6 +742,22 @@ public class CalendarModelImpl extends BaseModelImpl<Calendar>
 
 	@JSON
 	@Override
+	public String getTimeZoneId() {
+		if (_timeZoneId == null) {
+			return StringPool.BLANK;
+		}
+		else {
+			return _timeZoneId;
+		}
+	}
+
+	@Override
+	public void setTimeZoneId(String timeZoneId) {
+		_timeZoneId = timeZoneId;
+	}
+
+	@JSON
+	@Override
 	public int getColor() {
 		return _color;
 	}
@@ -860,19 +887,28 @@ public class CalendarModelImpl extends BaseModelImpl<Calendar>
 			return StringPool.BLANK;
 		}
 
-		return LocalizationUtil.getDefaultLanguageId(xml);
+		Locale defaultLocale = LocaleUtil.getSiteDefault();
+
+		return LocalizationUtil.getDefaultLanguageId(xml, defaultLocale);
 	}
 
 	@Override
 	public void prepareLocalizedFieldsForImport() throws LocaleException {
-		prepareLocalizedFieldsForImport(null);
+		Locale defaultLocale = LocaleUtil.fromLanguageId(getDefaultLanguageId());
+
+		Locale[] availableLocales = LocaleUtil.fromLanguageIds(getAvailableLanguageIds());
+
+		Locale defaultImportLocale = LocalizationUtil.getDefaultImportLocale(Calendar.class.getName(),
+				getPrimaryKey(), defaultLocale, availableLocales);
+
+		prepareLocalizedFieldsForImport(defaultImportLocale);
 	}
 
 	@Override
 	@SuppressWarnings("unused")
 	public void prepareLocalizedFieldsForImport(Locale defaultImportLocale)
 		throws LocaleException {
-		Locale defaultLocale = LocaleUtil.getDefault();
+		Locale defaultLocale = LocaleUtil.getSiteDefault();
 
 		String modelDefaultLanguageId = getDefaultLanguageId();
 
@@ -922,6 +958,7 @@ public class CalendarModelImpl extends BaseModelImpl<Calendar>
 		calendarImpl.setCalendarResourceId(getCalendarResourceId());
 		calendarImpl.setName(getName());
 		calendarImpl.setDescription(getDescription());
+		calendarImpl.setTimeZoneId(getTimeZoneId());
 		calendarImpl.setColor(getColor());
 		calendarImpl.setDefaultCalendar(getDefaultCalendar());
 		calendarImpl.setEnableComments(getEnableComments());
@@ -1077,6 +1114,14 @@ public class CalendarModelImpl extends BaseModelImpl<Calendar>
 			calendarCacheModel.description = null;
 		}
 
+		calendarCacheModel.timeZoneId = getTimeZoneId();
+
+		String timeZoneId = calendarCacheModel.timeZoneId;
+
+		if ((timeZoneId != null) && (timeZoneId.length() == 0)) {
+			calendarCacheModel.timeZoneId = null;
+		}
+
 		calendarCacheModel.color = getColor();
 
 		calendarCacheModel.defaultCalendar = getDefaultCalendar();
@@ -1090,7 +1135,7 @@ public class CalendarModelImpl extends BaseModelImpl<Calendar>
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(33);
+		StringBundler sb = new StringBundler(35);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -1116,6 +1161,8 @@ public class CalendarModelImpl extends BaseModelImpl<Calendar>
 		sb.append(getName());
 		sb.append(", description=");
 		sb.append(getDescription());
+		sb.append(", timeZoneId=");
+		sb.append(getTimeZoneId());
 		sb.append(", color=");
 		sb.append(getColor());
 		sb.append(", defaultCalendar=");
@@ -1131,7 +1178,7 @@ public class CalendarModelImpl extends BaseModelImpl<Calendar>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(52);
+		StringBundler sb = new StringBundler(55);
 
 		sb.append("<model><model-name>");
 		sb.append("com.liferay.calendar.model.Calendar");
@@ -1186,6 +1233,10 @@ public class CalendarModelImpl extends BaseModelImpl<Calendar>
 		sb.append(getDescription());
 		sb.append("]]></column-value></column>");
 		sb.append(
+			"<column><column-name>timeZoneId</column-name><column-value><![CDATA[");
+		sb.append(getTimeZoneId());
+		sb.append("]]></column-value></column>");
+		sb.append(
 			"<column><column-name>color</column-name><column-value><![CDATA[");
 		sb.append(getColor());
 		sb.append("]]></column-value></column>");
@@ -1207,8 +1258,8 @@ public class CalendarModelImpl extends BaseModelImpl<Calendar>
 		return sb.toString();
 	}
 
-	private static ClassLoader _classLoader = Calendar.class.getClassLoader();
-	private static Class<?>[] _escapedModelInterfaces = new Class[] {
+	private static final ClassLoader _classLoader = Calendar.class.getClassLoader();
+	private static final Class<?>[] _escapedModelInterfaces = new Class[] {
 			Calendar.class
 		};
 	private String _uuid;
@@ -1234,6 +1285,7 @@ public class CalendarModelImpl extends BaseModelImpl<Calendar>
 	private String _nameCurrentLanguageId;
 	private String _description;
 	private String _descriptionCurrentLanguageId;
+	private String _timeZoneId;
 	private int _color;
 	private boolean _defaultCalendar;
 	private boolean _originalDefaultCalendar;

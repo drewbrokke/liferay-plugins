@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,132 +16,104 @@
 
 <%@ include file="/init.jsp" %>
 
-<div class="clearfix">
-	<div class="nav-bar user-notifications-sidebar">
-		<div class="nav">
-			<a class="clearfix selected unread" href="javascript:;">
-				<span class="title"><liferay-ui:message key="unread" /></span>
+<%
+boolean actionable = ParamUtil.getBoolean(request, "actionable");
+%>
 
-				<%
-				int unreadUserNotificationsCount = UserNotificationEventLocalServiceUtil.getArchivedUserNotificationEventsCount(themeDisplay.getUserId(), false);
-				%>
+<div class="clearfix user-notifications-container <%= actionable ? "actionable" : "nonactionable" %>">
+	<aui:row>
+		<aui:col cssClass="nav-bar user-notifications-sidebar" width="<%= 25 %>">
+			<div class="nav">
+				<a class="clearfix nonactionable <%= !actionable ? "selected" : "" %>" href="javascript:;">
+					<span class="title"><liferay-ui:message key="notifications" /></span>
 
-				<span class="count"><%= unreadUserNotificationsCount %></span>
-			</a>
-		</div>
+					<%
+					int unreadNonactionableUserNotificationsCount = UserNotificationEventLocalServiceUtil.getArchivedUserNotificationEventsCount(themeDisplay.getUserId(), UserNotificationDeliveryConstants.TYPE_WEBSITE, false, false);
+					%>
 
-		<div class="nav">
-			<a class="all-notifications clearfix" href="javascript:;">
-				<span class="title"><liferay-ui:message key="all-notifications" /></span>
-			</a>
-		</div>
+					<span class="count"><%= unreadNonactionableUserNotificationsCount %></span>
+				</a>
+			</div>
 
-		<div class="nav">
-			<a class="manage clearfix" href="javascript:;">
-				<span class="title"><liferay-ui:message key="notification-delivery" /></span>
-			</a>
-		</div>
-	</div>
+			<div class="nav">
+				<a class="actionable clearfix <%= actionable ? "selected" : "" %>" href="javascript:;">
+					<span class="title"><liferay-ui:message key="requests" /></span>
 
-	<div class="user-notifications-list-container">
-		<ul class="user-notifications-list">
-			<div class="loading-mask"></div>
-		</ul>
-	</div>
+					<%
+					int unreadActionableUserNotificationsCount = UserNotificationEventLocalServiceUtil.getArchivedUserNotificationEventsCount(themeDisplay.getUserId(), UserNotificationDeliveryConstants.TYPE_WEBSITE, true, false);
+					%>
+
+					<span class="count"><%= unreadActionableUserNotificationsCount %></span>
+				</a>
+			</div>
+
+			<div class="nav">
+				<a class="clearfix manage" href="javascript:;">
+					<span class="title"><liferay-ui:message key="notification-delivery" /></span>
+				</a>
+			</div>
+		</aui:col>
+
+		<aui:col cssClass="user-notifications-list-container" width="<%= 75 %>">
+			<ul class="unstyled user-notifications-list">
+				<li class="clearfix pagination top">
+					<span class="hide left-nav previous"><a href="javascript:;"><liferay-ui:message key="previous" /></a></span>
+
+					<span class="hide page-info"></span>
+
+					<span class="hide next right-nav"><a href="javascript:;"><liferay-ui:message key="next" /></a></span>
+				</li>
+
+				<div class="mark-all-as-read"><a class="hide" href="javascript:;"><liferay-ui:message key="mark-as-read" /></a></div>
+
+				<div class="user-notifications"></div>
+
+				<li class="bottom clearfix pagination">
+					<span class="hide left-nav previous"><a href="javascript:;"><liferay-ui:message key="previous" /></a></span>
+
+					<span class="hide page-info"></span>
+
+					<span class="hide next right-nav"><a href="javascript:;"><liferay-ui:message key="next" /></a></span>
+				</li>
+			</ul>
+
+			<div class="hide notifications-configurations"></div>
+		</aui:col>
+	</aui:row>
 </div>
 
-<aui:script use="aui-base,aui-io-plugin-deprecated">
-	var userNotifications = A.one('#portlet_<%= PortletKeys.NOTIFICATIONS %>');
+<aui:script use="aui-base,liferay-plugin-notifications">
+	var notificationsCount = '.nonactionable .count';
 
-	var userNotificationsList = userNotifications.one('.user-notifications-list-container .user-notifications-list');
+	if (<%= actionable %>) {
+		notificationsCount = '.actionable .count'
+	}
 
-	var renderUserNotificationsList = function(uri) {
-		if (userNotificationsList) {
-			if (!userNotificationsList.io) {
-				userNotificationsList.plug(
-					A.Plugin.IO,
-					{
-					autoLoad: false
-					}
-				);
-			}
-
-			userNotificationsList.io.set('uri', uri);
-			userNotificationsList.io.start();
+	var notificationsList = new Liferay.NotificationsList(
+		{
+			actionable: <%= actionable %>,
+			baseActionURL: '<%= PortletURLFactoryUtil.create(request, portletDisplay.getId(), themeDisplay.getPlid(), PortletRequest.ACTION_PHASE) %>',
+			baseRenderURL: '<%= PortletURLFactoryUtil.create(request, portletDisplay.getId(), themeDisplay.getPlid(), PortletRequest.RENDER_PHASE) %>',
+			baseResourceURL: '<%= PortletURLFactoryUtil.create(request, portletDisplay.getId(), themeDisplay.getPlid(), PortletRequest.RESOURCE_PHASE) %>',
+			delta: <%= fullViewDelta %>,
+			fullView: <%= true %>,
+			markAllAsReadNode: '.user-notifications-list .mark-all-as-read',
+			namespace: '<portlet:namespace />',
+			nextPageNode: '.pagination .next',
+			notificationsContainer: '.notifications-portlet .user-notifications-container',
+			notificationsCount: notificationsCount,
+			notificationsNode: '.user-notifications-list .user-notifications',
+			paginationInfoNode: '.pagination .page-info',
+			previousPageNode: '.pagination .previous',
+			portletKey: '<%= portletDisplay.getId() %>',
+			start: 0
 		}
-	}
-
-	<portlet:renderURL var="unreadURL" windowState="<%= LiferayWindowState.EXCLUSIVE.toString() %>">
-		<portlet:param name="mvcPath" value="/notifications/view_entries.jsp" />
-		<portlet:param name="filter" value="unread" />
-	</portlet:renderURL>
-
-	renderUserNotificationsList('<%= unreadURL %>');
-
-	var userNotificationsSidebar = userNotifications.one('.user-notifications-sidebar');
-
-	var unreadNav = userNotificationsSidebar.one('.unread');
-
-	if (unreadNav) {
-		unreadNav.on(
-			'click',
-			function(event) {
-				renderUserNotificationsList('<%= unreadURL %>');
-
-				A.io.request('<liferay-portlet:actionURL name="setDelivered" />');
-
-				userNotificationsSidebar.all('.nav a').removeClass('selected');
-
-				unreadNav.addClass('selected');
-			}
-		);
-	}
-
-	var allNotificationsNav = userNotificationsSidebar.one('.all-notifications');
-
-	if (allNotificationsNav) {
-		allNotificationsNav.on(
-			'click',
-			function(event) {
-				<portlet:renderURL var="allNotificationsURL" windowState="<%= LiferayWindowState.EXCLUSIVE.toString() %>">
-					<portlet:param name="mvcPath" value="/notifications/view_entries.jsp" />
-				</portlet:renderURL>
-
-				renderUserNotificationsList('<%= allNotificationsURL %>');
-
-				A.io.request('<liferay-portlet:actionURL name="setDelivered" />');
-
-				userNotificationsSidebar.all('.nav a').removeClass('selected');
-
-				allNotificationsNav.addClass('selected');
-			}
-		);
-	}
-
-	var manageNav = userNotificationsSidebar.one('.manage');
-
-	if (manageNav) {
-		manageNav.on(
-			'click',
-			function(event) {
-				<portlet:renderURL var="configurationURL" windowState="<%= LiferayWindowState.EXCLUSIVE.toString() %>">
-					<portlet:param name="mvcPath" value="/notifications/configuration.jsp" />
-				</portlet:renderURL>
-
-				renderUserNotificationsList('<%= configurationURL %>');
-
-				userNotificationsSidebar.all('.nav a').removeClass('selected');
-
-				manageNav.addClass('selected');
-			}
-		);
-	}
-
-	userNotificationsList.delegate(
-		'click',
-		function(event) {
-			Liferay.Notifications.viewNotification(event);
-		},
-		'.user-notification .user-notification-link'
 	);
+
+	new Liferay.Notifications(
+		{
+			baseRenderURL: '<%= PortletURLFactoryUtil.create(request, portletDisplay.getId(), themeDisplay.getPlid(), PortletRequest.RENDER_PHASE) %>',
+			notificationsList: notificationsList
+		}
+	)
 </aui:script>
