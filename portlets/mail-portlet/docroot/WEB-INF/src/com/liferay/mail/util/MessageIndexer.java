@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -22,7 +22,6 @@ import com.liferay.mail.service.persistence.MessageActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.search.BaseIndexer;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.BooleanQueryFactoryUtil;
@@ -32,15 +31,19 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchEngineUtil;
+import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
-import com.liferay.portal.util.PortletKeys;
 import com.liferay.portlet.expando.model.ExpandoBridge;
 import com.liferay.portlet.expando.util.ExpandoBridgeIndexerUtil;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletResponse;
 import javax.portlet.PortletURL;
 
 /**
@@ -48,18 +51,11 @@ import javax.portlet.PortletURL;
  */
 public class MessageIndexer extends BaseIndexer {
 
-	public static final String[] CLASS_NAMES = {Message.class.getName()};
-
-	public static final String PORTLET_ID = PortletKeys.MAIL;
+	public static final String CLASS_NAME = Message.class.getName();
 
 	@Override
-	public String[] getClassNames() {
-		return CLASS_NAMES;
-	}
-
-	@Override
-	public String getPortletId() {
-		return PORTLET_ID;
+	public String getClassName() {
+		return CLASS_NAME;
 	}
 
 	@Override
@@ -71,57 +67,71 @@ public class MessageIndexer extends BaseIndexer {
 		if (obj instanceof Account) {
 			Account account = (Account)obj;
 
+			searchContext.setCompanyId(account.getCompanyId());
+			searchContext.setEnd(QueryUtil.ALL_POS);
+			searchContext.setSorts(SortFactoryUtil.getDefaultSorts());
+			searchContext.setStart(QueryUtil.ALL_POS);
+
 			BooleanQuery booleanQuery = BooleanQueryFactoryUtil.create(
 				searchContext);
 
-			booleanQuery.addRequiredTerm(Field.PORTLET_ID, PORTLET_ID);
+			booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
 			booleanQuery.addRequiredTerm("accountId", account.getAccountId());
 
-			Hits hits = SearchEngineUtil.search(
-				getSearchEngineId(), account.getCompanyId(), booleanQuery,
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+			Hits hits = SearchEngineUtil.search(searchContext, booleanQuery);
+
+			List<String> uids = new ArrayList<>(hits.getLength());
 
 			for (int i = 0; i < hits.getLength(); i++) {
 				Document document = hits.doc(i);
 
-				SearchEngineUtil.deleteDocument(
-					getSearchEngineId(), account.getCompanyId(),
-					document.get(Field.UID));
+				uids.add(document.get(Field.UID));
 			}
+
+			SearchEngineUtil.deleteDocuments(
+				getSearchEngineId(), account.getCompanyId(), uids,
+				isCommitImmediately());
 		}
 		else if (obj instanceof Folder) {
 			Folder folder = (Folder)obj;
 
+			searchContext.setCompanyId(folder.getCompanyId());
+			searchContext.setEnd(QueryUtil.ALL_POS);
+			searchContext.setSorts(SortFactoryUtil.getDefaultSorts());
+			searchContext.setStart(QueryUtil.ALL_POS);
+
 			BooleanQuery booleanQuery = BooleanQueryFactoryUtil.create(
 				searchContext);
 
-			booleanQuery.addRequiredTerm(Field.PORTLET_ID, PORTLET_ID);
+			booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
 			booleanQuery.addRequiredTerm("folderId", folder.getFolderId());
 
-			Hits hits = SearchEngineUtil.search(
-				getSearchEngineId(), folder.getCompanyId(), booleanQuery,
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+			Hits hits = SearchEngineUtil.search(searchContext, booleanQuery);
+
+			List<String> uids = new ArrayList<>(hits.getLength());
 
 			for (int i = 0; i < hits.getLength(); i++) {
 				Document document = hits.doc(i);
 
-				SearchEngineUtil.deleteDocument(
-					getSearchEngineId(), folder.getCompanyId(),
-					document.get(Field.UID));
+				uids.add(document.get(Field.UID));
 			}
+
+			SearchEngineUtil.deleteDocuments(
+				getSearchEngineId(), folder.getCompanyId(), uids,
+				isCommitImmediately());
 		}
 		else if (obj instanceof Message) {
 			Message message = (Message)obj;
 
 			Document document = new DocumentImpl();
 
-			document.addUID(PORTLET_ID, message.getMessageId());
+			document.addUID(CLASS_NAME, message.getMessageId());
 
 			SearchEngineUtil.deleteDocument(
 				getSearchEngineId(), message.getCompanyId(),
-				document.get(Field.UID));
+				document.get(Field.UID), isCommitImmediately());
 		}
 	}
 
@@ -129,7 +139,7 @@ public class MessageIndexer extends BaseIndexer {
 	protected Document doGetDocument(Object obj) throws Exception {
 		Message message = (Message)obj;
 
-		Document document = getBaseModelDocument(PORTLET_ID, message);
+		Document document = getBaseModelDocument(CLASS_NAME, message);
 
 		ExpandoBridge expandoBridge = message.getExpandoBridge();
 
@@ -148,7 +158,8 @@ public class MessageIndexer extends BaseIndexer {
 
 	@Override
 	protected Summary doGetSummary(
-		Document doc, Locale locale, String snippet, PortletURL portletURL) {
+		Document doc, Locale locale, String snippet, PortletURL portletURL,
+		PortletRequest portletRequest, PortletResponse portletResponse) {
 
 		return null;
 	}
@@ -160,7 +171,8 @@ public class MessageIndexer extends BaseIndexer {
 		Document document = getDocument(message);
 
 		SearchEngineUtil.updateDocument(
-			getSearchEngineId(), message.getCompanyId(), document);
+			getSearchEngineId(), message.getCompanyId(), document,
+			isCommitImmediately());
 	}
 
 	@Override
@@ -177,14 +189,7 @@ public class MessageIndexer extends BaseIndexer {
 		reindexMessages(companyId);
 	}
 
-	@Override
-	protected String getPortletId(SearchContext searchContext) {
-		return PORTLET_ID;
-	}
-
-	protected void reindexMessages(long companyId)
-		throws PortalException, SystemException {
-
+	protected void reindexMessages(long companyId) throws PortalException {
 		ActionableDynamicQuery actionableDynamicQuery =
 			new MessageActionableDynamicQuery() {
 

@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -46,6 +46,8 @@ try {
 			<aui:form action="<%= saveDataURL %>" cssClass="lfr-dynamic-form" enctype="multipart/form-data" method="post" name="fm">
 				<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
 				<aui:input name="recordSetId" type="hidden" value="<%= recordSet.getRecordSetId() %>" />
+				<aui:input name="defaultLanguageId" type="hidden" value="<%= themeDisplay.getLanguageId() %>" />
+				<aui:input name="languageId" type="hidden" value="<%= themeDisplay.getLanguageId() %>" />
 				<aui:input name="multipleSubmissions" type="hidden" value="<%= multipleSubmissions %>" />
 				<aui:input name="workflowAction" type="hidden" value="<%= WorkflowConstants.ACTION_PUBLISH %>" />
 
@@ -67,6 +69,11 @@ try {
 							</c:when>
 							<c:when test="<%= multipleSubmissions || !(DDLFormUtil.hasSubmitted(request, recordSet.getRecordSetId())) %>">
 								<aui:fieldset>
+									<aui:translation-manager
+										availableLocales="<%= new Locale[] {LocaleUtil.fromLanguageId(themeDisplay.getLanguageId())} %>"
+										defaultLanguageId="<%= themeDisplay.getLanguageId() %>"
+										id="translationManager"
+									/>
 
 									<%
 									long classNameId = PortalUtil.getClassNameId(DDMStructure.class);
@@ -87,7 +94,7 @@ try {
 									/>
 
 									<aui:button-row>
-										<aui:button onClick='<%= renderResponse.getNamespace() + "publishRecord();" %>' type="submit" value="send" />
+										<aui:button type="submit" value="send" />
 									</aui:button-row>
 								</aui:fieldset>
 							</c:when>
@@ -126,7 +133,7 @@ catch (NoSuchRecordSetException nsrse) {
 %>
 
 	<div class="alert alert-error">
-		<%= LanguageUtil.get(pageContext, "the-selected-list-no-longer-exists") %>
+		<%= LanguageUtil.get(request, "the-selected-list-no-longer-exists") %>
 	</div>
 
 <%
@@ -157,7 +164,7 @@ boolean showEditTemplateIcon = (ddmTemplate != null) && (permissionChecker.hasOw
 
 				<liferay-ui:icon
 					cssClass="lfr-icon-action lfr-icon-action-add"
-					image="add_template"
+					iconCssClass="icon-plus"
 					label="<%= true %>"
 					message="add-form"
 					url="<%= addTemplateURL %>"
@@ -176,7 +183,7 @@ boolean showEditTemplateIcon = (ddmTemplate != null) && (permissionChecker.hasOw
 
 				<liferay-ui:icon
 					cssClass="lfr-icon-action lfr-icon-action-edit-template"
-					image="../file_system/small/xml"
+					iconCssClass="icon-edit"
 					label="<%= true %>"
 					message="edit-form"
 					url="<%= editTemplateURL %>"
@@ -186,7 +193,7 @@ boolean showEditTemplateIcon = (ddmTemplate != null) && (permissionChecker.hasOw
 			<c:if test="<%= hasConfigurationPermission %>">
 				<liferay-ui:icon
 					cssClass="lfr-icon-action lfr-icon-action-configuration"
-					image="configuration"
+					iconCssClass="icon-cog"
 					label="<%= true %>"
 					message="select-list"
 					method="get"
@@ -205,7 +212,7 @@ boolean showEditTemplateIcon = (ddmTemplate != null) && (permissionChecker.hasOw
 
 				<liferay-ui:icon
 					cssClass="lfr-icon-action lfr-icon-action-add"
-					image="add_article"
+					iconCssClass="icon-plus"
 					label="<%= true %>"
 					message="add-list"
 					url="<%= addListURL %>"

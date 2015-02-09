@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -20,7 +20,6 @@ import com.liferay.calendar.service.CalendarResourceServiceUtil;
 import com.liferay.calendar.util.comparator.CalendarResourceCodeComparator;
 import com.liferay.calendar.util.comparator.CalendarResourceNameComparator;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.model.Group;
@@ -45,9 +44,17 @@ import javax.portlet.PortletRequest;
  */
 public class CalendarResourceUtil {
 
+	public static CalendarResource fetchGuestCalendarResource(long companyId)
+		throws PortalException {
+
+		return CalendarResourceLocalServiceUtil.fetchCalendarResource(
+			PortalUtil.getClassNameId(User.class),
+			UserLocalServiceUtil.getDefaultUserId(companyId));
+	}
+
 	public static CalendarResource getCalendarResource(
 			PortletRequest portletRequest, long classNameId, long classPK)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		long groupClassNameId = PortalUtil.getClassNameId(Group.class);
 
@@ -69,7 +76,7 @@ public class CalendarResourceUtil {
 
 	public static CalendarResource getGroupCalendarResource(
 			long groupId, ServiceContext serviceContext)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		Group group = GroupLocalServiceUtil.getGroup(groupId);
 
@@ -77,31 +84,37 @@ public class CalendarResourceUtil {
 			return null;
 		}
 
-		long classNameId = PortalUtil.getClassNameId(Group.class);
-
 		CalendarResource calendarResource =
 			CalendarResourceLocalServiceUtil.fetchCalendarResource(
-				classNameId, groupId);
+				PortalUtil.getClassNameId(Group.class), groupId);
 
 		if (calendarResource != null) {
 			return calendarResource;
 		}
 
-		Map<Locale, String> nameMap = new HashMap<Locale, String>();
+		long userId = group.getCreatorUserId();
+
+		User user = UserLocalServiceUtil.fetchUserById(userId);
+
+		if (user == null) {
+			userId = UserLocalServiceUtil.getDefaultUserId(
+				group.getCompanyId());
+		}
+
+		Map<Locale, String> nameMap = new HashMap<>();
 
 		nameMap.put(LocaleUtil.getDefault(), group.getDescriptiveName());
 
-		Map<Locale, String> descriptionMap = new HashMap<Locale, String>();
+		Map<Locale, String> descriptionMap = new HashMap<>();
 
 		return CalendarResourceLocalServiceUtil.addCalendarResource(
-			group.getCreatorUserId(), groupId,
-			PortalUtil.getClassNameId(Group.class), groupId, null, null,
-			nameMap, descriptionMap, true, serviceContext);
+			userId, groupId, PortalUtil.getClassNameId(Group.class), groupId,
+			null, null, nameMap, descriptionMap, true, serviceContext);
 	}
 
 	public static CalendarResource getGroupCalendarResource(
 			PortletRequest portletRequest, long groupId)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			portletRequest);
@@ -109,7 +122,7 @@ public class CalendarResourceUtil {
 		return getGroupCalendarResource(groupId, serviceContext);
 	}
 
-	public static OrderByComparator getOrderByComparator(
+	public static OrderByComparator<CalendarResource> getOrderByComparator(
 		String orderByCol, String orderByType) {
 
 		boolean orderByAsc = false;
@@ -118,7 +131,7 @@ public class CalendarResourceUtil {
 			orderByAsc = true;
 		}
 
-		OrderByComparator orderByComparator = null;
+		OrderByComparator<CalendarResource> orderByComparator = null;
 
 		if (orderByCol.equals("name")) {
 			orderByComparator = new CalendarResourceNameComparator(orderByAsc);
@@ -130,9 +143,33 @@ public class CalendarResourceUtil {
 		return orderByComparator;
 	}
 
+	public static CalendarResource getScopeGroupCalendarResource(
+			long groupId, ServiceContext serviceContext)
+		throws PortalException {
+
+		Group group = GroupLocalServiceUtil.getGroup(groupId);
+
+		if (group.isUser()) {
+			return getUserCalendarResource(group.getClassPK(), serviceContext);
+		}
+		else {
+			return getGroupCalendarResource(groupId, serviceContext);
+		}
+	}
+
+	public static CalendarResource getScopeGroupCalendarResource(
+			PortletRequest portletRequest, long groupId)
+		throws PortalException {
+
+		ServiceContext serviceContext = ServiceContextFactory.getInstance(
+			portletRequest);
+
+		return getScopeGroupCalendarResource(groupId, serviceContext);
+	}
+
 	public static CalendarResource getUserCalendarResource(
 			long userId, ServiceContext serviceContext)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		long classNameId = PortalUtil.getClassNameId(User.class);
 
@@ -161,11 +198,11 @@ public class CalendarResourceUtil {
 				serviceContext.getCompanyId(), userId);
 		}
 
-		Map<Locale, String> nameMap = new HashMap<Locale, String>();
+		Map<Locale, String> nameMap = new HashMap<>();
 
 		nameMap.put(LocaleUtil.getDefault(), userName);
 
-		Map<Locale, String> descriptionMap = new HashMap<Locale, String>();
+		Map<Locale, String> descriptionMap = new HashMap<>();
 
 		return CalendarResourceLocalServiceUtil.addCalendarResource(
 			userId, userGroup.getGroupId(),
@@ -175,7 +212,7 @@ public class CalendarResourceUtil {
 
 	public static CalendarResource getUserCalendarResource(
 			PortletRequest portletRequest, long userId)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			portletRequest);

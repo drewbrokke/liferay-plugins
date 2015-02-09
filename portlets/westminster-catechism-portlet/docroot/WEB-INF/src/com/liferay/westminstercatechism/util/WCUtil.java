@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -71,7 +71,7 @@ public class WCUtil {
 			_log.error(de, de);
 		}
 
-		_shorter = new ArrayList<WCEntry>();
+		_shorter = new ArrayList<>();
 
 		Element rootElement = document.getRootElement();
 
@@ -80,7 +80,7 @@ public class WCUtil {
 		List<Element> entryElements = shorterElement.elements("entry");
 
 		for (Element entryElement : entryElements) {
-			List<String[]> proofs = new ArrayList<String[]>();
+			List<String[]> proofs = new ArrayList<>();
 
 			Element proofsElement = entryElement.element("proofs");
 
@@ -102,14 +102,14 @@ public class WCUtil {
 
 		_shorter = Collections.unmodifiableList(_shorter);
 
-		_larger = new ArrayList<WCEntry>();
+		_larger = new ArrayList<>();
 
 		Element largerElement = rootElement.element("larger");
 
 		entryElements = largerElement.elements("entry");
 
 		for (Element entry : entryElements) {
-			List<String[]> proofs = new ArrayList<String[]>();
+			List<String[]> proofs = new ArrayList<>();
 
 			Element proofsElement = entry.element("proofs");
 

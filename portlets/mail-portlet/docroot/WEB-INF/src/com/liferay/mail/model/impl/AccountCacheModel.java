@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,8 +14,11 @@
 
 package com.liferay.mail.model.impl;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.mail.model.Account;
 
+import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.model.CacheModel;
@@ -34,7 +37,32 @@ import java.util.Date;
  * @see Account
  * @generated
  */
+@ProviderType
 public class AccountCacheModel implements CacheModel<Account>, Externalizable {
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof AccountCacheModel)) {
+			return false;
+		}
+
+		AccountCacheModel accountCacheModel = (AccountCacheModel)obj;
+
+		if (accountId == accountCacheModel.accountId) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashUtil.hash(0, accountId);
+	}
+
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(53);

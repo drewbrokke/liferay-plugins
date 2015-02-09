@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -17,7 +17,6 @@ package com.liferay.portal.workflow.kaleo.hook.listeners;
 import com.liferay.portal.ModelListenerException;
 import com.liferay.portal.model.BaseModelListener;
 import com.liferay.portal.model.Company;
-import com.liferay.portal.workflow.kaleo.manager.PortalKaleoManager;
 import com.liferay.portal.workflow.kaleo.manager.PortalKaleoManagerUtil;
 
 /**
@@ -28,10 +27,7 @@ public class CompanyModelListener extends BaseModelListener<Company> {
 	@Override
 	public void onAfterRemove(Company company) throws ModelListenerException {
 		try {
-			PortalKaleoManager portalKaleoManager =
-				PortalKaleoManagerUtil.getPortalKaleoManager();
-
-			portalKaleoManager.deleteKaleoData(company);
+			PortalKaleoManagerUtil.deleteKaleoData(company.getCompanyId());
 		}
 		catch (Exception e) {
 			throw new ModelListenerException(e);

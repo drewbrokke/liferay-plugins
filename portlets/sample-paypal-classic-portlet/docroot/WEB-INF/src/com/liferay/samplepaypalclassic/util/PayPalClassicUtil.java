@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -26,7 +26,7 @@ import java.util.Map;
 public class PayPalClassicUtil {
 
 	protected static AdaptivePaymentsService getAdaptivePaymentsService() {
-		Map<String, String> map = new HashMap<String, String>();
+		Map<String, String> map = new HashMap<>();
 
 		map.put("acct1.AppId", PortletPropsValues.PAYPAL_APP_ID);
 		map.put("acct1.Password", PortletPropsValues.PAYPAL_PASSWORD);

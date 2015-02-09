@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -21,6 +21,12 @@ import com.liferay.util.portlet.PortletProps;
  * @author Brian Wing Shun Chan
  */
 public class PortletPropsValues {
+
+	public static final String CSV_SEPARATOR = GetterUtil.getString(
+		PortletProps.get(PortletPropsKeys.CSV_SEPARATOR));
+
+	public static final String DATA_ROOT_DIR = GetterUtil.getString(
+		PortletProps.get(PortletPropsKeys.DATA_ROOT_DIR));
 
 	public static final String EMAIL_FROM_ADDRESS = GetterUtil.getString(
 		PortletProps.get(PortletPropsKeys.EMAIL_FROM_ADDRESS));

@@ -1,4 +1,4 @@
-@import "compass";
+@import "mixins";
 
 .so-announcements-portlet {
 	.back-link {
@@ -17,6 +17,7 @@
 	.entry {
 		margin-bottom: 1.2em;
 		padding-bottom: 0.5em;
+		position: relative;
 
 		&.last {
 			padding-bottom: 0;
@@ -25,12 +26,16 @@
 
 	.user-portrait {
 		float: left;
-		height: 45px;
+		left: 0;
+		margin-bottom: 0.4em;
+		max-height: 45px;
+		position: absolute;
+		top: 0;
 		width: 45px;
 
 		.avatar {
 			display: block;
-			height: 45px;
+			max-height: 45px;
 			overflow: hidden;
 
 			img {
@@ -39,13 +44,13 @@
 		}
 	}
 
-	.entry-data {
+	.entry-block, .entry-header {
 		margin-left: 55px;
 		overflow: hidden;
 	}
 
 	.entry-header {
-		margin-bottom: .4em;
+		margin-bottom: 0.4em;
 
 		a {
 			font-weight: bold;
@@ -53,14 +58,23 @@
 	}
 
 	.entry-time {
+		color: #999;
 		float: right;
-		font-size: .9em;
+		font-size: 0.9em;
 		margin-left: 1em;
+	}
+
+	.entry-action {
+		float: left;
 	}
 
 	.entry-scope {
 		color: #555;
 		display: block;
+	}
+
+	.entry-block {
+		clear: both;
 	}
 
 	.entry-body {
@@ -77,7 +91,7 @@
 			display: block;
 			font-weight: bold;
 			overflow: hidden;
-			padding: .4em .9em;
+			padding: 0.4em 0.9em;
 
 			.event-title {
 				float: left;
@@ -95,7 +109,7 @@
 	.entry-content-container {
 		max-height: 75px;
 		overflow: hidden;
-		padding: .5em .9em;
+		padding: 0.5em 0.9em;
 	}
 
 	.entry-content {
@@ -120,8 +134,8 @@
 			display: inline-block;
 			height: 16px;
 			line-height: 16px;
-			margin: .5em 0;
-			padding: 0 .6em 0 .8em;
+			margin: 0.5em 0;
+			padding: 0 0.6em 0 0.8em;
 			vertical-align: middle;
 
 			&:first-child {
@@ -131,7 +145,7 @@
 		}
 
 		a {
-			font-size: .9em;
+			font-size: 0.9em;
 		}
 	}
 
@@ -146,7 +160,7 @@
 		.header {
 			border: 1px solid #C8C9CA;
 			cursor: pointer;
-			padding: .2em .5em;
+			padding: 0.2em 0.5em;
 		}
 
 		.toggler-header-collapsed {
@@ -158,7 +172,9 @@
 		}
 
 		.toggler-content-collapsed {
-			display: none;
+			display: block;
+			height: 0;
+			overflow: hidden;
 		}
 
 		.entry {
@@ -184,12 +200,12 @@
 
 		.left-nav {
 			float: left;
-			margin-left: .5em;
+			margin-left: 0.5em;
 		}
 
 		.right-nav {
 			float: right;
-			margin-right: .5em;
+			margin-right: 0.5em;
 		}
 	}
 }
@@ -224,14 +240,13 @@
 		}
 	}
 
+	.distribution-scope-container .control-group .form-validator-stack {
+		position: relative;
+	}
+
 	.date-container .control-group {
 		float: left;
 		margin-bottom: 0;
-	}
-
-	.distribution-scope-container {
-		display: inline;
-		min-width: inherit;
 	}
 
 	#_1_WAR_soannouncementsportlet_ocerSearchContainerSearchContainer td.last {
@@ -265,5 +280,26 @@
 /* ---------- Extras ---------- */
 
 .so-announcements-portlet .announcement-collapsed .entry-footer-toolbar {
-	@include box-shadow(0 -1px 15px -5px rgba(0, 0, 0, .8));
+	box-shadow: 0 -1px 15px -5px rgba(0, 0, 0, 0.8);
+}
+
+/* ---------- Responsive ---------- */
+
+@include respond-to(phone) {
+	.so-announcements-portlet {
+		.user-portrait {
+			position: relative;
+		}
+
+		.entry-time {
+			margin: 0.2em 0 0;
+			width: 100%;
+		}
+
+		.entry-block {
+			float: left;
+			margin-left: 0;
+			width: 100%;
+		}
+	}
 }

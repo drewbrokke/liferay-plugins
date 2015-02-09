@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,8 +14,11 @@
 
 package com.liferay.knowledgebase.model.impl;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.knowledgebase.model.KBComment;
 
+import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.model.CacheModel;
@@ -34,11 +37,36 @@ import java.util.Date;
  * @see KBComment
  * @generated
  */
+@ProviderType
 public class KBCommentCacheModel implements CacheModel<KBComment>,
 	Externalizable {
 	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof KBCommentCacheModel)) {
+			return false;
+		}
+
+		KBCommentCacheModel kbCommentCacheModel = (KBCommentCacheModel)obj;
+
+		if (kbCommentId == kbCommentCacheModel.kbCommentId) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashUtil.hash(0, kbCommentId);
+	}
+
+	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(25);
+		StringBundler sb = new StringBundler(27);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -62,8 +90,10 @@ public class KBCommentCacheModel implements CacheModel<KBComment>,
 		sb.append(classPK);
 		sb.append(", content=");
 		sb.append(content);
-		sb.append(", helpful=");
-		sb.append(helpful);
+		sb.append(", userRating=");
+		sb.append(userRating);
+		sb.append(", status=");
+		sb.append(status);
 		sb.append("}");
 
 		return sb.toString();
@@ -116,7 +146,8 @@ public class KBCommentCacheModel implements CacheModel<KBComment>,
 			kbCommentImpl.setContent(content);
 		}
 
-		kbCommentImpl.setHelpful(helpful);
+		kbCommentImpl.setUserRating(userRating);
+		kbCommentImpl.setStatus(status);
 
 		kbCommentImpl.resetOriginalValues();
 
@@ -136,7 +167,8 @@ public class KBCommentCacheModel implements CacheModel<KBComment>,
 		classNameId = objectInput.readLong();
 		classPK = objectInput.readLong();
 		content = objectInput.readUTF();
-		helpful = objectInput.readBoolean();
+		userRating = objectInput.readInt();
+		status = objectInput.readInt();
 	}
 
 	@Override
@@ -173,7 +205,8 @@ public class KBCommentCacheModel implements CacheModel<KBComment>,
 			objectOutput.writeUTF(content);
 		}
 
-		objectOutput.writeBoolean(helpful);
+		objectOutput.writeInt(userRating);
+		objectOutput.writeInt(status);
 	}
 
 	public String uuid;
@@ -187,5 +220,6 @@ public class KBCommentCacheModel implements CacheModel<KBComment>,
 	public long classNameId;
 	public long classPK;
 	public String content;
-	public boolean helpful;
+	public int userRating;
+	public int status;
 }

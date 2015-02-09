@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -18,6 +18,7 @@ import com.liferay.calendar.model.CalendarBooking;
 import com.liferay.calendar.model.CalendarResource;
 import com.liferay.calendar.notification.NotificationType;
 import com.liferay.calendar.recurrence.Frequency;
+import com.liferay.calendar.recurrence.PositionalWeekday;
 import com.liferay.calendar.recurrence.Recurrence;
 import com.liferay.calendar.recurrence.RecurrenceSerializer;
 import com.liferay.calendar.recurrence.Weekday;
@@ -27,8 +28,11 @@ import com.liferay.portal.kernel.cal.DayAndPosition;
 import com.liferay.portal.kernel.cal.TZSRecurrence;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Time;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.model.Group;
@@ -37,8 +41,10 @@ import com.liferay.portal.model.ResourceBlockConstants;
 import com.liferay.portal.model.ResourceConstants;
 import com.liferay.portal.model.ResourcePermission;
 import com.liferay.portal.model.Subscription;
+import com.liferay.portal.model.User;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.UserLocalServiceUtil;
+import com.liferay.portal.util.PortalUtil;
 import com.liferay.portlet.asset.model.AssetCategory;
 import com.liferay.portlet.asset.model.AssetCategoryConstants;
 import com.liferay.portlet.asset.model.AssetEntry;
@@ -46,7 +52,7 @@ import com.liferay.portlet.asset.model.AssetLink;
 import com.liferay.portlet.asset.model.AssetTag;
 import com.liferay.portlet.asset.model.AssetVocabulary;
 import com.liferay.portlet.calendar.model.CalEvent;
-import com.liferay.portlet.calendar.service.persistence.CalEventActionableDynamicQuery;
+import com.liferay.portlet.calendar.service.CalEventLocalServiceUtil;
 import com.liferay.portlet.messageboards.model.MBDiscussion;
 import com.liferay.portlet.messageboards.model.MBMessage;
 import com.liferay.portlet.messageboards.model.MBMessageConstants;
@@ -69,12 +75,15 @@ public class CalendarImporterLocalServiceImpl
 	extends CalendarImporterLocalServiceBaseImpl {
 
 	@Override
-	public void importCalEvent(CalEvent calEvent)
-		throws PortalException, SystemException {
+	public void importCalEvent(CalEvent calEvent) throws PortalException {
 
 		// Calendar event
 
-		if (isImported(calEvent)) {
+		CalendarBooking calendarBooking = fetchCalendarBooking(calEvent);
+
+		if (calendarBooking != null) {
+			verifyCalendarBooking(calendarBooking, calEvent);
+
 			return;
 		}
 
@@ -139,33 +148,85 @@ public class CalendarImporterLocalServiceImpl
 	}
 
 	@Override
-	public void importCalEvents() throws PortalException, SystemException {
+	public void importCalEvents() throws PortalException {
 		ActionableDynamicQuery actionableDynamicQuery =
-			new CalEventActionableDynamicQuery() {
+			CalEventLocalServiceUtil.getActionableDynamicQuery();
 
-			@Override
-			protected void performAction(Object object)
-				throws PortalException, SystemException {
+		actionableDynamicQuery.setPerformActionMethod(
+			new ActionableDynamicQuery.PerformActionMethod() {
 
-				CalEvent calEvent = (CalEvent)object;
+				@Override
+				public void performAction(Object object)
+					throws PortalException {
 
-				importCalEvent(calEvent);
-			}
+					CalEvent calEvent = (CalEvent)object;
 
-		};
+					importCalEvent(calEvent);
+				}
+
+			});
 
 		actionableDynamicQuery.performActions();
 	}
 
+	@Override
+	public void importRolePermissions() {
+		int[] scopes = {
+			ResourceConstants.SCOPE_COMPANY, ResourceConstants.SCOPE_GROUP,
+			ResourceConstants.SCOPE_GROUP_TEMPLATE
+		};
+
+		for (long companyId : PortalUtil.getCompanyIds()) {
+			for (int scope : scopes) {
+				importResourcePermissions(
+					companyId, "com.liferay.portlet.calendar", "ADD_EVENT",
+					"com.liferay.calendar.model.Calendar", "MANAGE_BOOKINGS",
+					scope);
+
+				importResourcePermissions(
+					companyId, "com.liferay.portlet.calendar", "ADD_EVENT",
+					"com.liferay.calendar.model.Calendar",
+					"VIEW_BOOKING_DETAILS", scope);
+
+				importResourcePermissions(
+					companyId, "com.liferay.portlet.calendar", "PERMISSIONS",
+					"com.liferay.calendar.model.Calendar", "PERMISSIONS",
+					scope);
+
+				importResourcePermissions(
+					companyId, "com.liferay.portlet.calendar.model.CalEvent",
+					"ADD_DISCUSSION",
+					"com.liferay.calendar.model.CalendarBooking",
+					"ADD_DISCUSSION", scope);
+
+				importResourcePermissions(
+					companyId, "com.liferay.portlet.calendar.model.CalEvent",
+					"DELETE_DISCUSSION",
+					"com.liferay.calendar.model.CalendarBooking",
+					"DELETE_DISCUSSION", scope);
+
+				importResourcePermissions(
+					companyId, "com.liferay.portlet.calendar.model.CalEvent",
+					"PERMISSIONS", "com.liferay.calendar.model.CalendarBooking",
+					"PERMISSIONS", scope);
+
+				importResourcePermissions(
+					companyId, "com.liferay.portlet.calendar.model.CalEvent",
+					"UPDATE_DISCUSSION",
+					"com.liferay.calendar.model.CalendarBooking",
+					"UPDATE_DISCUSSION", scope);
+			}
+		}
+	}
+
 	protected void addAssetEntry(
-			long entryId, long groupId, long companyId, long userId,
-			String userName, Date createDate, Date modifiedDate,
-			long classNameId, long classPK, String classUuid, boolean visible,
-			Date startDate, Date endDate, Date publishDate, Date expirationDate,
-			String mimeType, String title, String description, String summary,
-			String url, String layoutUuid, int height, int width,
-			double priority, int viewCount)
-		throws SystemException {
+		long entryId, long groupId, long companyId, long userId,
+		String userName, Date createDate, Date modifiedDate, long classNameId,
+		long classPK, String classUuid, boolean visible, Date startDate,
+		Date endDate, Date publishDate, Date expirationDate, String mimeType,
+		String title, String description, String summary, String url,
+		String layoutUuid, int height, int width, double priority,
+		int viewCount) {
 
 		AssetEntry assetEntry = assetEntryPersistence.create(entryId);
 
@@ -198,9 +259,8 @@ public class CalendarImporterLocalServiceImpl
 	}
 
 	protected void addAssetLink(
-			long linkId, long companyId, long userId, String userName,
-			Date createDate, long entryId1, long entryId2, int type, int weight)
-		throws SystemException {
+		long linkId, long companyId, long userId, String userName,
+		Date createDate, long entryId1, long entryId2, int type, int weight) {
 
 		AssetLink assetLink = assetLinkPersistence.create(linkId);
 
@@ -217,14 +277,13 @@ public class CalendarImporterLocalServiceImpl
 	}
 
 	protected void addCalendarBooking(
-			String uuid, long calendarBookingId, long companyId, long groupId,
-			long userId, String userName, Date createDate, Date modifiedDate,
-			long calendarId, long calendarResourceId, String title,
-			String description, String location, long startTime, long endTime,
-			boolean allDay, String recurrence, int firstReminder,
-			NotificationType firstReminderType, int secondReminder,
-			NotificationType secondReminderType)
-		throws SystemException {
+		String uuid, long calendarBookingId, long companyId, long groupId,
+		long userId, String userName, Date createDate, Date modifiedDate,
+		long calendarId, long calendarResourceId, String title,
+		String description, String location, long startTime, long endTime,
+		boolean allDay, String recurrence, int firstReminder,
+		NotificationType firstReminderType, int secondReminder,
+		NotificationType secondReminderType) {
 
 		CalendarBooking calendarBooking = calendarBookingPersistence.create(
 			calendarBookingId);
@@ -259,10 +318,9 @@ public class CalendarImporterLocalServiceImpl
 	}
 
 	protected void addMBDiscussion(
-			String uuid, long discussionId, long groupId, long companyId,
-			long userId, String userName, Date createDate, Date modifiedDate,
-			long classNameId, long classPK, long threadId)
-		throws SystemException {
+		String uuid, long discussionId, long groupId, long companyId,
+		long userId, String userName, Date createDate, Date modifiedDate,
+		long classNameId, long classPK, long threadId) {
 
 		MBDiscussion mbDiscussion = mbDiscussionPersistence.create(
 			discussionId);
@@ -290,7 +348,7 @@ public class CalendarImporterLocalServiceImpl
 			boolean allowPingbacks, boolean answer, int status,
 			long statusByUserId, String statusByUserName, Date statusDate,
 			Map<Long, Long> mbMessageIds)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		if (parentMessageId == MBMessageConstants.DEFAULT_PARENT_MESSAGE_ID) {
 			rootMessageId = messageId;
@@ -334,13 +392,12 @@ public class CalendarImporterLocalServiceImpl
 	}
 
 	protected void addMBThread(
-			String uuid, long threadId, long groupId, long companyId,
-			long userId, String userName, Date createDate, Date modifiedDate,
-			long categoryId, long rootMessageId, long rootMessageUserId,
-			int messageCount, int viewCount, long lastPostByUserId,
-			Date lastPostDate, double priority, boolean question, int status,
-			long statusByUserId, String statusByUserName, Date statusDate)
-		throws SystemException {
+		String uuid, long threadId, long groupId, long companyId, long userId,
+		String userName, Date createDate, Date modifiedDate, long categoryId,
+		long rootMessageId, long rootMessageUserId, int messageCount,
+		int viewCount, long lastPostByUserId, Date lastPostDate,
+		double priority, boolean question, int status, long statusByUserId,
+		String statusByUserName, Date statusDate) {
 
 		MBThread mbThread = mbThreadPersistence.create(threadId);
 
@@ -369,10 +426,9 @@ public class CalendarImporterLocalServiceImpl
 	}
 
 	protected RatingsEntry addRatingsEntry(
-			long entryId, long companyId, long userId, String userName,
-			Date createDate, Date modifiedDate, long classNameId, long classPK,
-			double score)
-		throws SystemException {
+		long entryId, long companyId, long userId, String userName,
+		Date createDate, Date modifiedDate, long classNameId, long classPK,
+		double score) {
 
 		RatingsEntry ratingsEntry = ratingsEntryPersistence.create(entryId);
 
@@ -389,9 +445,8 @@ public class CalendarImporterLocalServiceImpl
 	}
 
 	protected RatingsStats addRatingsStats(
-			long statsId, long classNameId, long classPK, int totalEntries,
-			double totalScore, double averageScore)
-		throws SystemException {
+		long statsId, long classNameId, long classPK, int totalEntries,
+		double totalScore, double averageScore) {
 
 		RatingsStats ratingsStats = ratingsStatsPersistence.create(statsId);
 
@@ -405,10 +460,9 @@ public class CalendarImporterLocalServiceImpl
 	}
 
 	protected void addSocialActivity(
-			long activityId, long groupId, long companyId, long userId,
-			long createDate, long mirrorActivityId, long classNameId,
-			long classPK, int type, String extraData, long receiverUserId)
-		throws SystemException {
+		long activityId, long groupId, long companyId, long userId,
+		long createDate, long mirrorActivityId, long classNameId, long classPK,
+		int type, String extraData, long receiverUserId) {
 
 		SocialActivity socialActivity = socialActivityPersistence.create(
 			activityId);
@@ -428,10 +482,9 @@ public class CalendarImporterLocalServiceImpl
 	}
 
 	protected void addSubscription(
-			long subscriptionId, long companyId, long userId, String userName,
-			Date createDate, Date modifiedDate, long classNameId, long classPK,
-			String frequency)
-		throws SystemException {
+		long subscriptionId, long companyId, long userId, String userName,
+		Date createDate, Date modifiedDate, long classNameId, long classPK,
+		String frequency) {
 
 		Subscription subscription = subscriptionPersistence.create(
 			subscriptionId);
@@ -448,12 +501,36 @@ public class CalendarImporterLocalServiceImpl
 		subscriptionPersistence.update(subscription);
 	}
 
-	protected long getActionId(
-			ResourceAction oldResourceAction, String newClassName)
-		throws SystemException {
+	protected long convertActionId(
+		ResourcePermission resourcePermission, String oldResourceModelName,
+		String oldActionId, String newResourceModelName, String newActionId) {
 
+		ResourceAction oldResourceAction = resourceActionPersistence.fetchByN_A(
+			oldResourceModelName, oldActionId);
+
+		boolean hasActionId = resourcePermissionLocalService.hasActionId(
+			resourcePermission, oldResourceAction);
+
+		if (!hasActionId) {
+			return 0;
+		}
+
+		return getActionId(newResourceModelName, newActionId);
+	}
+
+	protected CalendarBooking fetchCalendarBooking(CalEvent calEvent)
+		throws PortalException {
+
+		CalendarResource calendarResource = getCalendarResource(
+			calEvent.getCompanyId(), calEvent.getGroupId());
+
+		return calendarBookingPersistence.fetchByUUID_G(
+			calEvent.getUuid(), calendarResource.getGroupId());
+	}
+
+	protected long getActionId(String resourceModelName, String actionId) {
 		ResourceAction newResourceAction = resourceActionPersistence.fetchByN_A(
-			newClassName, oldResourceAction.getActionId());
+			resourceModelName, actionId);
 
 		if (newResourceAction == null) {
 			return 0;
@@ -463,9 +540,8 @@ public class CalendarImporterLocalServiceImpl
 	}
 
 	protected long getActionIds(
-			ResourcePermission resourcePermission, String oldClassName,
-			String newClassName)
-		throws SystemException {
+		ResourcePermission resourcePermission, String oldClassName,
+		String newClassName) {
 
 		long actionIds = 0;
 
@@ -480,16 +556,20 @@ public class CalendarImporterLocalServiceImpl
 				continue;
 			}
 
-			actionIds = actionIds | getActionId(
-				oldResourceAction, newClassName);
+			actionIds =
+				actionIds |
+					convertActionId(
+						resourcePermission, oldClassName,
+						oldResourceAction.getActionId(), newClassName,
+						oldResourceAction.getActionId());
 		}
 
 		return actionIds;
 	}
 
 	protected AssetCategory getAssetCategory(
-			long userId, long groupId, String name)
-		throws PortalException, SystemException {
+			long userId, long companyId, long groupId, String name)
+		throws PortalException {
 
 		AssetVocabulary assetVocabulary = assetVocabularyPersistence.fetchByG_N(
 			groupId, _ASSET_VOCABULARY_NAME);
@@ -497,6 +577,15 @@ public class CalendarImporterLocalServiceImpl
 		ServiceContext serviceContext = new ServiceContext();
 
 		serviceContext.setScopeGroupId(groupId);
+
+		User user = userPersistence.fetchByC_U(companyId, userId);
+
+		if (user == null) {
+			user = userPersistence.fetchByC_DU(companyId, true);
+
+			userId = user.getUserId();
+		}
+
 		serviceContext.setUserId(userId);
 
 		if (assetVocabulary == null) {
@@ -517,7 +606,7 @@ public class CalendarImporterLocalServiceImpl
 	}
 
 	protected CalendarResource getCalendarResource(long companyId, long groupId)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		ServiceContext serviceContext = new ServiceContext();
 
@@ -549,33 +638,50 @@ public class CalendarImporterLocalServiceImpl
 
 		int interval = tzsRecurrence.getInterval();
 
-		List<Weekday> weekdays = new ArrayList<Weekday>();
+		List<PositionalWeekday> positionalWeekdays = new ArrayList<>();
 
 		if ((frequency == Frequency.DAILY) && (interval == 0)) {
 			frequency = Frequency.WEEKLY;
 
 			interval = 1;
 
-			weekdays.add(Weekday.MONDAY);
-			weekdays.add(Weekday.TUESDAY);
-			weekdays.add(Weekday.WEDNESDAY);
-			weekdays.add(Weekday.THURSDAY);
-			weekdays.add(Weekday.FRIDAY);
+			positionalWeekdays.add(new PositionalWeekday(Weekday.MONDAY, 0));
+			positionalWeekdays.add(new PositionalWeekday(Weekday.TUESDAY, 0));
+			positionalWeekdays.add(new PositionalWeekday(Weekday.WEDNESDAY, 0));
+			positionalWeekdays.add(new PositionalWeekday(Weekday.THURSDAY, 0));
+			positionalWeekdays.add(new PositionalWeekday(Weekday.FRIDAY, 0));
 		}
-		else if (frequency == Frequency.WEEKLY) {
+		else {
 			DayAndPosition[] dayAndPositions = tzsRecurrence.getByDay();
 
-			for (DayAndPosition dayAndPosition : dayAndPositions) {
-				Weekday weekday = _weekdayMap.get(
-					dayAndPosition.getDayOfWeek());
+			if (dayAndPositions != null) {
+				for (DayAndPosition dayAndPosition : dayAndPositions) {
+					Weekday weekday = _weekdayMap.get(
+						dayAndPosition.getDayOfWeek());
 
-				weekdays.add(weekday);
+					PositionalWeekday positionalWeekday = new PositionalWeekday(
+						weekday, dayAndPosition.getDayPosition());
+
+					positionalWeekdays.add(positionalWeekday);
+				}
+			}
+
+			int[] months = tzsRecurrence.getByMonth();
+
+			if (ArrayUtil.isNotEmpty(months)) {
+				List<Integer> monthsList = new ArrayList<>();
+
+				for (int month : months) {
+					monthsList.add(month);
+				}
+
+				recurrence.setMonths(monthsList);
 			}
 		}
 
 		recurrence.setInterval(interval);
 		recurrence.setFrequency(frequency);
-		recurrence.setWeekdays(weekdays);
+		recurrence.setPositionalWeekdays(positionalWeekdays);
 
 		Calendar untilJCalendar = tzsRecurrence.getUntil();
 
@@ -591,9 +697,19 @@ public class CalendarImporterLocalServiceImpl
 		return RecurrenceSerializer.serialize(recurrence);
 	}
 
+	protected boolean hasDayAndPosition(TZSRecurrence tzsRecurrence) {
+		if ((tzsRecurrence == null) ||
+			ArrayUtil.isEmpty(tzsRecurrence.getByDay())) {
+
+			return false;
+		}
+
+		return true;
+	}
+
 	protected void importAssetLink(
 			AssetLink assetLink, long oldEntryId, long newEntryId)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		long entryId1 = 0;
 		long entryId2 = 0;
@@ -650,7 +766,7 @@ public class CalendarImporterLocalServiceImpl
 	}
 
 	protected void importAssets(CalEvent calEvent, long calendarBookingId)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		// Asset entry
 
@@ -681,14 +797,16 @@ public class CalendarImporterLocalServiceImpl
 
 		// Asset categories
 
-		List<AssetCategory> assetCategories = new ArrayList<AssetCategory>();
+		List<AssetCategory> assetCategories = new ArrayList<>();
 
 		assetCategories.addAll(assetEntry.getCategories());
 
-		assetCategories.add(
-			getAssetCategory(
-				calEvent.getUserId(), calEvent.getGroupId(),
-				calEvent.getType()));
+		if (Validator.isNotNull(calEvent.getType())) {
+			assetCategories.add(
+				getAssetCategory(
+					calEvent.getUserId(), calEvent.getCompanyId(),
+					calEvent.getGroupId(), calEvent.getType()));
+		}
 
 		for (AssetCategory assetCategory : assetCategories) {
 			assetEntryLocalService.addAssetCategoryAssetEntry(
@@ -716,7 +834,7 @@ public class CalendarImporterLocalServiceImpl
 
 	protected void importCalendarBookingResourcePermission(
 			ResourcePermission resourcePermission, long calendarBookingId)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		CalendarBooking calendarBooking =
 			calendarBookingPersistence.findByPrimaryKey(calendarBookingId);
@@ -734,7 +852,7 @@ public class CalendarImporterLocalServiceImpl
 
 	protected void importCalendarBookingResourcePermissions(
 			CalEvent calEvent, long calendarBookingId)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		List<ResourcePermission> resourcePermissions =
 			resourcePermissionPersistence.findByC_N_S_P(
@@ -749,7 +867,7 @@ public class CalendarImporterLocalServiceImpl
 	}
 
 	protected void importMBDiscussion(CalEvent calEvent, long calendarBookingId)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		MBDiscussion mbDiscussion = mbDiscussionPersistence.fetchByC_C(
 			classNameLocalService.getClassNameId(CalEvent.class),
@@ -775,7 +893,7 @@ public class CalendarImporterLocalServiceImpl
 	protected long importMBMessage(
 			long messageId, long threadId, long calendarBookingId,
 			Map<Long, Long> mbMessageIds)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		MBMessage mbMessage = mbMessagePersistence.findByPrimaryKey(messageId);
 
@@ -786,7 +904,7 @@ public class CalendarImporterLocalServiceImpl
 	protected long importMBMessage(
 			MBMessage mbMessage, long threadId, long calendarBookingId,
 			Map<Long, Long> mbMessageIds)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		Long messageId = mbMessageIds.get(mbMessage.getMessageId());
 
@@ -825,7 +943,7 @@ public class CalendarImporterLocalServiceImpl
 	}
 
 	protected long importMBThread(long threadId, long calendarBookingId)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		MBThread mbThread = mbThreadPersistence.findByPrimaryKey(threadId);
 
@@ -833,7 +951,7 @@ public class CalendarImporterLocalServiceImpl
 	}
 
 	protected long importMBThread(MBThread mbThread, long calendarBookingId)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		long threadId = counterLocalService.increment();
 
@@ -849,7 +967,7 @@ public class CalendarImporterLocalServiceImpl
 			mbThread.getStatusByUserId(), mbThread.getStatusByUserName(),
 			mbThread.getStatusDate());
 
-		Map<Long, Long> mbMessageIds = new HashMap<Long, Long>();
+		Map<Long, Long> mbMessageIds = new HashMap<>();
 
 		List<MBMessage> mbMessages = mbMessagePersistence.findByThreadId(
 			mbThread.getThreadId());
@@ -866,9 +984,7 @@ public class CalendarImporterLocalServiceImpl
 	}
 
 	protected void importRatings(
-			long oldClassNameId, long oldClassPK, long classNameId,
-			long classPK)
-		throws SystemException {
+		long oldClassNameId, long oldClassPK, long classNameId, long classPK) {
 
 		List<RatingsEntry> ratingsEntries = ratingsEntryPersistence.findByC_C(
 			oldClassNameId, oldClassPK);
@@ -894,9 +1010,36 @@ public class CalendarImporterLocalServiceImpl
 			ratingsStats.getAverageScore());
 	}
 
+	protected void importResourcePermissions(
+		long companyId, String oldClassName, String oldAction,
+		String newClassName, String newAction, int scope) {
+
+		List<ResourcePermission> resourcePermissions =
+			resourcePermissionPersistence.findByC_N_S(
+				companyId, oldClassName, scope);
+
+		for (ResourcePermission resourcePermission : resourcePermissions) {
+			long roleId = resourcePermission.getRoleId();
+
+			long actionIds = convertActionId(
+				resourcePermission, oldClassName, oldAction, newClassName,
+				newAction);
+
+			if (scope == ResourceConstants.SCOPE_GROUP) {
+				resourceBlockLocalService.addGroupScopePermissions(
+					companyId,
+					GetterUtil.getLong(resourcePermission.getPrimKey()),
+					newClassName, roleId, actionIds);
+			}
+			else {
+				resourceBlockLocalService.addCompanyScopePermissions(
+					companyId, newClassName, roleId, actionIds);
+			}
+		}
+	}
+
 	protected void importSocialActivities(
-			CalEvent calEvent, long calendarBookingId)
-		throws SystemException {
+		CalEvent calEvent, long calendarBookingId) {
 
 		List<SocialActivity> socialActivities =
 			socialActivityPersistence.findByC_C(
@@ -909,8 +1052,7 @@ public class CalendarImporterLocalServiceImpl
 	}
 
 	protected void importSocialActivity(
-			SocialActivity socialActivity, long calendarBookingId)
-		throws SystemException {
+		SocialActivity socialActivity, long calendarBookingId) {
 
 		addSocialActivity(
 			counterLocalService.increment(SocialActivity.class.getName()),
@@ -923,8 +1065,7 @@ public class CalendarImporterLocalServiceImpl
 	}
 
 	protected void importSubscription(
-			Subscription subscription, long calendarBookingId)
-		throws SystemException {
+		Subscription subscription, long calendarBookingId) {
 
 		addSubscription(
 			counterLocalService.increment(), subscription.getCompanyId(),
@@ -935,8 +1076,7 @@ public class CalendarImporterLocalServiceImpl
 	}
 
 	protected void importSubscriptions(
-			CalEvent calEvent, long calendarBookingId)
-		throws SystemException {
+		CalEvent calEvent, long calendarBookingId) {
 
 		List<Subscription> subscriptions = subscriptionPersistence.findByC_C_C(
 			calEvent.getCompanyId(),
@@ -948,26 +1088,19 @@ public class CalendarImporterLocalServiceImpl
 		}
 	}
 
-	protected boolean isImported(CalEvent calEvent)
-		throws PortalException, SystemException {
+	protected void updateCalendarBookingRecurrence(
+		CalendarBooking calendarBooking, TZSRecurrence tzsRecurrence) {
 
-		CalendarResource calendarResource = getCalendarResource(
-			calEvent.getCompanyId(), calEvent.getGroupId());
+		String recurrence = getRecurrence(tzsRecurrence);
 
-		CalendarBooking calendarBooking =
-			calendarBookingPersistence.fetchByUUID_G(
-				calEvent.getUuid(), calendarResource.getGroupId());
+		calendarBooking.setRecurrence(recurrence);
 
-		if (calendarBooking != null) {
-			return true;
-		}
-
-		return false;
+		calendarBookingPersistence.update(calendarBooking);
 	}
 
 	protected void updateMBThreadRootMessageId(
 			long threadId, long rootMessageId)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		MBThread mbThread = mbThreadPersistence.findByPrimaryKey(threadId);
 
@@ -976,12 +1109,31 @@ public class CalendarImporterLocalServiceImpl
 		mbThreadPersistence.update(mbThread);
 	}
 
+	protected void verifyCalendarBooking(
+		CalendarBooking calendarBooking, CalEvent calEvent) {
+
+		if (!hasDayAndPosition(calEvent.getRecurrenceObj())) {
+			return;
+		}
+
+		TZSRecurrence tzsRecurrence =
+			(TZSRecurrence)JSONFactoryUtil.deserialize(
+				calEvent.getRecurrence());
+
+		tzsRecurrence.setByDay(null);
+
+		String oldRecurrence = getRecurrence(tzsRecurrence);
+
+		if (oldRecurrence.equals(calendarBooking.getRecurrence())) {
+			updateCalendarBookingRecurrence(
+				calendarBooking, calEvent.getRecurrenceObj());
+		}
+	}
+
 	private static final String _ASSET_VOCABULARY_NAME = "Calendar Event Types";
 
-	private static Map<Integer, Frequency> _frequencyMap =
-		new HashMap<Integer, Frequency>();
-	private static Map<Integer, Weekday> _weekdayMap =
-		new HashMap<Integer, Weekday>();
+	private static Map<Integer, Frequency> _frequencyMap = new HashMap<>();
+	private static Map<Integer, Weekday> _weekdayMap = new HashMap<>();
 
 	static {
 		_frequencyMap.put(TZSRecurrence.DAILY, Frequency.DAILY);

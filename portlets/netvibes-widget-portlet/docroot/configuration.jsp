@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -82,7 +82,7 @@ String htmlAttributes =
 				href="<%= updateWidgetURL %>"
 				name="thumbnail"
 			>
-				<img alt="<%= curTitle %>" src="<%= curThumbnail %>" />
+				<img alt="<%= HtmlUtil.escapeAttribute(curTitle) %>" src="<%= curThumbnail %>" />
 			</liferay-ui:search-container-column-text>
 
 			<liferay-ui:search-container-column-text
@@ -103,7 +103,7 @@ String htmlAttributes =
 		<c:if test="<%= Validator.isNotNull(link) %>">
 			<aui:fieldset>
 				<div class="float-container">
-					<img alt="<%= title %>" src="<%= thumbnail %>" style="float: left; padding-right: 10px;" />
+					<img alt="<%= HtmlUtil.escapeAttribute(title) %>" src="<%= thumbnail %>" style="float: left; padding-right: 10px;" />
 
 					<div style="font-size: 1.2em;">
 						<strong><%= title %></strong>
@@ -112,7 +112,7 @@ String htmlAttributes =
 					<%= description %>
 				</div>
 
-				<aui:input cssClass="lfr-textarea-container lfr-textarea" name="preferences--htmlAttributes--" onKeyDown="Liferay.Util.checkTab(this); Liferay.Util.disableEsc();" type="textarea" value="<%= htmlAttributes %>" wrap="soft" />
+				<aui:input cssClass="lfr-textarea" name="preferences--htmlAttributes--" onKeyDown="Liferay.Util.checkTab(this); Liferay.Util.disableEsc();" type="textarea" value="<%= htmlAttributes %>" wrap="soft" wrapperCssClass="lfr-textarea-container" />
 			</aui:fieldset>
 
 			<%
@@ -145,7 +145,7 @@ String htmlAttributes =
 	}
 
 	function <portlet:namespace />updateWidget(link, title, description, thumbnail) {
-		document.<portlet:namespace />fm.<portlet:namespace /><%= Constants.CMD %>.value = "<%= Constants.UPDATE %>";
+		document.<portlet:namespace />fm.<portlet:namespace /><%= Constants.CMD %>.value = '<%= Constants.UPDATE %>';
 		document.<portlet:namespace />fm.<portlet:namespace />link.value = link;
 		document.<portlet:namespace />fm.<portlet:namespace />title.value = title;
 		document.<portlet:namespace />fm.<portlet:namespace />description.value = description;

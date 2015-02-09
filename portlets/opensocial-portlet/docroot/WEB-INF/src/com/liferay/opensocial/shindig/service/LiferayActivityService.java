@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -149,7 +149,7 @@ public class LiferayActivityService implements ActivityService {
 
 		ThemeDisplay themeDisplay = getThemeDisplay(securityToken);
 
-		List<Activity> activities = new ArrayList<Activity>();
+		List<Activity> activities = new ArrayList<>();
 
 		for (UserId userId : userIds) {
 			long userIdLong = GetterUtil.getLong(
@@ -272,7 +272,7 @@ public class LiferayActivityService implements ActivityService {
 			ThemeDisplay themeDisplay, long userId)
 		throws Exception {
 
-		List<Activity> activities = new ArrayList<Activity>();
+		List<Activity> activities = new ArrayList<>();
 
 		List<SocialActivity> socialActivities =
 			SocialActivityLocalServiceUtil.getUserActivities(userId, 0, 20);
@@ -346,7 +346,7 @@ public class LiferayActivityService implements ActivityService {
 			return null;
 		}
 
-		List<MediaItem> mediaItems = new ArrayList<MediaItem>();
+		List<MediaItem> mediaItems = new ArrayList<>();
 
 		for (int i = 0; i < mediaItemsJSONArray.length(); i++) {
 			JSONObject mediaItemsJsonObject = mediaItemsJSONArray.getJSONObject(
@@ -392,7 +392,7 @@ public class LiferayActivityService implements ActivityService {
 			return null;
 		}
 
-		Map<String, String> templateParams = new HashMap<String, String>();
+		Map<String, String> templateParams = new HashMap<>();
 
 		for (int i = 0; i < templateParamsJSONArray.length(); i++) {
 			JSONObject templateParamJSONObject =

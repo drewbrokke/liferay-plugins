@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -15,7 +15,6 @@
 package com.liferay.so.activities.hook.social;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.parsers.bbcode.BBCodeTranslatorUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.StringBundler;
@@ -42,9 +41,7 @@ public class MBActivityInterpreter extends SOSocialActivityInterpreter {
 		return _CLASS_NAMES;
 	}
 
-	public void updateActivitySet(long activityId)
-		throws PortalException, SystemException {
-
+	public void updateActivitySet(long activityId) throws PortalException {
 		SocialActivity activity =
 			SocialActivityLocalServiceUtil.fetchSocialActivity(activityId);
 
@@ -129,10 +126,6 @@ public class MBActivityInterpreter extends SOSocialActivityInterpreter {
 
 		if (activitySet.getType() ==
 				SocialActivityKeyConstants.MB_REPLY_MESSAGE) {
-
-			if (!hasPermissions(activitySet, serviceContext)) {
-				return null;
-			}
 
 			return getBody(
 				activitySet.getClassName(), activitySet.getClassPK(),

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License as published by the Free
@@ -175,7 +175,6 @@ public class WURFLDevice extends AbstractDevice {
 		return capability.getValue();
 	}
 
-	private Map<String, Capability> _capabilities =
-		new HashMap<String, Capability>();
+	private Map<String, Capability> _capabilities = new HashMap<>();
 
 }

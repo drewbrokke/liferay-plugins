@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -100,7 +100,7 @@ public class Definition {
 
 	public List<State> getTerminalStates() {
 		if (_terminalStates == null) {
-			_terminalStates = new ArrayList<State>();
+			_terminalStates = new ArrayList<>();
 
 			for (Node node : _nodesMap.values()) {
 				if (node instanceof State) {
@@ -126,11 +126,11 @@ public class Definition {
 
 	private String _content;
 	private String _description;
-	private List<Fork> _forks = new ArrayList<Fork>();
+	private List<Fork> _forks = new ArrayList<>();
 	private State _initialState;
-	private List<Join> _joins = new ArrayList<Join>();
+	private List<Join> _joins = new ArrayList<>();
 	private String _name;
-	private Map<String, Node> _nodesMap = new HashMap<String, Node>();
+	private Map<String, Node> _nodesMap = new HashMap<>();
 	private List<State> _terminalStates;
 	private int _version;
 

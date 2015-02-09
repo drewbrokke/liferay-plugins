@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -80,8 +80,9 @@ if (entry == null) {
 				boolean submitOnChange = false;
 				%>
 
-				<%@ include file="/entry_select_scope.jspf" %>
-
+				<div class="distribution-scope-container">
+					<%@ include file="/entry_select_scope.jspf" %>
+				</div>
 			</c:otherwise>
 		</c:choose>
 
@@ -113,7 +114,7 @@ if (entry == null) {
 		</div>
 
 		<aui:field-wrapper label="content">
-			<liferay-ui:input-editor height="150" toolbarSet="Basic" width="100%" />
+			<liferay-ui:input-editor contents="<%= content %>" height="150" toolbarSet="Basic" width="100%" />
 
 			<aui:input name="content" type="hidden" />
 		</aui:field-wrapper>
@@ -135,7 +136,7 @@ if (entry == null) {
 </aui:form>
 
 <div class="entries preview unread-entries">
-	<div class="entry hide" id="<portlet:namespace />preview">
+	<div class="clearfix entry hide" id="<portlet:namespace />preview">
 		<div class="user-portrait">
 			<span class="avatar">
 
@@ -144,22 +145,22 @@ if (entry == null) {
 				%>
 
 				<a href="<%= currentUser.getDisplayURL(themeDisplay) %>">
-					<img alt="<%= currentUser.getFullName() %>" src="<%= currentUser.getPortraitURL(themeDisplay) %>" />
+					<img alt="<%= HtmlUtil.escapeAttribute(currentUser.getFullName()) %>" src="<%= currentUser.getPortraitURL(themeDisplay) %>" />
 				</a>
 			</span>
 		</div>
 
-		<div class="entry-data">
-			<div class="entry-header">
-				<div class="entry-time">
-					<%= LanguageUtil.get(pageContext, "about-a-minute-ago") %>
-				</div>
-
-				<div class="entry-action">
-					<%= LanguageUtil.format(pageContext, "x-to-x", new Object[] {"<a href=\"" + currentUser.getDisplayURL(themeDisplay) + "\">" + HtmlUtil.escape(currentUser.getFullName()) + "</a>", "<span class=\"scope\" id=\"" + renderResponse.getNamespace() + "scope\"></span>"}, false) %>
-				</div>
+		<div class="entry-header">
+			<div class="entry-action">
+				<%= LanguageUtil.format(request, "x-to-x", new Object[] {"<a href=\"" + currentUser.getDisplayURL(themeDisplay) + "\">" + HtmlUtil.escape(currentUser.getFullName()) + "</a>", "<span class=\"scope\" id=\"" + renderResponse.getNamespace() + "scope\"></span>"}, false) %>
 			</div>
 
+			<div class="entry-time">
+				<%= LanguageUtil.get(request, "about-a-minute-ago") %>
+			</div>
+		</div>
+
+		<div class="entry-block">
 			<div class="entry-body">
 				<div class="title" id="<portlet:namespace />title"></div>
 
@@ -171,7 +172,7 @@ if (entry == null) {
 			<div class="entry-footer" id="<portlet:namespace />entryFooter">
 				<div class="entry-footer-toolbar">
 					<div class="edit-actions">
-						<span class="toggle action hide">
+						<span class="action hide toggle">
 							<a class="toggle-entry" data-entryId="preview" href="javascript:;">
 								<i class="icon-expand-alt"></i>
 
@@ -186,14 +187,6 @@ if (entry == null) {
 </div>
 
 <aui:script>
-	function <portlet:namespace />initEditor() {
-		var ckEditor = CKEDITOR.instances["<portlet:namespace />editor"];
-
-		ckEditor.resize("100%", "200");
-
-		return "<%= UnicodeFormatter.toString(content) %>";
-	}
-
 	function <portlet:namespace />closeEntry() {
 		Liferay.Util.getWindow('<portlet:namespace />Dialog').hide();
 	}
@@ -217,7 +210,7 @@ if (entry == null) {
 		}
 
 		if (<%= entry != null %>) {
-			var scope = A.one('#<portlet:namespace />scope').get('value');;
+			var scope = A.one('#<portlet:namespace />scope').get('value');
 		}
 		else {
 			var optValue = A.one('select[name="<portlet:namespace />distributionScope"]').get('value');
@@ -293,7 +286,7 @@ if (entry == null) {
 						}
 					}
 				},
-				dataType: 'json',
+				dataType: 'JSON',
 				form: {
 					id: form
 				}

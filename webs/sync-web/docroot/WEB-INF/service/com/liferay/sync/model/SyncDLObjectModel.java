@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,8 +14,9 @@
 
 package com.liferay.sync.model;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.portal.kernel.bean.AutoEscape;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.service.ServiceContext;
@@ -39,6 +40,7 @@ import java.util.Date;
  * @see com.liferay.sync.model.impl.SyncDLObjectModelImpl
  * @generated
  */
+@ProviderType
 public interface SyncDLObjectModel extends BaseModel<SyncDLObject> {
 	/*
 	 * NOTE FOR DEVELOPERS:
@@ -325,9 +327,8 @@ public interface SyncDLObjectModel extends BaseModel<SyncDLObject> {
 	 * Returns the lock user uuid of this sync d l object.
 	 *
 	 * @return the lock user uuid of this sync d l object
-	 * @throws SystemException if a system exception occurred
 	 */
-	public String getLockUserUuid() throws SystemException;
+	public String getLockUserUuid();
 
 	/**
 	 * Sets the lock user uuid of this sync d l object.
@@ -432,19 +433,19 @@ public interface SyncDLObjectModel extends BaseModel<SyncDLObject> {
 	public Object clone();
 
 	@Override
-	public int compareTo(SyncDLObject syncDLObject);
+	public int compareTo(com.liferay.sync.model.SyncDLObject syncDLObject);
 
 	@Override
 	public int hashCode();
 
 	@Override
-	public CacheModel<SyncDLObject> toCacheModel();
+	public CacheModel<com.liferay.sync.model.SyncDLObject> toCacheModel();
 
 	@Override
-	public SyncDLObject toEscapedModel();
+	public com.liferay.sync.model.SyncDLObject toEscapedModel();
 
 	@Override
-	public SyncDLObject toUnescapedModel();
+	public com.liferay.sync.model.SyncDLObject toUnescapedModel();
 
 	@Override
 	public String toString();

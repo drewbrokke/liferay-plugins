@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -15,9 +15,9 @@
 package com.liferay.repository.external.model;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.repository.RepositoryException;
 import com.liferay.portal.kernel.repository.model.Folder;
+import com.liferay.portal.security.permission.ActionKeys;
 import com.liferay.portal.security.permission.PermissionChecker;
 import com.liferay.portlet.documentlibrary.service.DLAppLocalServiceUtil;
 import com.liferay.repository.external.ExtRepositoryAdapter;
@@ -26,7 +26,9 @@ import com.liferay.repository.external.ExtRepositoryObject.ExtRepositoryPermissi
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Iván Zaera
@@ -38,7 +40,11 @@ public abstract class ExtRepositoryObjectAdapter<T>
 	@SuppressWarnings("unused")
 	public boolean containsPermission(
 			PermissionChecker permissionChecker, String actionId)
-		throws PortalException, SystemException {
+		throws PortalException {
+
+		if (_unsupportedActionIds.containsKey(actionId)) {
+			return _unsupportedActionIds.get(actionId);
+		}
 
 		try {
 			ExtRepositoryPermission extRepositoryPermission =
@@ -53,10 +59,8 @@ public abstract class ExtRepositoryObjectAdapter<T>
 		}
 	}
 
-	public List<Long> getAncestorFolderIds()
-		throws PortalException, SystemException {
-
-		List<Long> folderIds = new ArrayList<Long>();
+	public List<Long> getAncestorFolderIds() throws PortalException {
+		List<Long> folderIds = new ArrayList<>();
 
 		Folder folder = getParentFolder();
 
@@ -69,8 +73,8 @@ public abstract class ExtRepositoryObjectAdapter<T>
 		return folderIds;
 	}
 
-	public List<Folder> getAncestors() throws PortalException, SystemException {
-		List<Folder> folders = new ArrayList<Folder>();
+	public List<Folder> getAncestors() throws PortalException {
+		List<Folder> folders = new ArrayList<>();
 
 		Folder folder = getParentFolder();
 
@@ -103,7 +107,7 @@ public abstract class ExtRepositoryObjectAdapter<T>
 
 	public abstract String getName();
 
-	public Folder getParentFolder() throws PortalException, SystemException {
+	public Folder getParentFolder() throws PortalException {
 		ExtRepositoryAdapter extRepositoryAdapter = getRepository();
 
 		Folder parentFolder = extRepositoryAdapter.getParentFolder(this);
@@ -141,6 +145,12 @@ public abstract class ExtRepositoryObjectAdapter<T>
 			extRepositoryObject);
 
 		_extRepositoryObject = extRepositoryObject;
+	}
+
+	private static Map<String, Boolean> _unsupportedActionIds = new HashMap<>();
+
+	static {
+		_unsupportedActionIds.put(ActionKeys.SUBSCRIBE, Boolean.FALSE);
 	}
 
 	private ExtRepositoryObject _extRepositoryObject;

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,7 +16,6 @@ package com.liferay.portal.workflow.kaleo.export.builder;
 
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -62,9 +61,7 @@ public abstract class BaseNodeBuilder
 	extends BaseKaleoBean implements NodeBuilder {
 
 	@Override
-	public Node buildNode(KaleoNode kaleoNode)
-		throws PortalException, SystemException {
-
+	public Node buildNode(KaleoNode kaleoNode) throws PortalException {
 		Node node = createNode(kaleoNode);
 
 		Set<Action> actions = buildActions(
@@ -89,7 +86,7 @@ public abstract class BaseNodeBuilder
 
 	protected void addNotificationRecipients(
 			KaleoNotification kaleoNotification, Notification notification)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		List<KaleoNotificationRecipient> kaleoNotificationRecipients =
 			kaleoNotificationRecipientLocalService.
@@ -139,14 +136,14 @@ public abstract class BaseNodeBuilder
 		}
 	}
 
-	protected Set<Action> buildActions(String kaleoClassName, long kaleoClassPK)
-		throws SystemException {
+	protected Set<Action> buildActions(
+		String kaleoClassName, long kaleoClassPK) {
 
 		List<KaleoAction> kaleoActions =
 			kaleoActionLocalService.getKaleoActions(
 				kaleoClassName, kaleoClassPK);
 
-		Set<Action> actions = new HashSet<Action>(kaleoActions.size());
+		Set<Action> actions = new HashSet<>(kaleoActions.size());
 
 		for (KaleoAction kaleoAction : kaleoActions) {
 			Action action = new Action(
@@ -164,13 +161,13 @@ public abstract class BaseNodeBuilder
 
 	protected Set<Assignment> buildAssigments(
 			String kaleoClassName, long kaleoClassPK)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		List<KaleoTaskAssignment> kaleoTaskAssignments =
 			kaleoTaskAssignmentLocalService.getKaleoTaskAssignments(
 				kaleoClassName, kaleoClassPK);
 
-		Set<Assignment> assignments = new HashSet<Assignment>(
+		Set<Assignment> assignments = new HashSet<>(
 			kaleoTaskAssignments.size());
 
 		for (KaleoTaskAssignment kaleoTaskAssignment : kaleoTaskAssignments) {
@@ -218,13 +215,13 @@ public abstract class BaseNodeBuilder
 
 	protected Set<Notification> buildNotifications(
 			String kaleoClassName, long kaleoClassPK)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		List<KaleoNotification> kaleoNotifications =
 			kaleoNotificationLocalService.getKaleoNotifications(
 				kaleoClassName, kaleoClassPK);
 
-		Set<Notification> notifications = new HashSet<Notification>(
+		Set<Notification> notifications = new HashSet<>(
 			kaleoNotifications.size());
 
 		for (KaleoNotification kaleoNotification : kaleoNotifications) {
@@ -252,12 +249,12 @@ public abstract class BaseNodeBuilder
 	}
 
 	protected Set<Timer> buildTimers(String kaleoClassName, long kaleoClassPK)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		List<KaleoTimer> kaleoTimers = kaleoTimerLocalService.getKaleoTimers(
 			kaleoClassName, kaleoClassPK);
 
-		Set<Timer> timers = new HashSet<Timer>(kaleoTimers.size());
+		Set<Timer> timers = new HashSet<>(kaleoTimers.size());
 
 		for (KaleoTimer kaleoTimer : kaleoTimers) {
 			Timer timer = new Timer(
@@ -303,7 +300,7 @@ public abstract class BaseNodeBuilder
 	}
 
 	protected abstract Node createNode(KaleoNode kaleoNode)
-		throws PortalException, SystemException;
+		throws PortalException;
 
 	@BeanReference(type = RoleLocalService.class)
 	private RoleLocalService _roleLocalService;

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,6 +19,9 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * Represents a <a href="http://en.wikipedia.org/wiki/WebRTC">Web Real-Time
+ * Communication</a> (WebRTC) client. The clients are not thread-safe.
+ *
  * @author Philippe Proulx
  */
 public class WebRTCClient {
@@ -100,6 +103,6 @@ public class WebRTCClient {
 	private long _presenceTime;
 	private long _userId;
 	private Map<WebRTCClient, WebRTCConnection> _webRTCConnections =
-		new ConcurrentHashMap<WebRTCClient, WebRTCConnection>();
+		new ConcurrentHashMap<>();
 
 }

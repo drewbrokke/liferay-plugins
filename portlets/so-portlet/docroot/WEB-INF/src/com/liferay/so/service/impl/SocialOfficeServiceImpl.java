@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -18,7 +18,6 @@
 package com.liferay.so.service.impl;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -35,10 +34,8 @@ import java.util.List;
  */
 public class SocialOfficeServiceImpl extends SocialOfficeServiceBaseImpl {
 
-	public long[] getUserSocialOfficeGroupIds()
-		throws PortalException, SystemException {
-
-		List<Group> groups = new ArrayList<Group>();
+	public long[] getUserSocialOfficeGroupIds() throws PortalException {
+		List<Group> groups = new ArrayList<>();
 
 		for (Group group : GroupServiceUtil.getUserSites()) {
 			if (isSocialOfficeGroup(group.getGroupId())) {
@@ -49,9 +46,7 @@ public class SocialOfficeServiceImpl extends SocialOfficeServiceBaseImpl {
 		return StringUtil.split(ListUtil.toString(groups, "groupId"), 0L);
 	}
 
-	public boolean isSocialOfficeGroup(long groupId)
-		throws PortalException, SystemException {
-
+	public boolean isSocialOfficeGroup(long groupId) throws PortalException {
 		Group group = groupPersistence.findByPrimaryKey(groupId);
 
 		ExpandoBridge expandoBridge = group.getExpandoBridge();

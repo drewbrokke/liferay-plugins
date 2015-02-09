@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,8 +14,9 @@
 
 package com.liferay.portal.workflow.kaleo.model;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.portal.kernel.bean.AutoEscape;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.model.GroupedModel;
@@ -40,6 +41,7 @@ import java.util.Date;
  * @see com.liferay.portal.workflow.kaleo.model.impl.KaleoLogModelImpl
  * @generated
  */
+@ProviderType
 public interface KaleoLogModel extends BaseModel<KaleoLog>, GroupedModel {
 	/*
 	 * NOTE FOR DEVELOPERS:
@@ -127,10 +129,9 @@ public interface KaleoLogModel extends BaseModel<KaleoLog>, GroupedModel {
 	 * Returns the user uuid of this kaleo log.
 	 *
 	 * @return the user uuid of this kaleo log
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public String getUserUuid() throws SystemException;
+	public String getUserUuid();
 
 	/**
 	 * Sets the user uuid of this kaleo log.
@@ -565,19 +566,20 @@ public interface KaleoLogModel extends BaseModel<KaleoLog>, GroupedModel {
 	public Object clone();
 
 	@Override
-	public int compareTo(KaleoLog kaleoLog);
+	public int compareTo(
+		com.liferay.portal.workflow.kaleo.model.KaleoLog kaleoLog);
 
 	@Override
 	public int hashCode();
 
 	@Override
-	public CacheModel<KaleoLog> toCacheModel();
+	public CacheModel<com.liferay.portal.workflow.kaleo.model.KaleoLog> toCacheModel();
 
 	@Override
-	public KaleoLog toEscapedModel();
+	public com.liferay.portal.workflow.kaleo.model.KaleoLog toEscapedModel();
 
 	@Override
-	public KaleoLog toUnescapedModel();
+	public com.liferay.portal.workflow.kaleo.model.KaleoLog toUnescapedModel();
 
 	@Override
 	public String toString();

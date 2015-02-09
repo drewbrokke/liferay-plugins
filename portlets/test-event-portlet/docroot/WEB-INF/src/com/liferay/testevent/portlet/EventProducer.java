@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -56,7 +56,7 @@ public class EventProducer extends GenericPortlet {
 
 		QName qName = new QName("http://www.liferay.com", "LPS-18191");
 
-		HashMap<String, String> hashMap = new HashMap<String, String>();
+		HashMap<String, String> hashMap = new HashMap<>();
 
 		hashMap.put("hello", "world");
 

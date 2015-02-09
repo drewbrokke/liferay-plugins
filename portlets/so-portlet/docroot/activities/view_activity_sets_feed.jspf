@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -21,14 +21,20 @@
 for (SocialActivitySet activitySet : results) {
 	SocialActivityFeedEntry activityFeedEntry = SocialActivityInterpreterLocalServiceUtil.interpret("SO", activitySet, ServiceContextFactory.getInstance(request));
 
+	start++;
+
 	if (activityFeedEntry == null) {
 		continue;
+	}
+
+	if (count >= _DELTA) {
+		break;
 	}
 
 	Portlet portlet = PortletLocalServiceUtil.getPortletById(activityFeedEntry.getPortletId());
 %>
 
-	<div class="activity-item <%= portlet.getCssClassWrapper() %>-activity" id="<portlet:namespace /><%= activitySet.getActivitySetId() %>">
+	<div class="activity-item clearfix <%= portlet.getCssClassWrapper() %>-activity" id="<portlet:namespace /><%= activitySet.getActivitySetId() %>">
 
 		<%
 		User activitySetUser = UserLocalServiceUtil.fetchUser(activitySet.getUserId());
@@ -47,14 +53,14 @@ for (SocialActivitySet activitySet : results) {
 		<div class="user-portrait">
 			<span class="avatar">
 				<a href="<%= userDisplayURL %>">
-					<img alt="<%= HtmlUtil.escape(userFullName) %>" src="<%= userPortraitURL %>" />
+					<img alt="<%= HtmlUtil.escapeAttribute(userFullName) %>" src="<%= userPortraitURL %>" />
 				</a>
 			</span>
 		</div>
 
-		<div class="activity-data">
+		<%= activityFeedEntry.getTitle() %>
 
-			<%= activityFeedEntry.getTitle() %>
+		<div class="activity-block">
 
 			<%= activityFeedEntry.getBody() %>
 
@@ -74,7 +80,7 @@ for (SocialActivitySet activitySet : results) {
 						long classPK = (Long)commentsClassNameAndClassPK[1];
 
 						if (className.equals(MicroblogsEntry.class.getName())) {
-							commentsCount = MicroblogsEntryLocalServiceUtil.getReceiverMicroblogsEntryMicroblogsEntriesCount(MicroblogsEntryConstants.TYPE_REPLY, classPK);
+							commentsCount = MicroblogsEntryLocalServiceUtil.getParentMicroblogsEntryMicroblogsEntriesCount(MicroblogsEntryConstants.TYPE_REPLY, classPK);
 						}
 						else {
 							commentsCount = MBMessageLocalServiceUtil.getDiscussionMessagesCount(className, classPK, WorkflowConstants.STATUS_APPROVED);
@@ -137,5 +143,6 @@ for (SocialActivitySet activitySet : results) {
 	</aui:script>
 
 <%
+	count++;
 }
 %>

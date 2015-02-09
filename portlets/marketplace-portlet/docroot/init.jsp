@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -28,13 +28,10 @@ page import="com.liferay.marketplace.service.AppLocalServiceUtil" %><%@
 page import="com.liferay.marketplace.util.MarketplaceConstants" %><%@
 page import="com.liferay.marketplace.util.PortletKeys" %><%@
 page import="com.liferay.marketplace.util.comparator.PluginComparator" %><%@
-page import="com.liferay.portal.kernel.dao.orm.QueryUtil" %><%@
 page import="com.liferay.portal.kernel.deploy.DeployManagerUtil" %><%@
 page import="com.liferay.portal.kernel.plugin.RequiredPluginPackageException" %><%@
-page import="com.liferay.portal.kernel.portlet.LiferayPortletURL" %><%@
 page import="com.liferay.portal.kernel.servlet.ServletContextPool" %><%@
 page import="com.liferay.portal.kernel.upload.UploadException" %><%@
-page import="com.liferay.portal.kernel.util.Constants" %><%@
 page import="com.liferay.portal.kernel.util.ListUtil" %><%@
 page import="com.liferay.portal.kernel.util.ParamUtil" %><%@
 page import="com.liferay.portal.kernel.util.ServerDetector" %><%@
@@ -51,15 +48,13 @@ page import="com.liferay.portal.service.CompanyLocalServiceUtil" %><%@
 page import="com.liferay.portal.service.PluginSettingLocalServiceUtil" %><%@
 page import="com.liferay.portal.service.PortletLocalServiceUtil" %><%@
 page import="com.liferay.portal.util.PortalUtil" %><%@
-page import="com.liferay.portal.util.PortletCategoryKeys" %><%@
-page import="com.liferay.portlet.PortletURLFactoryUtil" %>
+page import="com.liferay.portal.util.PortletCategoryKeys" %>
 
 <%@ page import="java.util.ArrayList" %><%@
 page import="java.util.Iterator" %><%@
 page import="java.util.List" %>
 
-<%@ page import="javax.portlet.PortletRequest" %><%@
-page import="javax.portlet.PortletURL" %><%@
+<%@ page import="javax.portlet.PortletURL" %><%@
 page import="javax.portlet.WindowState" %>
 
 <%@ page import="javax.servlet.ServletContext" %>
@@ -86,4 +81,6 @@ else if (portletId.equals(PortletKeys.STORE) && (appId > 0)) {
 else {
 	referer = MarketplaceConstants.getPathStore();
 }
+
+referer = StringPool.SLASH + locale.getLanguage() + referer;
 %>

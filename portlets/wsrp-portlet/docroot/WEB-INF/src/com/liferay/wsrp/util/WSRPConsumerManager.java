@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -177,7 +177,7 @@ public class WSRPConsumerManager {
 		_serviceDescription = _serviceDescriptionService.getServiceDescription(
 			getServiceDescription);
 
-		_portletDescriptions = new HashMap<String, PortletDescription>();
+		_portletDescriptions = new HashMap<>();
 
 		PortletDescription[] portletDescriptions =
 			_serviceDescription.getOfferedPortlets();
@@ -189,7 +189,7 @@ public class WSRPConsumerManager {
 			}
 		}
 
-		_propertyDescriptions = new HashMap<String, PropertyDescription>();
+		_propertyDescriptions = new HashMap<>();
 
 		PropertyDescription[] propertyDescriptions = getPropertyDescriptions();
 
@@ -203,7 +203,7 @@ public class WSRPConsumerManager {
 			}
 		}
 
-		_events = new HashMap<String, QName>();
+		_events = new HashMap<>();
 
 		EventDescription[] eventDescriptions =
 			_serviceDescription.getEventDescriptions();

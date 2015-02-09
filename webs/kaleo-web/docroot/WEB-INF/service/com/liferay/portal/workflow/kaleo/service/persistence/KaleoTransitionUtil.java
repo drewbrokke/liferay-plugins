@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,9 +14,10 @@
 
 package com.liferay.portal.workflow.kaleo.service.persistence;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.portal.kernel.bean.PortletBeanLocatorUtil;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ReferenceRegistry;
 import com.liferay.portal.service.ServiceContext;
@@ -36,6 +37,7 @@ import java.util.List;
  * @see KaleoTransitionPersistenceImpl
  * @generated
  */
+@ProviderType
 public class KaleoTransitionUtil {
 	/*
 	 * NOTE FOR DEVELOPERS:
@@ -60,8 +62,7 @@ public class KaleoTransitionUtil {
 	/**
 	 * @see com.liferay.portal.service.persistence.BasePersistence#countWithDynamicQuery(DynamicQuery)
 	 */
-	public static long countWithDynamicQuery(DynamicQuery dynamicQuery)
-		throws SystemException {
+	public static long countWithDynamicQuery(DynamicQuery dynamicQuery) {
 		return getPersistence().countWithDynamicQuery(dynamicQuery);
 	}
 
@@ -69,7 +70,7 @@ public class KaleoTransitionUtil {
 	 * @see com.liferay.portal.service.persistence.BasePersistence#findWithDynamicQuery(DynamicQuery)
 	 */
 	public static List<KaleoTransition> findWithDynamicQuery(
-		DynamicQuery dynamicQuery) throws SystemException {
+		DynamicQuery dynamicQuery) {
 		return getPersistence().findWithDynamicQuery(dynamicQuery);
 	}
 
@@ -77,8 +78,7 @@ public class KaleoTransitionUtil {
 	 * @see com.liferay.portal.service.persistence.BasePersistence#findWithDynamicQuery(DynamicQuery, int, int)
 	 */
 	public static List<KaleoTransition> findWithDynamicQuery(
-		DynamicQuery dynamicQuery, int start, int end)
-		throws SystemException {
+		DynamicQuery dynamicQuery, int start, int end) {
 		return getPersistence().findWithDynamicQuery(dynamicQuery, start, end);
 	}
 
@@ -87,7 +87,7 @@ public class KaleoTransitionUtil {
 	 */
 	public static List<KaleoTransition> findWithDynamicQuery(
 		DynamicQuery dynamicQuery, int start, int end,
-		OrderByComparator orderByComparator) throws SystemException {
+		OrderByComparator<KaleoTransition> orderByComparator) {
 		return getPersistence()
 				   .findWithDynamicQuery(dynamicQuery, start, end,
 			orderByComparator);
@@ -96,8 +96,7 @@ public class KaleoTransitionUtil {
 	/**
 	 * @see com.liferay.portal.service.persistence.BasePersistence#update(com.liferay.portal.model.BaseModel)
 	 */
-	public static KaleoTransition update(KaleoTransition kaleoTransition)
-		throws SystemException {
+	public static KaleoTransition update(KaleoTransition kaleoTransition) {
 		return getPersistence().update(kaleoTransition);
 	}
 
@@ -105,7 +104,7 @@ public class KaleoTransitionUtil {
 	 * @see com.liferay.portal.service.persistence.BasePersistence#update(com.liferay.portal.model.BaseModel, ServiceContext)
 	 */
 	public static KaleoTransition update(KaleoTransition kaleoTransition,
-		ServiceContext serviceContext) throws SystemException {
+		ServiceContext serviceContext) {
 		return getPersistence().update(kaleoTransition, serviceContext);
 	}
 
@@ -114,11 +113,9 @@ public class KaleoTransitionUtil {
 	*
 	* @param companyId the company ID
 	* @return the matching kaleo transitions
-	* @throws SystemException if a system exception occurred
 	*/
 	public static java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoTransition> findByCompanyId(
-		long companyId)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		long companyId) {
 		return getPersistence().findByCompanyId(companyId);
 	}
 
@@ -133,11 +130,9 @@ public class KaleoTransitionUtil {
 	* @param start the lower bound of the range of kaleo transitions
 	* @param end the upper bound of the range of kaleo transitions (not inclusive)
 	* @return the range of matching kaleo transitions
-	* @throws SystemException if a system exception occurred
 	*/
 	public static java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoTransition> findByCompanyId(
-		long companyId, int start, int end)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		long companyId, int start, int end) {
 		return getPersistence().findByCompanyId(companyId, start, end);
 	}
 
@@ -153,12 +148,10 @@ public class KaleoTransitionUtil {
 	* @param end the upper bound of the range of kaleo transitions (not inclusive)
 	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	* @return the ordered range of matching kaleo transitions
-	* @throws SystemException if a system exception occurred
 	*/
 	public static java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoTransition> findByCompanyId(
 		long companyId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoTransition> orderByComparator) {
 		return getPersistence()
 				   .findByCompanyId(companyId, start, end, orderByComparator);
 	}
@@ -170,13 +163,11 @@ public class KaleoTransitionUtil {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching kaleo transition
 	* @throws com.liferay.portal.workflow.kaleo.NoSuchTransitionException if a matching kaleo transition could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoTransition findByCompanyId_First(
 		long companyId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.portal.workflow.kaleo.NoSuchTransitionException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoTransition> orderByComparator)
+		throws com.liferay.portal.workflow.kaleo.NoSuchTransitionException {
 		return getPersistence()
 				   .findByCompanyId_First(companyId, orderByComparator);
 	}
@@ -187,12 +178,10 @@ public class KaleoTransitionUtil {
 	* @param companyId the company ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching kaleo transition, or <code>null</code> if a matching kaleo transition could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoTransition fetchByCompanyId_First(
 		long companyId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoTransition> orderByComparator) {
 		return getPersistence()
 				   .fetchByCompanyId_First(companyId, orderByComparator);
 	}
@@ -204,13 +193,11 @@ public class KaleoTransitionUtil {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching kaleo transition
 	* @throws com.liferay.portal.workflow.kaleo.NoSuchTransitionException if a matching kaleo transition could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoTransition findByCompanyId_Last(
 		long companyId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.portal.workflow.kaleo.NoSuchTransitionException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoTransition> orderByComparator)
+		throws com.liferay.portal.workflow.kaleo.NoSuchTransitionException {
 		return getPersistence()
 				   .findByCompanyId_Last(companyId, orderByComparator);
 	}
@@ -221,12 +208,10 @@ public class KaleoTransitionUtil {
 	* @param companyId the company ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching kaleo transition, or <code>null</code> if a matching kaleo transition could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoTransition fetchByCompanyId_Last(
 		long companyId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoTransition> orderByComparator) {
 		return getPersistence()
 				   .fetchByCompanyId_Last(companyId, orderByComparator);
 	}
@@ -239,13 +224,11 @@ public class KaleoTransitionUtil {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next kaleo transition
 	* @throws com.liferay.portal.workflow.kaleo.NoSuchTransitionException if a kaleo transition with the primary key could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoTransition[] findByCompanyId_PrevAndNext(
 		long kaleoTransitionId, long companyId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.portal.workflow.kaleo.NoSuchTransitionException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoTransition> orderByComparator)
+		throws com.liferay.portal.workflow.kaleo.NoSuchTransitionException {
 		return getPersistence()
 				   .findByCompanyId_PrevAndNext(kaleoTransitionId, companyId,
 			orderByComparator);
@@ -255,10 +238,8 @@ public class KaleoTransitionUtil {
 	* Removes all the kaleo transitions where companyId = &#63; from the database.
 	*
 	* @param companyId the company ID
-	* @throws SystemException if a system exception occurred
 	*/
-	public static void removeByCompanyId(long companyId)
-		throws com.liferay.portal.kernel.exception.SystemException {
+	public static void removeByCompanyId(long companyId) {
 		getPersistence().removeByCompanyId(companyId);
 	}
 
@@ -267,10 +248,8 @@ public class KaleoTransitionUtil {
 	*
 	* @param companyId the company ID
 	* @return the number of matching kaleo transitions
-	* @throws SystemException if a system exception occurred
 	*/
-	public static int countByCompanyId(long companyId)
-		throws com.liferay.portal.kernel.exception.SystemException {
+	public static int countByCompanyId(long companyId) {
 		return getPersistence().countByCompanyId(companyId);
 	}
 
@@ -279,11 +258,9 @@ public class KaleoTransitionUtil {
 	*
 	* @param kaleoDefinitionId the kaleo definition ID
 	* @return the matching kaleo transitions
-	* @throws SystemException if a system exception occurred
 	*/
 	public static java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoTransition> findByKaleoDefinitionId(
-		long kaleoDefinitionId)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		long kaleoDefinitionId) {
 		return getPersistence().findByKaleoDefinitionId(kaleoDefinitionId);
 	}
 
@@ -298,11 +275,9 @@ public class KaleoTransitionUtil {
 	* @param start the lower bound of the range of kaleo transitions
 	* @param end the upper bound of the range of kaleo transitions (not inclusive)
 	* @return the range of matching kaleo transitions
-	* @throws SystemException if a system exception occurred
 	*/
 	public static java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoTransition> findByKaleoDefinitionId(
-		long kaleoDefinitionId, int start, int end)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		long kaleoDefinitionId, int start, int end) {
 		return getPersistence()
 				   .findByKaleoDefinitionId(kaleoDefinitionId, start, end);
 	}
@@ -319,12 +294,10 @@ public class KaleoTransitionUtil {
 	* @param end the upper bound of the range of kaleo transitions (not inclusive)
 	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	* @return the ordered range of matching kaleo transitions
-	* @throws SystemException if a system exception occurred
 	*/
 	public static java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoTransition> findByKaleoDefinitionId(
 		long kaleoDefinitionId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoTransition> orderByComparator) {
 		return getPersistence()
 				   .findByKaleoDefinitionId(kaleoDefinitionId, start, end,
 			orderByComparator);
@@ -337,13 +310,11 @@ public class KaleoTransitionUtil {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching kaleo transition
 	* @throws com.liferay.portal.workflow.kaleo.NoSuchTransitionException if a matching kaleo transition could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoTransition findByKaleoDefinitionId_First(
 		long kaleoDefinitionId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.portal.workflow.kaleo.NoSuchTransitionException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoTransition> orderByComparator)
+		throws com.liferay.portal.workflow.kaleo.NoSuchTransitionException {
 		return getPersistence()
 				   .findByKaleoDefinitionId_First(kaleoDefinitionId,
 			orderByComparator);
@@ -355,12 +326,10 @@ public class KaleoTransitionUtil {
 	* @param kaleoDefinitionId the kaleo definition ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching kaleo transition, or <code>null</code> if a matching kaleo transition could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoTransition fetchByKaleoDefinitionId_First(
 		long kaleoDefinitionId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoTransition> orderByComparator) {
 		return getPersistence()
 				   .fetchByKaleoDefinitionId_First(kaleoDefinitionId,
 			orderByComparator);
@@ -373,13 +342,11 @@ public class KaleoTransitionUtil {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching kaleo transition
 	* @throws com.liferay.portal.workflow.kaleo.NoSuchTransitionException if a matching kaleo transition could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoTransition findByKaleoDefinitionId_Last(
 		long kaleoDefinitionId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.portal.workflow.kaleo.NoSuchTransitionException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoTransition> orderByComparator)
+		throws com.liferay.portal.workflow.kaleo.NoSuchTransitionException {
 		return getPersistence()
 				   .findByKaleoDefinitionId_Last(kaleoDefinitionId,
 			orderByComparator);
@@ -391,12 +358,10 @@ public class KaleoTransitionUtil {
 	* @param kaleoDefinitionId the kaleo definition ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching kaleo transition, or <code>null</code> if a matching kaleo transition could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoTransition fetchByKaleoDefinitionId_Last(
 		long kaleoDefinitionId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoTransition> orderByComparator) {
 		return getPersistence()
 				   .fetchByKaleoDefinitionId_Last(kaleoDefinitionId,
 			orderByComparator);
@@ -410,13 +375,11 @@ public class KaleoTransitionUtil {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next kaleo transition
 	* @throws com.liferay.portal.workflow.kaleo.NoSuchTransitionException if a kaleo transition with the primary key could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoTransition[] findByKaleoDefinitionId_PrevAndNext(
 		long kaleoTransitionId, long kaleoDefinitionId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.portal.workflow.kaleo.NoSuchTransitionException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoTransition> orderByComparator)
+		throws com.liferay.portal.workflow.kaleo.NoSuchTransitionException {
 		return getPersistence()
 				   .findByKaleoDefinitionId_PrevAndNext(kaleoTransitionId,
 			kaleoDefinitionId, orderByComparator);
@@ -426,10 +389,8 @@ public class KaleoTransitionUtil {
 	* Removes all the kaleo transitions where kaleoDefinitionId = &#63; from the database.
 	*
 	* @param kaleoDefinitionId the kaleo definition ID
-	* @throws SystemException if a system exception occurred
 	*/
-	public static void removeByKaleoDefinitionId(long kaleoDefinitionId)
-		throws com.liferay.portal.kernel.exception.SystemException {
+	public static void removeByKaleoDefinitionId(long kaleoDefinitionId) {
 		getPersistence().removeByKaleoDefinitionId(kaleoDefinitionId);
 	}
 
@@ -438,10 +399,8 @@ public class KaleoTransitionUtil {
 	*
 	* @param kaleoDefinitionId the kaleo definition ID
 	* @return the number of matching kaleo transitions
-	* @throws SystemException if a system exception occurred
 	*/
-	public static int countByKaleoDefinitionId(long kaleoDefinitionId)
-		throws com.liferay.portal.kernel.exception.SystemException {
+	public static int countByKaleoDefinitionId(long kaleoDefinitionId) {
 		return getPersistence().countByKaleoDefinitionId(kaleoDefinitionId);
 	}
 
@@ -450,11 +409,9 @@ public class KaleoTransitionUtil {
 	*
 	* @param kaleoNodeId the kaleo node ID
 	* @return the matching kaleo transitions
-	* @throws SystemException if a system exception occurred
 	*/
 	public static java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoTransition> findByKaleoNodeId(
-		long kaleoNodeId)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		long kaleoNodeId) {
 		return getPersistence().findByKaleoNodeId(kaleoNodeId);
 	}
 
@@ -469,11 +426,9 @@ public class KaleoTransitionUtil {
 	* @param start the lower bound of the range of kaleo transitions
 	* @param end the upper bound of the range of kaleo transitions (not inclusive)
 	* @return the range of matching kaleo transitions
-	* @throws SystemException if a system exception occurred
 	*/
 	public static java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoTransition> findByKaleoNodeId(
-		long kaleoNodeId, int start, int end)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		long kaleoNodeId, int start, int end) {
 		return getPersistence().findByKaleoNodeId(kaleoNodeId, start, end);
 	}
 
@@ -489,12 +444,10 @@ public class KaleoTransitionUtil {
 	* @param end the upper bound of the range of kaleo transitions (not inclusive)
 	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	* @return the ordered range of matching kaleo transitions
-	* @throws SystemException if a system exception occurred
 	*/
 	public static java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoTransition> findByKaleoNodeId(
 		long kaleoNodeId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoTransition> orderByComparator) {
 		return getPersistence()
 				   .findByKaleoNodeId(kaleoNodeId, start, end, orderByComparator);
 	}
@@ -506,13 +459,11 @@ public class KaleoTransitionUtil {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching kaleo transition
 	* @throws com.liferay.portal.workflow.kaleo.NoSuchTransitionException if a matching kaleo transition could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoTransition findByKaleoNodeId_First(
 		long kaleoNodeId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.portal.workflow.kaleo.NoSuchTransitionException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoTransition> orderByComparator)
+		throws com.liferay.portal.workflow.kaleo.NoSuchTransitionException {
 		return getPersistence()
 				   .findByKaleoNodeId_First(kaleoNodeId, orderByComparator);
 	}
@@ -523,12 +474,10 @@ public class KaleoTransitionUtil {
 	* @param kaleoNodeId the kaleo node ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching kaleo transition, or <code>null</code> if a matching kaleo transition could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoTransition fetchByKaleoNodeId_First(
 		long kaleoNodeId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoTransition> orderByComparator) {
 		return getPersistence()
 				   .fetchByKaleoNodeId_First(kaleoNodeId, orderByComparator);
 	}
@@ -540,13 +489,11 @@ public class KaleoTransitionUtil {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching kaleo transition
 	* @throws com.liferay.portal.workflow.kaleo.NoSuchTransitionException if a matching kaleo transition could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoTransition findByKaleoNodeId_Last(
 		long kaleoNodeId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.portal.workflow.kaleo.NoSuchTransitionException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoTransition> orderByComparator)
+		throws com.liferay.portal.workflow.kaleo.NoSuchTransitionException {
 		return getPersistence()
 				   .findByKaleoNodeId_Last(kaleoNodeId, orderByComparator);
 	}
@@ -557,12 +504,10 @@ public class KaleoTransitionUtil {
 	* @param kaleoNodeId the kaleo node ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching kaleo transition, or <code>null</code> if a matching kaleo transition could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoTransition fetchByKaleoNodeId_Last(
 		long kaleoNodeId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoTransition> orderByComparator) {
 		return getPersistence()
 				   .fetchByKaleoNodeId_Last(kaleoNodeId, orderByComparator);
 	}
@@ -575,13 +520,11 @@ public class KaleoTransitionUtil {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next kaleo transition
 	* @throws com.liferay.portal.workflow.kaleo.NoSuchTransitionException if a kaleo transition with the primary key could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoTransition[] findByKaleoNodeId_PrevAndNext(
 		long kaleoTransitionId, long kaleoNodeId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.portal.workflow.kaleo.NoSuchTransitionException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoTransition> orderByComparator)
+		throws com.liferay.portal.workflow.kaleo.NoSuchTransitionException {
 		return getPersistence()
 				   .findByKaleoNodeId_PrevAndNext(kaleoTransitionId,
 			kaleoNodeId, orderByComparator);
@@ -591,10 +534,8 @@ public class KaleoTransitionUtil {
 	* Removes all the kaleo transitions where kaleoNodeId = &#63; from the database.
 	*
 	* @param kaleoNodeId the kaleo node ID
-	* @throws SystemException if a system exception occurred
 	*/
-	public static void removeByKaleoNodeId(long kaleoNodeId)
-		throws com.liferay.portal.kernel.exception.SystemException {
+	public static void removeByKaleoNodeId(long kaleoNodeId) {
 		getPersistence().removeByKaleoNodeId(kaleoNodeId);
 	}
 
@@ -603,10 +544,8 @@ public class KaleoTransitionUtil {
 	*
 	* @param kaleoNodeId the kaleo node ID
 	* @return the number of matching kaleo transitions
-	* @throws SystemException if a system exception occurred
 	*/
-	public static int countByKaleoNodeId(long kaleoNodeId)
-		throws com.liferay.portal.kernel.exception.SystemException {
+	public static int countByKaleoNodeId(long kaleoNodeId) {
 		return getPersistence().countByKaleoNodeId(kaleoNodeId);
 	}
 
@@ -617,12 +556,10 @@ public class KaleoTransitionUtil {
 	* @param name the name
 	* @return the matching kaleo transition
 	* @throws com.liferay.portal.workflow.kaleo.NoSuchTransitionException if a matching kaleo transition could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoTransition findByKNI_N(
 		long kaleoNodeId, java.lang.String name)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.portal.workflow.kaleo.NoSuchTransitionException {
+		throws com.liferay.portal.workflow.kaleo.NoSuchTransitionException {
 		return getPersistence().findByKNI_N(kaleoNodeId, name);
 	}
 
@@ -632,11 +569,9 @@ public class KaleoTransitionUtil {
 	* @param kaleoNodeId the kaleo node ID
 	* @param name the name
 	* @return the matching kaleo transition, or <code>null</code> if a matching kaleo transition could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoTransition fetchByKNI_N(
-		long kaleoNodeId, java.lang.String name)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		long kaleoNodeId, java.lang.String name) {
 		return getPersistence().fetchByKNI_N(kaleoNodeId, name);
 	}
 
@@ -647,11 +582,9 @@ public class KaleoTransitionUtil {
 	* @param name the name
 	* @param retrieveFromCache whether to use the finder cache
 	* @return the matching kaleo transition, or <code>null</code> if a matching kaleo transition could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoTransition fetchByKNI_N(
-		long kaleoNodeId, java.lang.String name, boolean retrieveFromCache)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		long kaleoNodeId, java.lang.String name, boolean retrieveFromCache) {
 		return getPersistence()
 				   .fetchByKNI_N(kaleoNodeId, name, retrieveFromCache);
 	}
@@ -662,12 +595,10 @@ public class KaleoTransitionUtil {
 	* @param kaleoNodeId the kaleo node ID
 	* @param name the name
 	* @return the kaleo transition that was removed
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoTransition removeByKNI_N(
 		long kaleoNodeId, java.lang.String name)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.portal.workflow.kaleo.NoSuchTransitionException {
+		throws com.liferay.portal.workflow.kaleo.NoSuchTransitionException {
 		return getPersistence().removeByKNI_N(kaleoNodeId, name);
 	}
 
@@ -677,10 +608,8 @@ public class KaleoTransitionUtil {
 	* @param kaleoNodeId the kaleo node ID
 	* @param name the name
 	* @return the number of matching kaleo transitions
-	* @throws SystemException if a system exception occurred
 	*/
-	public static int countByKNI_N(long kaleoNodeId, java.lang.String name)
-		throws com.liferay.portal.kernel.exception.SystemException {
+	public static int countByKNI_N(long kaleoNodeId, java.lang.String name) {
 		return getPersistence().countByKNI_N(kaleoNodeId, name);
 	}
 
@@ -691,12 +620,10 @@ public class KaleoTransitionUtil {
 	* @param defaultTransition the default transition
 	* @return the matching kaleo transition
 	* @throws com.liferay.portal.workflow.kaleo.NoSuchTransitionException if a matching kaleo transition could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoTransition findByKNI_DT(
 		long kaleoNodeId, boolean defaultTransition)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.portal.workflow.kaleo.NoSuchTransitionException {
+		throws com.liferay.portal.workflow.kaleo.NoSuchTransitionException {
 		return getPersistence().findByKNI_DT(kaleoNodeId, defaultTransition);
 	}
 
@@ -706,11 +633,9 @@ public class KaleoTransitionUtil {
 	* @param kaleoNodeId the kaleo node ID
 	* @param defaultTransition the default transition
 	* @return the matching kaleo transition, or <code>null</code> if a matching kaleo transition could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoTransition fetchByKNI_DT(
-		long kaleoNodeId, boolean defaultTransition)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		long kaleoNodeId, boolean defaultTransition) {
 		return getPersistence().fetchByKNI_DT(kaleoNodeId, defaultTransition);
 	}
 
@@ -721,11 +646,9 @@ public class KaleoTransitionUtil {
 	* @param defaultTransition the default transition
 	* @param retrieveFromCache whether to use the finder cache
 	* @return the matching kaleo transition, or <code>null</code> if a matching kaleo transition could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoTransition fetchByKNI_DT(
-		long kaleoNodeId, boolean defaultTransition, boolean retrieveFromCache)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		long kaleoNodeId, boolean defaultTransition, boolean retrieveFromCache) {
 		return getPersistence()
 				   .fetchByKNI_DT(kaleoNodeId, defaultTransition,
 			retrieveFromCache);
@@ -737,12 +660,10 @@ public class KaleoTransitionUtil {
 	* @param kaleoNodeId the kaleo node ID
 	* @param defaultTransition the default transition
 	* @return the kaleo transition that was removed
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoTransition removeByKNI_DT(
 		long kaleoNodeId, boolean defaultTransition)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.portal.workflow.kaleo.NoSuchTransitionException {
+		throws com.liferay.portal.workflow.kaleo.NoSuchTransitionException {
 		return getPersistence().removeByKNI_DT(kaleoNodeId, defaultTransition);
 	}
 
@@ -752,10 +673,8 @@ public class KaleoTransitionUtil {
 	* @param kaleoNodeId the kaleo node ID
 	* @param defaultTransition the default transition
 	* @return the number of matching kaleo transitions
-	* @throws SystemException if a system exception occurred
 	*/
-	public static int countByKNI_DT(long kaleoNodeId, boolean defaultTransition)
-		throws com.liferay.portal.kernel.exception.SystemException {
+	public static int countByKNI_DT(long kaleoNodeId, boolean defaultTransition) {
 		return getPersistence().countByKNI_DT(kaleoNodeId, defaultTransition);
 	}
 
@@ -796,18 +715,15 @@ public class KaleoTransitionUtil {
 	* @param kaleoTransitionId the primary key of the kaleo transition
 	* @return the kaleo transition that was removed
 	* @throws com.liferay.portal.workflow.kaleo.NoSuchTransitionException if a kaleo transition with the primary key could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoTransition remove(
 		long kaleoTransitionId)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.portal.workflow.kaleo.NoSuchTransitionException {
+		throws com.liferay.portal.workflow.kaleo.NoSuchTransitionException {
 		return getPersistence().remove(kaleoTransitionId);
 	}
 
 	public static com.liferay.portal.workflow.kaleo.model.KaleoTransition updateImpl(
-		com.liferay.portal.workflow.kaleo.model.KaleoTransition kaleoTransition)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.workflow.kaleo.model.KaleoTransition kaleoTransition) {
 		return getPersistence().updateImpl(kaleoTransition);
 	}
 
@@ -817,12 +733,10 @@ public class KaleoTransitionUtil {
 	* @param kaleoTransitionId the primary key of the kaleo transition
 	* @return the kaleo transition
 	* @throws com.liferay.portal.workflow.kaleo.NoSuchTransitionException if a kaleo transition with the primary key could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoTransition findByPrimaryKey(
 		long kaleoTransitionId)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.portal.workflow.kaleo.NoSuchTransitionException {
+		throws com.liferay.portal.workflow.kaleo.NoSuchTransitionException {
 		return getPersistence().findByPrimaryKey(kaleoTransitionId);
 	}
 
@@ -831,22 +745,23 @@ public class KaleoTransitionUtil {
 	*
 	* @param kaleoTransitionId the primary key of the kaleo transition
 	* @return the kaleo transition, or <code>null</code> if a kaleo transition with the primary key could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoTransition fetchByPrimaryKey(
-		long kaleoTransitionId)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		long kaleoTransitionId) {
 		return getPersistence().fetchByPrimaryKey(kaleoTransitionId);
+	}
+
+	public static java.util.Map<java.io.Serializable, com.liferay.portal.workflow.kaleo.model.KaleoTransition> fetchByPrimaryKeys(
+		java.util.Set<java.io.Serializable> primaryKeys) {
+		return getPersistence().fetchByPrimaryKeys(primaryKeys);
 	}
 
 	/**
 	* Returns all the kaleo transitions.
 	*
 	* @return the kaleo transitions
-	* @throws SystemException if a system exception occurred
 	*/
-	public static java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoTransition> findAll()
-		throws com.liferay.portal.kernel.exception.SystemException {
+	public static java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoTransition> findAll() {
 		return getPersistence().findAll();
 	}
 
@@ -860,11 +775,9 @@ public class KaleoTransitionUtil {
 	* @param start the lower bound of the range of kaleo transitions
 	* @param end the upper bound of the range of kaleo transitions (not inclusive)
 	* @return the range of kaleo transitions
-	* @throws SystemException if a system exception occurred
 	*/
 	public static java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoTransition> findAll(
-		int start, int end)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		int start, int end) {
 		return getPersistence().findAll(start, end);
 	}
 
@@ -879,22 +792,17 @@ public class KaleoTransitionUtil {
 	* @param end the upper bound of the range of kaleo transitions (not inclusive)
 	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	* @return the ordered range of kaleo transitions
-	* @throws SystemException if a system exception occurred
 	*/
 	public static java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoTransition> findAll(
 		int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoTransition> orderByComparator) {
 		return getPersistence().findAll(start, end, orderByComparator);
 	}
 
 	/**
 	* Removes all the kaleo transitions from the database.
-	*
-	* @throws SystemException if a system exception occurred
 	*/
-	public static void removeAll()
-		throws com.liferay.portal.kernel.exception.SystemException {
+	public static void removeAll() {
 		getPersistence().removeAll();
 	}
 
@@ -902,10 +810,8 @@ public class KaleoTransitionUtil {
 	* Returns the number of kaleo transitions.
 	*
 	* @return the number of kaleo transitions
-	* @throws SystemException if a system exception occurred
 	*/
-	public static int countAll()
-		throws com.liferay.portal.kernel.exception.SystemException {
+	public static int countAll() {
 		return getPersistence().countAll();
 	}
 

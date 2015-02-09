@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,6 +14,8 @@
 
 package com.liferay.portal.workflow.kaleo.model;
 
+import aQute.bnd.annotation.ProviderType;
+
 import java.io.Serializable;
 
 import java.util.ArrayList;
@@ -27,6 +29,7 @@ import java.util.List;
  * @see com.liferay.portal.workflow.kaleo.service.http.KaleoDefinitionServiceSoap
  * @generated
  */
+@ProviderType
 public class KaleoDefinitionSoap implements Serializable {
 	public static KaleoDefinitionSoap toSoapModel(KaleoDefinition model) {
 		KaleoDefinitionSoap soapModel = new KaleoDefinitionSoap();

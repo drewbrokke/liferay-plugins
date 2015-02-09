@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -48,7 +48,9 @@ public class RSSUtil extends com.liferay.util.RSSUtil {
 			PortletProps.get(PortletPropsKeys.CALENDAR_RSS_TEMPLATE));
 
 		Format dateFormatDateTime = FastDateFormatFactoryUtil.getDateTime(
-			themeDisplay.getLocale(), themeDisplay.getTimeZone());
+			themeDisplay.getLocale(),
+			CalendarUtil.getCalendarBookingDisplayTimeZone(
+				calendarBooking, themeDisplay.getTimeZone()));
 
 		content = StringUtil.replace(
 			content,

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -17,12 +17,44 @@
 
 package com.liferay.microblogs.model.impl;
 
+import com.liferay.microblogs.model.MicroblogsEntry;
+import com.liferay.microblogs.service.MicroblogsEntryLocalServiceUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+
 /**
  * @author Brian Wing Shun Chan
  */
 public class MicroblogsEntryImpl extends MicroblogsEntryBaseImpl {
 
 	public MicroblogsEntryImpl() {
+	}
+
+	public long fetchParentMicroblogsEntryUserId() {
+		if (getMicroblogsEntryId() == getParentMicroblogsEntryId()) {
+			return getUserId();
+		}
+
+		MicroblogsEntry microblogsEntry =
+			MicroblogsEntryLocalServiceUtil.fetchMicroblogsEntry(
+				getParentMicroblogsEntryId());
+
+		if (microblogsEntry == null) {
+			return 0;
+		}
+
+		return microblogsEntry.getUserId();
+	}
+
+	public long getParentMicroblogsEntryUserId() throws PortalException {
+		if (getMicroblogsEntryId() == getParentMicroblogsEntryId()) {
+			return getUserId();
+		}
+
+		MicroblogsEntry microblogsEntry =
+			MicroblogsEntryLocalServiceUtil.getMicroblogsEntry(
+				getParentMicroblogsEntryId());
+
+		return microblogsEntry.getUserId();
 	}
 
 }

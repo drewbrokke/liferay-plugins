@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,12 +14,16 @@
 
 package com.liferay.portal.workflow.kaleo.service.base;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.bean.IdentifiableBean;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBFactoryUtil;
 import com.liferay.portal.kernel.dao.jdbc.SqlUpdate;
 import com.liferay.portal.kernel.dao.jdbc.SqlUpdateFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.DefaultActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.Projection;
@@ -72,6 +76,7 @@ import javax.sql.DataSource;
  * @see com.liferay.portal.workflow.kaleo.service.KaleoNodeLocalServiceUtil
  * @generated
  */
+@ProviderType
 public abstract class KaleoNodeLocalServiceBaseImpl extends BaseLocalServiceImpl
 	implements KaleoNodeLocalService, IdentifiableBean {
 	/*
@@ -85,12 +90,10 @@ public abstract class KaleoNodeLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 *
 	 * @param kaleoNode the kaleo node
 	 * @return the kaleo node that was added
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
-	public KaleoNode addKaleoNode(KaleoNode kaleoNode)
-		throws SystemException {
+	public KaleoNode addKaleoNode(KaleoNode kaleoNode) {
 		kaleoNode.setNew(true);
 
 		return kaleoNodePersistence.update(kaleoNode);
@@ -113,12 +116,11 @@ public abstract class KaleoNodeLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 * @param kaleoNodeId the primary key of the kaleo node
 	 * @return the kaleo node that was removed
 	 * @throws PortalException if a kaleo node with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	public KaleoNode deleteKaleoNode(long kaleoNodeId)
-		throws PortalException, SystemException {
+		throws PortalException {
 		return kaleoNodePersistence.remove(kaleoNodeId);
 	}
 
@@ -127,12 +129,10 @@ public abstract class KaleoNodeLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 *
 	 * @param kaleoNode the kaleo node
 	 * @return the kaleo node that was removed
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
-	public KaleoNode deleteKaleoNode(KaleoNode kaleoNode)
-		throws SystemException {
+	public KaleoNode deleteKaleoNode(KaleoNode kaleoNode) {
 		return kaleoNodePersistence.remove(kaleoNode);
 	}
 
@@ -149,12 +149,9 @@ public abstract class KaleoNodeLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 *
 	 * @param dynamicQuery the dynamic query
 	 * @return the matching rows
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	@SuppressWarnings("rawtypes")
-	public List dynamicQuery(DynamicQuery dynamicQuery)
-		throws SystemException {
+	public <T> List<T> dynamicQuery(DynamicQuery dynamicQuery) {
 		return kaleoNodePersistence.findWithDynamicQuery(dynamicQuery);
 	}
 
@@ -169,12 +166,10 @@ public abstract class KaleoNodeLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 * @param start the lower bound of the range of model instances
 	 * @param end the upper bound of the range of model instances (not inclusive)
 	 * @return the range of matching rows
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	@SuppressWarnings("rawtypes")
-	public List dynamicQuery(DynamicQuery dynamicQuery, int start, int end)
-		throws SystemException {
+	public <T> List<T> dynamicQuery(DynamicQuery dynamicQuery, int start,
+		int end) {
 		return kaleoNodePersistence.findWithDynamicQuery(dynamicQuery, start,
 			end);
 	}
@@ -191,46 +186,41 @@ public abstract class KaleoNodeLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 * @param end the upper bound of the range of model instances (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @return the ordered range of matching rows
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	@SuppressWarnings("rawtypes")
-	public List dynamicQuery(DynamicQuery dynamicQuery, int start, int end,
-		OrderByComparator orderByComparator) throws SystemException {
+	public <T> List<T> dynamicQuery(DynamicQuery dynamicQuery, int start,
+		int end, OrderByComparator<T> orderByComparator) {
 		return kaleoNodePersistence.findWithDynamicQuery(dynamicQuery, start,
 			end, orderByComparator);
 	}
 
 	/**
-	 * Returns the number of rows that match the dynamic query.
+	 * Returns the number of rows matching the dynamic query.
 	 *
 	 * @param dynamicQuery the dynamic query
-	 * @return the number of rows that match the dynamic query
-	 * @throws SystemException if a system exception occurred
+	 * @return the number of rows matching the dynamic query
 	 */
 	@Override
-	public long dynamicQueryCount(DynamicQuery dynamicQuery)
-		throws SystemException {
+	public long dynamicQueryCount(DynamicQuery dynamicQuery) {
 		return kaleoNodePersistence.countWithDynamicQuery(dynamicQuery);
 	}
 
 	/**
-	 * Returns the number of rows that match the dynamic query.
+	 * Returns the number of rows matching the dynamic query.
 	 *
 	 * @param dynamicQuery the dynamic query
 	 * @param projection the projection to apply to the query
-	 * @return the number of rows that match the dynamic query
-	 * @throws SystemException if a system exception occurred
+	 * @return the number of rows matching the dynamic query
 	 */
 	@Override
 	public long dynamicQueryCount(DynamicQuery dynamicQuery,
-		Projection projection) throws SystemException {
+		Projection projection) {
 		return kaleoNodePersistence.countWithDynamicQuery(dynamicQuery,
 			projection);
 	}
 
 	@Override
-	public KaleoNode fetchKaleoNode(long kaleoNodeId) throws SystemException {
+	public KaleoNode fetchKaleoNode(long kaleoNodeId) {
 		return kaleoNodePersistence.fetchByPrimaryKey(kaleoNodeId);
 	}
 
@@ -240,17 +230,46 @@ public abstract class KaleoNodeLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 * @param kaleoNodeId the primary key of the kaleo node
 	 * @return the kaleo node
 	 * @throws PortalException if a kaleo node with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public KaleoNode getKaleoNode(long kaleoNodeId)
-		throws PortalException, SystemException {
+	public KaleoNode getKaleoNode(long kaleoNodeId) throws PortalException {
 		return kaleoNodePersistence.findByPrimaryKey(kaleoNodeId);
 	}
 
 	@Override
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		ActionableDynamicQuery actionableDynamicQuery = new DefaultActionableDynamicQuery();
+
+		actionableDynamicQuery.setBaseLocalService(com.liferay.portal.workflow.kaleo.service.KaleoNodeLocalServiceUtil.getService());
+		actionableDynamicQuery.setClass(KaleoNode.class);
+		actionableDynamicQuery.setClassLoader(getClassLoader());
+
+		actionableDynamicQuery.setPrimaryKeyPropertyName("kaleoNodeId");
+
+		return actionableDynamicQuery;
+	}
+
+	protected void initActionableDynamicQuery(
+		ActionableDynamicQuery actionableDynamicQuery) {
+		actionableDynamicQuery.setBaseLocalService(com.liferay.portal.workflow.kaleo.service.KaleoNodeLocalServiceUtil.getService());
+		actionableDynamicQuery.setClass(KaleoNode.class);
+		actionableDynamicQuery.setClassLoader(getClassLoader());
+
+		actionableDynamicQuery.setPrimaryKeyPropertyName("kaleoNodeId");
+	}
+
+	/**
+	 * @throws PortalException
+	 */
+	@Override
+	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
+		throws PortalException {
+		return kaleoNodeLocalService.deleteKaleoNode((KaleoNode)persistedModel);
+	}
+
+	@Override
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
-		throws PortalException, SystemException {
+		throws PortalException {
 		return kaleoNodePersistence.findByPrimaryKey(primaryKeyObj);
 	}
 
@@ -264,11 +283,9 @@ public abstract class KaleoNodeLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 * @param start the lower bound of the range of kaleo nodes
 	 * @param end the upper bound of the range of kaleo nodes (not inclusive)
 	 * @return the range of kaleo nodes
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public List<KaleoNode> getKaleoNodes(int start, int end)
-		throws SystemException {
+	public List<KaleoNode> getKaleoNodes(int start, int end) {
 		return kaleoNodePersistence.findAll(start, end);
 	}
 
@@ -276,10 +293,9 @@ public abstract class KaleoNodeLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 * Returns the number of kaleo nodes.
 	 *
 	 * @return the number of kaleo nodes
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public int getKaleoNodesCount() throws SystemException {
+	public int getKaleoNodesCount() {
 		return kaleoNodePersistence.countAll();
 	}
 
@@ -288,12 +304,10 @@ public abstract class KaleoNodeLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 *
 	 * @param kaleoNode the kaleo node
 	 * @return the kaleo node that was updated
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
-	public KaleoNode updateKaleoNode(KaleoNode kaleoNode)
-		throws SystemException {
+	public KaleoNode updateKaleoNode(KaleoNode kaleoNode) {
 		return kaleoNodePersistence.update(kaleoNode);
 	}
 
@@ -1161,7 +1175,7 @@ public abstract class KaleoNodeLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 *
 	 * @param sql the sql query
 	 */
-	protected void runSQL(String sql) throws SystemException {
+	protected void runSQL(String sql) {
 		try {
 			DataSource dataSource = kaleoNodePersistence.getDataSource();
 

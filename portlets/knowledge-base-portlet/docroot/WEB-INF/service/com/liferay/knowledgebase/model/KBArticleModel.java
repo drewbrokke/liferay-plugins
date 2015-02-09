@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,8 +14,9 @@
 
 package com.liferay.knowledgebase.model;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.portal.kernel.bean.AutoEscape;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.model.ResourcedModel;
@@ -42,6 +43,7 @@ import java.util.Date;
  * @see com.liferay.knowledgebase.model.impl.KBArticleModelImpl
  * @generated
  */
+@ProviderType
 public interface KBArticleModel extends BaseModel<KBArticle>, ResourcedModel,
 	StagedGroupedModel, WorkflowedModel {
 	/*
@@ -166,10 +168,9 @@ public interface KBArticleModel extends BaseModel<KBArticle>, ResourcedModel,
 	 * Returns the user uuid of this k b article.
 	 *
 	 * @return the user uuid of this k b article
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public String getUserUuid() throws SystemException;
+	public String getUserUuid();
 
 	/**
 	 * Sets the user uuid of this k b article.
@@ -243,6 +244,20 @@ public interface KBArticleModel extends BaseModel<KBArticle>, ResourcedModel,
 	public void setRootResourcePrimKey(long rootResourcePrimKey);
 
 	/**
+	 * Returns the parent resource class name ID of this k b article.
+	 *
+	 * @return the parent resource class name ID of this k b article
+	 */
+	public long getParentResourceClassNameId();
+
+	/**
+	 * Sets the parent resource class name ID of this k b article.
+	 *
+	 * @param parentResourceClassNameId the parent resource class name ID of this k b article
+	 */
+	public void setParentResourceClassNameId(long parentResourceClassNameId);
+
+	/**
 	 * Returns the parent resource prim key of this k b article.
 	 *
 	 * @return the parent resource prim key of this k b article
@@ -255,6 +270,20 @@ public interface KBArticleModel extends BaseModel<KBArticle>, ResourcedModel,
 	 * @param parentResourcePrimKey the parent resource prim key of this k b article
 	 */
 	public void setParentResourcePrimKey(long parentResourcePrimKey);
+
+	/**
+	 * Returns the kb folder ID of this k b article.
+	 *
+	 * @return the kb folder ID of this k b article
+	 */
+	public long getKbFolderId();
+
+	/**
+	 * Sets the kb folder ID of this k b article.
+	 *
+	 * @param kbFolderId the kb folder ID of this k b article
+	 */
+	public void setKbFolderId(long kbFolderId);
 
 	/**
 	 * Returns the version of this k b article.
@@ -284,6 +313,21 @@ public interface KBArticleModel extends BaseModel<KBArticle>, ResourcedModel,
 	 * @param title the title of this k b article
 	 */
 	public void setTitle(String title);
+
+	/**
+	 * Returns the url title of this k b article.
+	 *
+	 * @return the url title of this k b article
+	 */
+	@AutoEscape
+	public String getUrlTitle();
+
+	/**
+	 * Sets the url title of this k b article.
+	 *
+	 * @param urlTitle the url title of this k b article
+	 */
+	public void setUrlTitle(String urlTitle);
 
 	/**
 	 * Returns the content of this k b article.
@@ -401,6 +445,21 @@ public interface KBArticleModel extends BaseModel<KBArticle>, ResourcedModel,
 	public void setMain(boolean main);
 
 	/**
+	 * Returns the source u r l of this k b article.
+	 *
+	 * @return the source u r l of this k b article
+	 */
+	@AutoEscape
+	public String getSourceURL();
+
+	/**
+	 * Sets the source u r l of this k b article.
+	 *
+	 * @param sourceURL the source u r l of this k b article
+	 */
+	public void setSourceURL(String sourceURL);
+
+	/**
 	 * Returns the status of this k b article.
 	 *
 	 * @return the status of this k b article
@@ -436,10 +495,9 @@ public interface KBArticleModel extends BaseModel<KBArticle>, ResourcedModel,
 	 * Returns the status by user uuid of this k b article.
 	 *
 	 * @return the status by user uuid of this k b article
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public String getStatusByUserUuid() throws SystemException;
+	public String getStatusByUserUuid();
 
 	/**
 	 * Sets the status by user uuid of this k b article.
@@ -590,19 +648,19 @@ public interface KBArticleModel extends BaseModel<KBArticle>, ResourcedModel,
 	public Object clone();
 
 	@Override
-	public int compareTo(KBArticle kbArticle);
+	public int compareTo(com.liferay.knowledgebase.model.KBArticle kbArticle);
 
 	@Override
 	public int hashCode();
 
 	@Override
-	public CacheModel<KBArticle> toCacheModel();
+	public CacheModel<com.liferay.knowledgebase.model.KBArticle> toCacheModel();
 
 	@Override
-	public KBArticle toEscapedModel();
+	public com.liferay.knowledgebase.model.KBArticle toEscapedModel();
 
 	@Override
-	public KBArticle toUnescapedModel();
+	public com.liferay.knowledgebase.model.KBArticle toUnescapedModel();
 
 	@Override
 	public String toString();

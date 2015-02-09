@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,8 +14,9 @@
 
 package com.liferay.portal.workflow.kaleo.model;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.portal.kernel.bean.AutoEscape;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.model.GroupedModel;
@@ -40,6 +41,7 @@ import java.util.Date;
  * @see com.liferay.portal.workflow.kaleo.model.impl.KaleoTransitionModelImpl
  * @generated
  */
+@ProviderType
 public interface KaleoTransitionModel extends BaseModel<KaleoTransition>,
 	GroupedModel {
 	/*
@@ -128,10 +130,9 @@ public interface KaleoTransitionModel extends BaseModel<KaleoTransition>,
 	 * Returns the user uuid of this kaleo transition.
 	 *
 	 * @return the user uuid of this kaleo transition
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public String getUserUuid() throws SystemException;
+	public String getUserUuid();
 
 	/**
 	 * Sets the user uuid of this kaleo transition.
@@ -364,19 +365,20 @@ public interface KaleoTransitionModel extends BaseModel<KaleoTransition>,
 	public Object clone();
 
 	@Override
-	public int compareTo(KaleoTransition kaleoTransition);
+	public int compareTo(
+		com.liferay.portal.workflow.kaleo.model.KaleoTransition kaleoTransition);
 
 	@Override
 	public int hashCode();
 
 	@Override
-	public CacheModel<KaleoTransition> toCacheModel();
+	public CacheModel<com.liferay.portal.workflow.kaleo.model.KaleoTransition> toCacheModel();
 
 	@Override
-	public KaleoTransition toEscapedModel();
+	public com.liferay.portal.workflow.kaleo.model.KaleoTransition toEscapedModel();
 
 	@Override
-	public KaleoTransition toUnescapedModel();
+	public com.liferay.portal.workflow.kaleo.model.KaleoTransition toUnescapedModel();
 
 	@Override
 	public String toString();

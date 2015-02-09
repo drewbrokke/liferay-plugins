@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -150,13 +150,12 @@ public abstract class Node implements ActionAware, NotificationAware {
 
 	private Set<Action> _actions;
 	private String _description;
-	private Set<Transition> _incomingTransitions = new HashSet<Transition>();
+	private Set<Transition> _incomingTransitions = new HashSet<>();
 	private String _metadata;
 	private String _name;
 	private NodeType _nodeType;
 	private Set<Notification> _notifications;
-	private Map<String, Transition> _outgoingTransitions =
-		new HashMap<String, Transition>();
+	private Map<String, Transition> _outgoingTransitions = new HashMap<>();
 	private Set<Timer> _timers;
 
 }

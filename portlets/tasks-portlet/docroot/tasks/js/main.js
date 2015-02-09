@@ -1,7 +1,9 @@
 AUI().use(
 	'aui-base',
 	'aui-io-plugin-deprecated',
+	'aui-modal',
 	'liferay-util-window',
+	'liferay-widget-zindex',
 	function(A) {
 		Liferay.namespace('Tasks');
 
@@ -13,6 +15,7 @@ AUI().use(
 				instance._setupTagsPopup();
 				instance._setupProgressBar();
 
+				instance._baseActionURL = param.baseActionURL;
 				instance._currentTab = param.currentTab;
 				instance._namespace = param.namespace;
 				instance._taskListURL = param.taskListURL;
@@ -38,59 +41,38 @@ AUI().use(
 				instance.updateTaskList();
 			},
 
-			closePopup: function() {
-				var instance = this;
-
-				instance.getPopup().hide();
-			},
-
 			displayPopup: function(url, title) {
 				var instance = this;
 
-				var viewportRegion = A.getBody().get('viewportRegion');
-
-				var popup = instance.getPopup();
-
-				popup.show();
-
-				popup.titleNode.html(title);
-
-				popup.io.set('uri', url);
-				popup.io.start();
+				Liferay.Util.openWindow(
+					{
+						dialog: {
+							after: {
+								destroy: function(event) {
+									instance.updateTaskList();
+								}
+							},
+							centered: true,
+							constrain: true,
+							cssClass: 'tasks-dialog',
+							destroyOnHide: true,
+							modal: true,
+							plugins: [Liferay.WidgetZIndex],
+							width: 800
+						},
+						id: instance._namespace + 'Dialog',
+						title: title,
+						uri: url
+					}
+				);
 			},
 
-			getPopup: function() {
+			openTask: function(href, tasksEntryId) {
 				var instance = this;
 
-				if (!instance._popup) {
-					instance._popup = Liferay.Util.Window.getWindow(
-						{
-							dialog: {
-								align: {
-									node: null,
-									points: ['tc', 'tc']
-								},
-								constrain2view: true,
-								cssClass: 'tasks-dialog',
-								modal: true,
-								resizable: false,
-								width: 600
-							}
-						}
-					).plug(
-						A.Plugin.IO,
-						{autoLoad: false}
-					).render();
-				}
+				instance.displayPopup(href, Liferay.Language.get('model.resource.com.liferay.tasks.model.TasksEntry'));
 
-				instance._popup.io.set('form', null);
-				instance._popup.io.set('uri', null);
-
-				return instance._popup;
-			},
-
-			openTask: function(href) {
-				this.displayPopup(href, "Tasks");
+				instance._updateViewCount(tasksEntryId);
 			},
 
 			toggleCommentForm: function() {
@@ -179,6 +161,15 @@ AUI().use(
 					function(event) {
 						var assetTag = event.currentTarget;
 
+						if (assetTag.hasClass('icon-check')) {
+							assetTag.removeClass('icon-check');
+							assetTag.addClass('icon-check-empty');
+						}
+						else {
+							assetTag.removeClass('icon-check-empty');
+							assetTag.addClass('icon-check');
+						}
+
 						assetTag.toggleClass('selected');
 
 						instance.updateTaskList();
@@ -247,12 +238,19 @@ AUI().use(
 						event = event.currentTarget;
 
 						var str = event.getAttribute('class');
+
 						var pos = str.substring(str.indexOf('progress-') + 9);
+
+						var completedText = Liferay.Language.get('complete');
+
+						if (pos !== "100") {
+							completedText = Liferay.Language.get(pos + '-percent-complete');
+						}
 
 						var container = event.ancestor('.progress-wrapper');
 
 						container.one('.new-progress').setStyle('width', pos + '%');
-						container.one('.progress-indicator').set('text', pos + '% Complete');
+						container.one('.progress-indicator').set('text', completedText);
 					},
 					'.progress-selector a'
 				);
@@ -268,6 +266,18 @@ AUI().use(
 					},
 					'.progress-selector a'
 				);
+			},
+
+			_updateViewCount: function(tasksEntryId) {
+				var instance = this;
+
+				var portletURL = new Liferay.PortletURL.createURL(instance._baseActionURL);
+
+				portletURL.setParameter('javax.portlet.action', 'updateTasksEntryViewCount');
+				portletURL.setParameter('tasksEntryId', tasksEntryId);
+				portletURL.setWindowState('normal');
+
+				A.io.request(portletURL.toString());
 			}
 		}
 	}

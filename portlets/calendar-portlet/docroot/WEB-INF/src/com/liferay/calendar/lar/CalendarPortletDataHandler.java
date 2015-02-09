@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -18,13 +18,17 @@ import com.liferay.calendar.model.Calendar;
 import com.liferay.calendar.model.CalendarBooking;
 import com.liferay.calendar.model.CalendarNotificationTemplate;
 import com.liferay.calendar.model.CalendarResource;
+import com.liferay.calendar.service.CalendarBookingLocalServiceUtil;
+import com.liferay.calendar.service.CalendarLocalServiceUtil;
+import com.liferay.calendar.service.CalendarNotificationTemplateLocalServiceUtil;
 import com.liferay.calendar.service.CalendarResourceLocalServiceUtil;
-import com.liferay.calendar.service.persistence.CalendarBookingExportActionableDynamicQuery;
-import com.liferay.calendar.service.persistence.CalendarExportActionableDynamicQuery;
-import com.liferay.calendar.service.persistence.CalendarNotificationTemplateExportActionableDynamicQuery;
-import com.liferay.calendar.service.persistence.CalendarResourceExportActionableDynamicQuery;
+import com.liferay.calendar.util.CalendarResourceUtil;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.dao.orm.DynamicQuery;
+import com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.Property;
+import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.lar.BasePortletDataHandler;
 import com.liferay.portal.kernel.lar.PortletDataContext;
 import com.liferay.portal.kernel.lar.PortletDataHandlerBoolean;
@@ -72,6 +76,35 @@ public class CalendarPortletDataHandler extends BasePortletDataHandler {
 		);
 	}
 
+	protected void addSkipGuestCalendarResourceCriterion(
+			ActionableDynamicQuery actionableDynamicQuery,
+			PortletDataContext portletDataContext)
+		throws PortalException {
+
+		final CalendarResource guestCalendarResource =
+			CalendarResourceUtil.fetchGuestCalendarResource(
+				portletDataContext.getCompanyId());
+
+		if (guestCalendarResource == null) {
+			return;
+		}
+
+		actionableDynamicQuery.setAddCriteriaMethod(
+			new ActionableDynamicQuery.AddCriteriaMethod() {
+
+				@Override
+				public void addCriteria(DynamicQuery dynamicQuery) {
+					Property property = PropertyFactoryUtil.forName(
+						"calendarResourceId");
+
+					dynamicQuery.add(
+						property.ne(
+							guestCalendarResource.getCalendarResourceId()));
+				}
+
+			});
+	}
+
 	@Override
 	protected PortletPreferences doDeleteData(
 			PortletDataContext portletDataContext, String portletId,
@@ -102,7 +135,11 @@ public class CalendarPortletDataHandler extends BasePortletDataHandler {
 
 		if (portletDataContext.getBooleanParameter(NAMESPACE, "calendars")) {
 			ActionableDynamicQuery calendarActionableDynamicQuery =
-				new CalendarExportActionableDynamicQuery(portletDataContext);
+				CalendarLocalServiceUtil.getExportActionableDynamicQuery(
+					portletDataContext);
+
+			addSkipGuestCalendarResourceCriterion(
+				calendarActionableDynamicQuery, portletDataContext);
 
 			calendarActionableDynamicQuery.performActions();
 
@@ -111,6 +148,9 @@ public class CalendarPortletDataHandler extends BasePortletDataHandler {
 					portletDataContext,
 					StagedModelType.REFERRER_CLASS_NAME_ID_ALL);
 
+			addSkipGuestCalendarResourceCriterion(
+				calendarResourceActionableDynamicQuery, portletDataContext);
+
 			calendarResourceActionableDynamicQuery.performActions();
 		}
 
@@ -118,7 +158,7 @@ public class CalendarPortletDataHandler extends BasePortletDataHandler {
 				NAMESPACE, "calendar-bookings")) {
 
 			ActionableDynamicQuery calendarBookingActionableDynamicQuery =
-				new CalendarBookingExportActionableDynamicQuery(
+				CalendarBookingLocalServiceUtil.getExportActionableDynamicQuery(
 					portletDataContext);
 
 			calendarBookingActionableDynamicQuery.performActions();
@@ -129,8 +169,8 @@ public class CalendarPortletDataHandler extends BasePortletDataHandler {
 
 			ActionableDynamicQuery
 				calendarNotificationTemplateActionableDynamicQuery =
-					new CalendarNotificationTemplateExportActionableDynamicQuery(
-						portletDataContext);
+					CalendarNotificationTemplateLocalServiceUtil.
+						getExportActionableDynamicQuery(portletDataContext);
 
 			calendarNotificationTemplateActionableDynamicQuery.performActions();
 		}
@@ -214,19 +254,24 @@ public class CalendarPortletDataHandler extends BasePortletDataHandler {
 		throws Exception {
 
 		ActionableDynamicQuery calendarActionableDynamicQuery =
-			new CalendarExportActionableDynamicQuery(portletDataContext);
+			CalendarLocalServiceUtil.getExportActionableDynamicQuery(
+				portletDataContext);
+
+		addSkipGuestCalendarResourceCriterion(
+			calendarActionableDynamicQuery, portletDataContext);
 
 		calendarActionableDynamicQuery.performCount();
 
 		ActionableDynamicQuery calendarBookingActionableDynamicQuery =
-			new CalendarBookingExportActionableDynamicQuery(portletDataContext);
+			CalendarBookingLocalServiceUtil.getExportActionableDynamicQuery(
+				portletDataContext);
 
 		calendarBookingActionableDynamicQuery.performCount();
 
 		ActionableDynamicQuery
 			calendarNotificationTemplateActionableDynamicQuery =
-				new CalendarNotificationTemplateExportActionableDynamicQuery(
-					portletDataContext);
+				CalendarNotificationTemplateLocalServiceUtil.
+					getExportActionableDynamicQuery(portletDataContext);
 
 		calendarNotificationTemplateActionableDynamicQuery.performCount();
 
@@ -235,25 +280,25 @@ public class CalendarPortletDataHandler extends BasePortletDataHandler {
 				portletDataContext,
 				PortalUtil.getClassNameId(CalendarResource.class));
 
+		addSkipGuestCalendarResourceCriterion(
+			calendarResourceActionableDynamicQuery, portletDataContext);
+
 		calendarResourceActionableDynamicQuery.performCount();
 	}
 
 	protected ActionableDynamicQuery getCalendarResourceActionableDynamicQuery(
-			final PortletDataContext portletDataContext,
-			final long referrerClassNameId)
-		throws SystemException {
+		PortletDataContext portletDataContext, long referrerClassNameId) {
 
-		return new CalendarResourceExportActionableDynamicQuery(
-			portletDataContext) {
+		ExportActionableDynamicQuery exportActionableDynamicQuery =
+			CalendarResourceLocalServiceUtil.getExportActionableDynamicQuery(
+				portletDataContext);
 
-			@Override
-			protected StagedModelType getStagedModelType() {
-				return new StagedModelType(
-					PortalUtil.getClassNameId(CalendarResource.class),
-					referrerClassNameId);
-			}
+		exportActionableDynamicQuery.setStagedModelType(
+			new StagedModelType(
+				PortalUtil.getClassNameId(CalendarResource.class),
+				referrerClassNameId));
 
-		};
+		return exportActionableDynamicQuery;
 	}
 
 	protected static final String RESOURCE_NAME =

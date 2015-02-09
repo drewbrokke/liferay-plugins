@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -17,9 +17,7 @@ package com.liferay.knowledgebase.admin.util;
 import com.liferay.knowledgebase.model.KBArticle;
 import com.liferay.knowledgebase.service.KBArticleLocalServiceUtil;
 import com.liferay.knowledgebase.service.permission.KBArticlePermission;
-import com.liferay.knowledgebase.service.persistence.KBArticleActionableDynamicQuery;
 import com.liferay.knowledgebase.util.KnowledgeBaseUtil;
-import com.liferay.knowledgebase.util.PortletKeys;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Property;
@@ -48,6 +46,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletResponse;
 import javax.portlet.PortletURL;
 
 /**
@@ -56,23 +56,20 @@ import javax.portlet.PortletURL;
  */
 public class AdminIndexer extends BaseIndexer {
 
-	public static final String[] CLASS_NAMES = {KBArticle.class.getName()};
-
-	public static final String PORTLET_ID = PortletKeys.KNOWLEDGE_BASE_ADMIN;
+	public static final String CLASS_NAME = KBArticle.class.getName();
 
 	public AdminIndexer() {
+		setDefaultSelectedFieldNames(
+			Field.COMPANY_ID, Field.CONTENT, Field.CREATE_DATE,
+			Field.DESCRIPTION, Field.ENTRY_CLASS_NAME, Field.ENTRY_CLASS_PK,
+			Field.MODIFIED_DATE, Field.TITLE, Field.UID, Field.USER_NAME);
 		setFilterSearch(true);
 		setPermissionAware(true);
 	}
 
 	@Override
-	public String[] getClassNames() {
-		return CLASS_NAMES;
-	}
-
-	@Override
-	public String getPortletId() {
-		return PORTLET_ID;
+	public String getClassName() {
+		return CLASS_NAME;
 	}
 
 	@Override
@@ -105,7 +102,7 @@ public class AdminIndexer extends BaseIndexer {
 		String keywords = searchContext.getKeywords();
 
 		queryTerms = ArrayUtil.append(
-			queryTerms, KnowledgeBaseUtil.parseKeywords(keywords));
+			queryTerms, KnowledgeBaseUtil.splitKeywords(keywords));
 
 		hits.setQueryTerms(queryTerms);
 
@@ -124,13 +121,11 @@ public class AdminIndexer extends BaseIndexer {
 	protected Document doGetDocument(Object obj) throws Exception {
 		KBArticle kbArticle = (KBArticle)obj;
 
-		Document document = getBaseModelDocument(PORTLET_ID, kbArticle);
+		Document document = getBaseModelDocument(CLASS_NAME, kbArticle);
 
 		document.addText(
 			Field.CONTENT, HtmlUtil.extractText(kbArticle.getContent()));
 		document.addText(Field.DESCRIPTION, kbArticle.getDescription());
-		document.addKeyword(
-			Field.ROOT_ENTRY_CLASS_PK, kbArticle.getRootResourcePrimKey());
 		document.addText(Field.TITLE, kbArticle.getTitle());
 
 		document.addKeyword("titleKeyword", kbArticle.getTitle(), true);
@@ -140,8 +135,8 @@ public class AdminIndexer extends BaseIndexer {
 
 	@Override
 	protected Summary doGetSummary(
-		Document document, Locale locale, String snippet,
-		PortletURL portletURL) {
+		Document document, Locale locale, String snippet, PortletURL portletURL,
+		PortletRequest portletRequest, PortletResponse portletResponse) {
 
 		String title = document.get(Field.TITLE);
 
@@ -169,13 +164,13 @@ public class AdminIndexer extends BaseIndexer {
 
 		SearchEngineUtil.updateDocument(
 			getSearchEngineId(), kbArticle.getCompanyId(),
-			getDocument(kbArticle));
+			getDocument(kbArticle), isCommitImmediately());
 	}
 
 	@Override
 	protected void doReindex(String className, long classPK) throws Exception {
 		KBArticle kbArticle = KBArticleLocalServiceUtil.getLatestKBArticle(
-			classPK, WorkflowConstants.STATUS_APPROVED);
+			classPK, WorkflowConstants.STATUS_ANY);
 
 		reindexKBArticles(kbArticle);
 	}
@@ -187,54 +182,58 @@ public class AdminIndexer extends BaseIndexer {
 		reindexKBArticles(companyId);
 	}
 
-	@Override
-	protected String getPortletId(SearchContext searchContext) {
-		return PORTLET_ID;
-	}
-
 	protected void reindexKBArticles(KBArticle kbArticle) throws Exception {
 
 		// See KBArticlePermission#contains
 
 		List<KBArticle> kbArticles =
-			KBArticleLocalServiceUtil.getKBArticleAndAllDescendants(
+			KBArticleLocalServiceUtil.getKBArticleAndAllDescendantKBArticles(
 				kbArticle.getResourcePrimKey(),
 				WorkflowConstants.STATUS_APPROVED, null);
 
-		Collection<Document> documents = new ArrayList<Document>();
+		Collection<Document> documents = new ArrayList<>();
 
 		for (KBArticle curKBArticle : kbArticles) {
 			documents.add(getDocument(curKBArticle));
 		}
 
 		SearchEngineUtil.updateDocuments(
-			getSearchEngineId(), kbArticle.getCompanyId(), documents);
+			getSearchEngineId(), kbArticle.getCompanyId(), documents,
+			isCommitImmediately());
 	}
 
 	protected void reindexKBArticles(long companyId) throws Exception {
-		ActionableDynamicQuery actionableDynamicQuery =
-			new KBArticleActionableDynamicQuery() {
+		final ActionableDynamicQuery actionableDynamicQuery =
+			KBArticleLocalServiceUtil.getActionableDynamicQuery();
 
-			@Override
-			protected void addCriteria(DynamicQuery dynamicQuery) {
-				Property property = PropertyFactoryUtil.forName("status");
+		actionableDynamicQuery.setAddCriteriaMethod(
+			new ActionableDynamicQuery.AddCriteriaMethod() {
 
-				dynamicQuery.add(
-					property.eq(WorkflowConstants.STATUS_APPROVED));
-			}
+				@Override
+				public void addCriteria(DynamicQuery dynamicQuery) {
+					Property property = PropertyFactoryUtil.forName("status");
 
-			@Override
-			protected void performAction(Object object) throws PortalException {
-				KBArticle kbArticle = (KBArticle)object;
+					dynamicQuery.add(
+						property.eq(WorkflowConstants.STATUS_APPROVED));
+				}
 
-				Document document = getDocument(kbArticle);
-
-				addDocument(document);
-			}
-
-		};
-
+			});
 		actionableDynamicQuery.setCompanyId(companyId);
+		actionableDynamicQuery.setPerformActionMethod(
+			new ActionableDynamicQuery.PerformActionMethod() {
+
+				@Override
+				public void performAction(Object object)
+					throws PortalException {
+
+					KBArticle kbArticle = (KBArticle)object;
+
+					Document document = getDocument(kbArticle);
+
+					actionableDynamicQuery.addDocument(document);
+				}
+
+			});
 		actionableDynamicQuery.setSearchEngineId(getSearchEngineId());
 
 		actionableDynamicQuery.performActions();

@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -86,7 +86,7 @@ String successURL = portletPreferences.getValue("successURL", StringPool.BLANK);
 					<aui:input cssClass='<%= fieldOptional ? "optional" : StringPool.BLANK %>' label="<%= HtmlUtil.escape(fieldLabel) %>" name="<%= fieldName %>" value="<%= HtmlUtil.escape(fieldValue) %>" />
 				</c:when>
 				<c:when test='<%= fieldType.equals("textarea") %>'>
-					<aui:input cssClass='<%= "lfr-textarea-container" + (fieldOptional ? "optional" : StringPool.BLANK) %>' label="<%= HtmlUtil.escape(fieldLabel) %>" name="<%= fieldName %>" type="textarea" value="<%= HtmlUtil.escape(fieldValue) %>" wrap="soft" />
+					<aui:input cssClass='<%= (fieldOptional ? "optional" : StringPool.BLANK) %>' label="<%= HtmlUtil.escape(fieldLabel) %>" name="<%= fieldName %>" type="textarea" value="<%= HtmlUtil.escape(fieldValue) %>" wrap="soft" wrapperCssClass="lfr-textarea-container" />
 				</c:when>
 				<c:when test='<%= fieldType.equals("checkbox") %>'>
 					<aui:input cssClass='<%= fieldOptional ? "optional" : StringPool.BLANK %>' label="<%= HtmlUtil.escape(fieldLabel) %>" name="<%= fieldName %>" type="checkbox" value="<%= GetterUtil.getBoolean(fieldValue) %>" />
@@ -173,12 +173,12 @@ String successURL = portletPreferences.getValue("successURL", StringPool.BLANK);
 					String fieldValidationErrorMessage = portletPreferences.getValue("fieldValidationErrorMessage" + i, StringPool.BLANK);
 				%>
 
-					var key = "<%= fieldName %>";
+					var key = '<%= fieldName %>';
 
 					keys[<%= i %>] = key;
 
-					fieldLabels[key] = "<%= HtmlUtil.escape(fieldLabel) %>";
-					fieldValidationErrorMessages[key] = "<%= fieldValidationErrorMessage %>";
+					fieldLabels[key] = '<%= HtmlUtil.escape(fieldLabel) %>';
+					fieldValidationErrorMessages[key] = '<%= fieldValidationErrorMessage %>';
 
 					function fieldValidationFunction<%= i %>(currentFieldValue, fieldsMap) {
 						<c:choose>
@@ -195,13 +195,13 @@ String successURL = portletPreferences.getValue("successURL", StringPool.BLANK);
 					fieldValidationFunctions[key] = fieldValidationFunction<%= i %>;
 
 					<c:choose>
-						<c:when test='<%= fieldType.equals("radio") %>'>
-							var radioButton = A.one('input[name=<portlet:namespace />field<%= i %>]:checked');
+						<c:when test='<%= fieldType.equals("checkbox") || fieldType.equals("radio") %>'>
+							var checkedField = A.one('input[name=<portlet:namespace />field<%= i %>]:checked');
 
 							fieldsMap[key] = '';
 
-							if (radioButton) {
-								fieldsMap[key] = radioButton.val();
+							if (checkedField) {
+								fieldsMap[key] = checkedField.val();
 							}
 						</c:when>
 						<c:otherwise>

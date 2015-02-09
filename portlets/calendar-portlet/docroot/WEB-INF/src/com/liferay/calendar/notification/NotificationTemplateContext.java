@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -143,8 +143,7 @@ public class NotificationTemplateContext implements Cloneable, Serializable {
 		_toName = toName;
 	}
 
-	private Map<String, Serializable> _attributes =
-		new LinkedHashMap<String, Serializable>();
+	private Map<String, Serializable> _attributes = new LinkedHashMap<>();
 	private long _calendarId;
 	private CalendarNotificationTemplate _calendarNotificationTemplate;
 	private long _companyId;

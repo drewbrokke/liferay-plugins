@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,8 +14,9 @@
 
 package com.liferay.portal.workflow.kaleo.model;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.portal.kernel.bean.AutoEscape;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.model.GroupedModel;
@@ -40,6 +41,7 @@ import java.util.Date;
  * @see com.liferay.portal.workflow.kaleo.model.impl.KaleoActionModelImpl
  * @generated
  */
+@ProviderType
 public interface KaleoActionModel extends BaseModel<KaleoAction>, GroupedModel {
 	/*
 	 * NOTE FOR DEVELOPERS:
@@ -127,10 +129,9 @@ public interface KaleoActionModel extends BaseModel<KaleoAction>, GroupedModel {
 	 * Returns the user uuid of this kaleo action.
 	 *
 	 * @return the user uuid of this kaleo action
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public String getUserUuid() throws SystemException;
+	public String getUserUuid();
 
 	/**
 	 * Sets the user uuid of this kaleo action.
@@ -388,19 +389,20 @@ public interface KaleoActionModel extends BaseModel<KaleoAction>, GroupedModel {
 	public Object clone();
 
 	@Override
-	public int compareTo(KaleoAction kaleoAction);
+	public int compareTo(
+		com.liferay.portal.workflow.kaleo.model.KaleoAction kaleoAction);
 
 	@Override
 	public int hashCode();
 
 	@Override
-	public CacheModel<KaleoAction> toCacheModel();
+	public CacheModel<com.liferay.portal.workflow.kaleo.model.KaleoAction> toCacheModel();
 
 	@Override
-	public KaleoAction toEscapedModel();
+	public com.liferay.portal.workflow.kaleo.model.KaleoAction toEscapedModel();
 
 	@Override
-	public KaleoAction toUnescapedModel();
+	public com.liferay.portal.workflow.kaleo.model.KaleoAction toUnescapedModel();
 
 	@Override
 	public String toString();

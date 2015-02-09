@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -161,8 +161,7 @@ public abstract class BaseNotificationSender implements NotificationSender {
 			ExecutionContext executionContext)
 		throws Exception {
 
-		Set<NotificationRecipient> notificationRecipients =
-			new HashSet<NotificationRecipient>();
+		Set<NotificationRecipient> notificationRecipients = new HashSet<>();
 
 		if (kaleoNotificationRecipients.isEmpty()) {
 			addAssignedRecipients(notificationRecipients, executionContext);
@@ -222,7 +221,7 @@ public abstract class BaseNotificationSender implements NotificationSender {
 				roleId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 		}
 
-		List<User> users = new ArrayList<User>();
+		List<User> users = new ArrayList<>();
 
 		KaleoInstanceToken kaleoInstanceToken =
 			executionContext.getKaleoInstanceToken();

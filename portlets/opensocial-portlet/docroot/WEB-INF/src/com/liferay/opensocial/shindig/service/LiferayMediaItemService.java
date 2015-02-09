@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -258,7 +258,7 @@ public class LiferayMediaItemService implements MediaItemService {
 			SecurityToken securityToken)
 		throws Exception {
 
-		List<MediaItem> mediaItems = new ArrayList<MediaItem>();
+		List<MediaItem> mediaItems = new ArrayList<>();
 
 		for (UserId userId : userIds) {
 			long userIdLong = GetterUtil.getLong(
@@ -270,7 +270,7 @@ public class LiferayMediaItemService implements MediaItemService {
 				continue;
 			}
 
-			List<FileEntry> fileEntries = new ArrayList<FileEntry>();
+			List<FileEntry> fileEntries = new ArrayList<>();
 
 			GroupId.Type groupIdType = groupId.getType();
 
@@ -331,7 +331,7 @@ public class LiferayMediaItemService implements MediaItemService {
 
 		User user = UserLocalServiceUtil.getUserById(userIdLong);
 
-		List<MediaItem> mediaItems = new ArrayList<MediaItem>();
+		List<MediaItem> mediaItems = new ArrayList<>();
 
 		if (!ShindigUtil.isValidUser(user)) {
 			return new RestfulCollection<MediaItem>(
@@ -376,7 +376,7 @@ public class LiferayMediaItemService implements MediaItemService {
 
 		User user = UserLocalServiceUtil.getUserById(userIdLong);
 
-		List<MediaItem> mediaItems = new ArrayList<MediaItem>();
+		List<MediaItem> mediaItems = new ArrayList<>();
 
 		if (!ShindigUtil.isValidUser(user)) {
 			return new RestfulCollection<MediaItem>(

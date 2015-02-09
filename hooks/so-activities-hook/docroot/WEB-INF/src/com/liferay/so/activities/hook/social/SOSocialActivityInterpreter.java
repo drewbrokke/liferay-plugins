@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,7 +19,6 @@ import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.parsers.bbcode.BBCodeTranslatorUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
@@ -36,6 +35,7 @@ import com.liferay.portal.service.GroupLocalServiceUtil;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portlet.asset.AssetRendererFactoryRegistryUtil;
+import com.liferay.portlet.asset.model.AssetEntry;
 import com.liferay.portlet.asset.model.AssetRenderer;
 import com.liferay.portlet.asset.model.AssetRendererFactory;
 import com.liferay.portlet.messageboards.model.MBMessage;
@@ -45,15 +45,17 @@ import com.liferay.portlet.social.model.SocialActivity;
 import com.liferay.portlet.social.model.SocialActivityFeedEntry;
 import com.liferay.portlet.social.model.SocialActivitySet;
 import com.liferay.portlet.social.service.SocialActivityLocalServiceUtil;
+import com.liferay.portlet.social.service.SocialActivitySetLocalServiceUtil;
 import com.liferay.portlet.trash.util.TrashUtil;
 import com.liferay.so.activities.util.PortletPropsValues;
+import com.liferay.wiki.model.WikiPageResource;
 
+import java.text.DateFormat;
 import java.text.Format;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
 
 /**
  * @author Brian Wing Shun Chan
@@ -73,12 +75,6 @@ public abstract class SOSocialActivityInterpreter
 			SocialActivity activity, ServiceContext serviceContext)
 		throws Exception {
 
-		if (TrashUtil.isInTrash(
-				activity.getClassName(), activity.getClassPK())) {
-
-			return null;
-		}
-
 		return super.doInterpret(activity, serviceContext);
 	}
 
@@ -87,16 +83,17 @@ public abstract class SOSocialActivityInterpreter
 			SocialActivitySet activitySet, ServiceContext serviceContext)
 		throws Exception {
 
-		if (activitySet.getActivityCount() == 1) {
-			List<SocialActivity> activities =
-				SocialActivityLocalServiceUtil.getActivitySetActivities(
-					activitySet.getActivitySetId(), 0, 1);
+		List<SocialActivity> viewableActivities = getViewableActivities(
+			activitySet, serviceContext);
 
-			if (!activities.isEmpty()) {
-				SocialActivity activity = activities.get(0);
+		if (viewableActivities.isEmpty()) {
+			return null;
+		}
 
-				return doInterpret(activity, serviceContext);
-			}
+		if (viewableActivities.size() == 1) {
+			SocialActivity activity = viewableActivities.get(0);
+
+			return doInterpret(activity, serviceContext);
 		}
 
 		String link = getLink(activitySet, serviceContext);
@@ -109,16 +106,10 @@ public abstract class SOSocialActivityInterpreter
 
 		String body = getBody(activitySet, serviceContext);
 
-		if (Validator.isNull(body)) {
-			return null;
-		}
-
 		return new SocialActivityFeedEntry(link, title, body);
 	}
 
-	protected List<Long> getActivitySetUserIds(long activitySetId)
-		throws SystemException {
-
+	protected List<Long> getActivitySetUserIds(long activitySetId) {
 		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
 			SocialActivity.class);
 
@@ -141,6 +132,14 @@ public abstract class SOSocialActivityInterpreter
 		return assetRendererFactory.getAssetRenderer(classPK);
 	}
 
+	protected String getAttachmentTitle(
+			SocialActivity activity, WikiPageResource pageResource,
+			ServiceContext serviceContext)
+		throws Exception {
+
+		return null;
+	}
+
 	protected String getBody(
 			SocialActivitySet activitySet, ServiceContext serviceContext)
 		throws Exception {
@@ -150,18 +149,10 @@ public abstract class SOSocialActivityInterpreter
 		sb.append("<div class=\"grouped-activity-body-container\">");
 		sb.append("<div class=\"grouped-activity-body\">");
 
-		int viewableActivities = 0;
-
-		List<SocialActivity> activities =
-			SocialActivityLocalServiceUtil.getActivitySetActivities(
-				activitySet.getActivitySetId(), QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS);
+		List<SocialActivity> activities = getViewableActivities(
+			activitySet, serviceContext);
 
 		for (SocialActivity activity : activities) {
-			if (!hasPermissions(activity, serviceContext)) {
-				continue;
-			}
-
 			SocialActivityFeedEntry subfeedEntry = getSubfeedEntry(
 				activity, serviceContext);
 
@@ -174,13 +165,9 @@ public abstract class SOSocialActivityInterpreter
 			sb.append(subfeedEntry.getTitle());
 			sb.append("</span><span class=\"activity-subentry-body\">");
 			sb.append(subfeedEntry.getBody());
+			sb.append("</span><span class=\"activity-subentry-link\">");
+			sb.append(subfeedEntry.getLink());
 			sb.append("</span></div>");
-
-			viewableActivities++;
-		}
-
-		if (viewableActivities == 0) {
-			return null;
 		}
 
 		sb.append("</div></div>");
@@ -188,9 +175,24 @@ public abstract class SOSocialActivityInterpreter
 		return sb.toString();
 	}
 
-	protected Format getFormatDateTime(Locale locale, TimeZone timezone) {
-		return FastDateFormatFactoryUtil.getSimpleDateFormat(
-			"EEEE, MMMMM dd, yyyy 'at' h:mm a", locale, timezone);
+	protected long getDisplayDate(SocialActivity activity) throws Exception {
+		long activitySetId = activity.getActivitySetId();
+
+		if (activitySetId > 0) {
+			SocialActivitySet socialActivitySet =
+				SocialActivitySetLocalServiceUtil.fetchSocialActivitySet(
+					activitySetId);
+
+			if ((socialActivitySet != null) &&
+				(socialActivitySet.getActivityCount() == 1) &&
+				(socialActivitySet.getModifiedDate() >
+					socialActivitySet.getCreateDate())) {
+
+				return socialActivitySet.getModifiedDate();
+			}
+		}
+
+		return activity.getCreateDate();
 	}
 
 	protected String getLink(
@@ -241,11 +243,9 @@ public abstract class SOSocialActivityInterpreter
 			SocialActivity activity, ServiceContext serviceContext)
 		throws Exception {
 
-		String className = activity.getClassName();
+		String link = getLink(activity, serviceContext);
 
-		if (TrashUtil.isInTrash(className, activity.getClassPK())) {
-			return null;
-		}
+		String className = activity.getClassName();
 
 		String title = getPageTitle(
 			className, activity.getClassPK(), serviceContext);
@@ -253,7 +253,7 @@ public abstract class SOSocialActivityInterpreter
 		AssetRenderer assetRenderer = getAssetRenderer(
 			className, activity.getClassPK());
 
-		String body = assetRenderer.getSummary(serviceContext.getLocale());
+		String body = assetRenderer.getSummary();
 
 		if (className.equals(MBMessage.class.getName())) {
 			MBMessage mbMessage = MBMessageLocalServiceUtil.getMBMessage(
@@ -267,7 +267,7 @@ public abstract class SOSocialActivityInterpreter
 
 		body = StringUtil.shorten(HtmlUtil.escape(body), 200);
 
-		return new SocialActivityFeedEntry(title, body);
+		return new SocialActivityFeedEntry(link, title, body);
 	}
 
 	protected String getTitle(
@@ -278,24 +278,7 @@ public abstract class SOSocialActivityInterpreter
 		StringBundler sb = new StringBundler(8);
 
 		sb.append("<div class=\"activity-header\">");
-		sb.append("<div class=\"activity-time\" title=\"");
-
-		Format dateFormatDate = getFormatDateTime(
-			serviceContext.getLocale(), serviceContext.getTimeZone());
-
-		Date activityDate = new Date(displayDate);
-
-		sb.append(dateFormatDate.format(activityDate));
-
-		sb.append("\">");
-
-		String relativeTimeDescription = Time.getRelativeTimeDescription(
-			displayDate, serviceContext.getLocale(),
-			serviceContext.getTimeZone());
-
-		sb.append(relativeTimeDescription);
-
-		sb.append("</div><div class=\"activity-user-name\">");
+		sb.append("<div class=\"activity-user-name\">");
 
 		String userName = getUserName(userId, serviceContext);
 
@@ -332,6 +315,28 @@ public abstract class SOSocialActivityInterpreter
 			sb.append(userName);
 		}
 
+		sb.append("</div><div class=\"activity-time\" title=\"");
+
+		Format dateFormatDate = FastDateFormatFactoryUtil.getDateTime(
+			DateFormat.FULL, DateFormat.SHORT, serviceContext.getLocale(),
+			serviceContext.getTimeZone());
+
+		Date activityDate = new Date(displayDate);
+
+		sb.append(dateFormatDate.format(activityDate));
+
+		sb.append("\">");
+
+		Format dateFormat = FastDateFormatFactoryUtil.getDate(
+			DateFormat.FULL, serviceContext.getLocale(),
+			serviceContext.getTimeZone());
+
+		String relativeTimeDescription = Time.getRelativeTimeDescription(
+			displayDate, serviceContext.getLocale(),
+			serviceContext.getTimeZone(), dateFormat);
+
+		sb.append(relativeTimeDescription);
+
 		sb.append("</div></div>");
 
 		return sb.toString();
@@ -347,7 +352,7 @@ public abstract class SOSocialActivityInterpreter
 		sb.append(
 			getTitle(
 				0, activity.getGroupId(), activity.getUserId(),
-				activity.getCreateDate(), serviceContext));
+				getDisplayDate(activity), serviceContext));
 		sb.append("<div class=\"activity-action\">");
 
 		String titlePattern = getTitlePattern(null, activity);
@@ -409,7 +414,10 @@ public abstract class SOSocialActivityInterpreter
 			String title, ServiceContext serviceContext)
 		throws Exception {
 
-		return new Object[] {activitySet.getActivityCount()};
+		List<SocialActivity> viewableActivities = getViewableActivities(
+			activitySet, serviceContext);
+
+		return new Object[] {viewableActivities.size()};
 	}
 
 	protected String getTitlePattern(
@@ -419,21 +427,56 @@ public abstract class SOSocialActivityInterpreter
 		return StringPool.BLANK;
 	}
 
+	protected List<SocialActivity> getViewableActivities(
+			SocialActivitySet activitySet, ServiceContext serviceContext)
+		throws Exception {
+
+		List<SocialActivity> viewableActivities = new ArrayList<>();
+
+		List<SocialActivity> activities =
+			SocialActivityLocalServiceUtil.getActivitySetActivities(
+				activitySet.getActivitySetId(), QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS);
+
+		for (SocialActivity activity : activities) {
+			if (!hasPermissions(activity, serviceContext)) {
+				continue;
+			}
+
+			Group group = GroupLocalServiceUtil.fetchGroup(
+				activity.getGroupId());
+
+			if ((group != null) && group.isUser()) {
+				continue;
+			}
+
+			if (TrashUtil.isInTrash(
+					activity.getClassName(), activity.getClassPK())) {
+
+				continue;
+			}
+
+			if (!isVisible(activity)) {
+				continue;
+			}
+
+			viewableActivities.add(activity);
+		}
+
+		return viewableActivities;
+	}
+
 	@Override
 	protected boolean hasPermissions(
 			PermissionChecker permissionChecker, SocialActivity activity,
 			String actionId, ServiceContext serviceContext)
 		throws Exception {
 
-		Group group = GroupLocalServiceUtil.fetchGroup(activity.getGroupId());
+		AssetEntry assetEntry = activity.getAssetEntry();
 
-		if ((group != null) && group.isUser()) {
-			return false;
-		}
+		AssetRenderer assetRenderer = assetEntry.getAssetRenderer();
 
-		return permissionChecker.hasPermission(
-			activity.getGroupId(), activity.getClassName(),
-			activity.getClassPK(), ActionKeys.VIEW);
+		return assetRenderer.hasViewPermission(permissionChecker);
 	}
 
 	protected boolean hasPermissions(
@@ -493,6 +536,10 @@ public abstract class SOSocialActivityInterpreter
 		}
 
 		return false;
+	}
+
+	protected boolean isVisible(SocialActivity activity) throws Exception {
+		return true;
 	}
 
 	protected String wrapLink(String link, String iconPath, String text) {

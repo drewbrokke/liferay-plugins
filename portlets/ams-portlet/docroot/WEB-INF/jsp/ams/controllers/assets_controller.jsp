@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -40,10 +40,20 @@ public class AlloyControllerImpl extends BaseAlloyControllerImpl {
 		AlloySearchResult alloySearchResult = search(null);
 
 		renderRequest.setAttribute("alloySearchResult", alloySearchResult);
+
+		respondWith(alloySearchResult);
 	}
 
 	public void save() throws Exception {
 		Asset asset = AssetLocalServiceUtil.createAsset(0);
+
+		String message = _validateSave();
+
+		if (Validator.isNotNull(message)) {
+			renderError(message);
+
+			return;
+		}
 
 		updateModel(asset);
 
@@ -52,6 +62,8 @@ public class AlloyControllerImpl extends BaseAlloyControllerImpl {
 		String redirect = ParamUtil.getString(request, "redirect");
 
 		redirectTo(redirect);
+
+		respondWith(asset);
 	}
 
 	public void view() throws Exception {
@@ -60,12 +72,30 @@ public class AlloyControllerImpl extends BaseAlloyControllerImpl {
 		Asset asset = AssetLocalServiceUtil.getAsset(assetId);
 
 		renderRequest.setAttribute("asset", asset);
+
+		respondWith(indexer.getDocument(asset));
 	}
 
 	@Override
 	protected Indexer buildIndexer() {
 		return AssetIndexer.getInstance();
 	}
+
+	private String _validateSave() throws Exception {
+		String serialNumber = ParamUtil.getString(request, "serialNumber");
+
+		Pattern pattern = Pattern.compile(_SERIAL_NUMBER_REGEX);
+
+		Matcher matcher = pattern.matcher(serialNumber);
+
+		if (!matcher.find()) {
+			return "the-serial-number-is-invalid";
+		}
+
+		return StringPool.BLANK;
+	}
+
+	private static final String _SERIAL_NUMBER_REGEX = "^[a-zA-Z0-9]+$";
 
 }
 %>

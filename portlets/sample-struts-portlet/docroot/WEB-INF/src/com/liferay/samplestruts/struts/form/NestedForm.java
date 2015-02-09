@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -36,7 +36,7 @@ public class NestedForm extends ActionForm {
 
 	@Override
 	public void reset(ActionMapping actionMapping, HttpServletRequest req) {
-		_books = new ArrayList<Book>();
+		_books = new ArrayList<>();
 
 		_books.add(new Book("1", "Genesis"));
 		_books.add(new Book("2", "Exodus"));

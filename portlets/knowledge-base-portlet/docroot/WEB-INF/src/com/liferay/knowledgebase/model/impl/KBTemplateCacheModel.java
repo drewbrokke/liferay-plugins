@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,8 +14,11 @@
 
 package com.liferay.knowledgebase.model.impl;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.knowledgebase.model.KBTemplate;
 
+import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.model.CacheModel;
@@ -34,8 +37,33 @@ import java.util.Date;
  * @see KBTemplate
  * @generated
  */
+@ProviderType
 public class KBTemplateCacheModel implements CacheModel<KBTemplate>,
 	Externalizable {
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof KBTemplateCacheModel)) {
+			return false;
+		}
+
+		KBTemplateCacheModel kbTemplateCacheModel = (KBTemplateCacheModel)obj;
+
+		if (kbTemplateId == kbTemplateCacheModel.kbTemplateId) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashUtil.hash(0, kbTemplateId);
+	}
+
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(21);

@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -132,7 +132,7 @@ portletURL.setWindowState(LiferayWindowState.POP_UP);
 
 			// Type
 
-			row.addText(LanguageUtil.get(pageContext, entry.getType()));
+			row.addText(LanguageUtil.get(request, entry.getType()));
 
 			// Modified date
 
@@ -168,7 +168,7 @@ portletURL.setWindowState(LiferayWindowState.POP_UP);
 		function(event) {
 			event.preventDefault();
 
-			if (confirm('<%= UnicodeLanguageUtil.get(pageContext,"are-you-sure-you-want-to-delete-the-selected-entry") %>')) {
+			if (confirm('<%= UnicodeLanguageUtil.get(request,"are-you-sure-you-want-to-delete-the-selected-entry") %>')) {
 				var deleteNode = event.currentTarget.ancestor('.delete-entry');
 
 				var entryId = deleteNode.attr('data-entryId');
@@ -196,7 +196,7 @@ portletURL.setWindowState(LiferayWindowState.POP_UP);
 								}
 							}
 						},
-						dataType: 'json'
+						dataType: 'JSON'
 					}
 				);
 			}

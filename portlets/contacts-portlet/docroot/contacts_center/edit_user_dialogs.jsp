@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -74,6 +74,9 @@ if (extension) {
 			<div id="<%= namespace %>errorMessage"></div>
 
 			<c:choose>
+				<c:when test='<%= curSectionId.equals("categorization") %>'>
+					<liferay-util:include page='<%= "/contacts_center/user/" + _getSectionJsp(curSectionId) + ".jsp" %>' servletContext="<%= application %>" />
+				</c:when>
 				<c:when test='<%= curSectionId.equals("details") %>'>
 					<liferay-util:include page='<%= "/contacts_center/user/" + _getSectionJsp(curSectionId) + ".jsp" %>' servletContext="<%= application %>" />
 				</c:when>
@@ -147,7 +150,7 @@ if (extension) {
 							}
 						}
 					},
-					dataType: 'json',
+					dataType: 'JSON',
 					form: {
 						id: form
 					}

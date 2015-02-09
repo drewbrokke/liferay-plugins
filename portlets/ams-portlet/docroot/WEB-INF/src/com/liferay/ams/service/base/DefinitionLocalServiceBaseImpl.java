@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -27,6 +27,8 @@ import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBFactoryUtil;
 import com.liferay.portal.kernel.dao.jdbc.SqlUpdate;
 import com.liferay.portal.kernel.dao.jdbc.SqlUpdateFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.DefaultActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.Projection;
@@ -74,12 +76,10 @@ public abstract class DefinitionLocalServiceBaseImpl
 	 *
 	 * @param definition the definition
 	 * @return the definition that was added
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
-	public Definition addDefinition(Definition definition)
-		throws SystemException {
+	public Definition addDefinition(Definition definition) {
 		definition.setNew(true);
 
 		return definitionPersistence.update(definition);
@@ -102,12 +102,11 @@ public abstract class DefinitionLocalServiceBaseImpl
 	 * @param definitionId the primary key of the definition
 	 * @return the definition that was removed
 	 * @throws PortalException if a definition with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	public Definition deleteDefinition(long definitionId)
-		throws PortalException, SystemException {
+		throws PortalException {
 		return definitionPersistence.remove(definitionId);
 	}
 
@@ -116,12 +115,10 @@ public abstract class DefinitionLocalServiceBaseImpl
 	 *
 	 * @param definition the definition
 	 * @return the definition that was removed
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
-	public Definition deleteDefinition(Definition definition)
-		throws SystemException {
+	public Definition deleteDefinition(Definition definition) {
 		return definitionPersistence.remove(definition);
 	}
 
@@ -138,12 +135,9 @@ public abstract class DefinitionLocalServiceBaseImpl
 	 *
 	 * @param dynamicQuery the dynamic query
 	 * @return the matching rows
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	@SuppressWarnings("rawtypes")
-	public List dynamicQuery(DynamicQuery dynamicQuery)
-		throws SystemException {
+	public <T> List<T> dynamicQuery(DynamicQuery dynamicQuery) {
 		return definitionPersistence.findWithDynamicQuery(dynamicQuery);
 	}
 
@@ -158,12 +152,10 @@ public abstract class DefinitionLocalServiceBaseImpl
 	 * @param start the lower bound of the range of model instances
 	 * @param end the upper bound of the range of model instances (not inclusive)
 	 * @return the range of matching rows
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	@SuppressWarnings("rawtypes")
-	public List dynamicQuery(DynamicQuery dynamicQuery, int start, int end)
-		throws SystemException {
+	public <T> List<T> dynamicQuery(DynamicQuery dynamicQuery, int start,
+		int end) {
 		return definitionPersistence.findWithDynamicQuery(dynamicQuery, start,
 			end);
 	}
@@ -180,12 +172,10 @@ public abstract class DefinitionLocalServiceBaseImpl
 	 * @param end the upper bound of the range of model instances (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @return the ordered range of matching rows
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	@SuppressWarnings("rawtypes")
-	public List dynamicQuery(DynamicQuery dynamicQuery, int start, int end,
-		OrderByComparator orderByComparator) throws SystemException {
+	public <T> List<T> dynamicQuery(DynamicQuery dynamicQuery, int start,
+		int end, OrderByComparator<T> orderByComparator) {
 		return definitionPersistence.findWithDynamicQuery(dynamicQuery, start,
 			end, orderByComparator);
 	}
@@ -195,11 +185,9 @@ public abstract class DefinitionLocalServiceBaseImpl
 	 *
 	 * @param dynamicQuery the dynamic query
 	 * @return the number of rows that match the dynamic query
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public long dynamicQueryCount(DynamicQuery dynamicQuery)
-		throws SystemException {
+	public long dynamicQueryCount(DynamicQuery dynamicQuery) {
 		return definitionPersistence.countWithDynamicQuery(dynamicQuery);
 	}
 
@@ -209,18 +197,16 @@ public abstract class DefinitionLocalServiceBaseImpl
 	 * @param dynamicQuery the dynamic query
 	 * @param projection the projection to apply to the query
 	 * @return the number of rows that match the dynamic query
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public long dynamicQueryCount(DynamicQuery dynamicQuery,
-		Projection projection) throws SystemException {
+		Projection projection) {
 		return definitionPersistence.countWithDynamicQuery(dynamicQuery,
 			projection);
 	}
 
 	@Override
-	public Definition fetchDefinition(long definitionId)
-		throws SystemException {
+	public Definition fetchDefinition(long definitionId) {
 		return definitionPersistence.fetchByPrimaryKey(definitionId);
 	}
 
@@ -230,17 +216,47 @@ public abstract class DefinitionLocalServiceBaseImpl
 	 * @param definitionId the primary key of the definition
 	 * @return the definition
 	 * @throws PortalException if a definition with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public Definition getDefinition(long definitionId)
-		throws PortalException, SystemException {
+		throws PortalException {
 		return definitionPersistence.findByPrimaryKey(definitionId);
 	}
 
 	@Override
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		ActionableDynamicQuery actionableDynamicQuery = new DefaultActionableDynamicQuery();
+
+		actionableDynamicQuery.setBaseLocalService(com.liferay.ams.service.DefinitionLocalServiceUtil.getService());
+		actionableDynamicQuery.setClass(Definition.class);
+		actionableDynamicQuery.setClassLoader(getClassLoader());
+
+		actionableDynamicQuery.setPrimaryKeyPropertyName("definitionId");
+
+		return actionableDynamicQuery;
+	}
+
+	protected void initActionableDynamicQuery(
+		ActionableDynamicQuery actionableDynamicQuery) {
+		actionableDynamicQuery.setBaseLocalService(com.liferay.ams.service.DefinitionLocalServiceUtil.getService());
+		actionableDynamicQuery.setClass(Definition.class);
+		actionableDynamicQuery.setClassLoader(getClassLoader());
+
+		actionableDynamicQuery.setPrimaryKeyPropertyName("definitionId");
+	}
+
+	/**
+	 * @throws PortalException
+	 */
+	@Override
+	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
+		throws PortalException {
+		return definitionLocalService.deleteDefinition((Definition)persistedModel);
+	}
+
+	@Override
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
-		throws PortalException, SystemException {
+		throws PortalException {
 		return definitionPersistence.findByPrimaryKey(primaryKeyObj);
 	}
 
@@ -254,11 +270,9 @@ public abstract class DefinitionLocalServiceBaseImpl
 	 * @param start the lower bound of the range of definitions
 	 * @param end the upper bound of the range of definitions (not inclusive)
 	 * @return the range of definitions
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public List<Definition> getDefinitions(int start, int end)
-		throws SystemException {
+	public List<Definition> getDefinitions(int start, int end) {
 		return definitionPersistence.findAll(start, end);
 	}
 
@@ -266,10 +280,9 @@ public abstract class DefinitionLocalServiceBaseImpl
 	 * Returns the number of definitions.
 	 *
 	 * @return the number of definitions
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public int getDefinitionsCount() throws SystemException {
+	public int getDefinitionsCount() {
 		return definitionPersistence.countAll();
 	}
 
@@ -278,12 +291,10 @@ public abstract class DefinitionLocalServiceBaseImpl
 	 *
 	 * @param definition the definition
 	 * @return the definition that was updated
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
-	public Definition updateDefinition(Definition definition)
-		throws SystemException {
+	public Definition updateDefinition(Definition definition) {
 		return definitionPersistence.update(definition);
 	}
 
@@ -655,7 +666,7 @@ public abstract class DefinitionLocalServiceBaseImpl
 	 *
 	 * @param sql the sql query
 	 */
-	protected void runSQL(String sql) throws SystemException {
+	protected void runSQL(String sql) {
 		try {
 			DataSource dataSource = definitionPersistence.getDataSource();
 

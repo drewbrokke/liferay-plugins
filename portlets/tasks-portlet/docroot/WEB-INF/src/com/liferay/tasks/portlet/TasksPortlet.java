@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -20,9 +20,9 @@ package com.liferay.tasks.portlet;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
+import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.servlet.SessionErrors;
-import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -34,13 +34,13 @@ import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portlet.PortletURLFactoryUtil;
 import com.liferay.portlet.asset.AssetTagException;
+import com.liferay.portlet.asset.service.AssetEntryLocalServiceUtil;
 import com.liferay.portlet.messageboards.model.MBMessage;
 import com.liferay.portlet.messageboards.service.MBMessageServiceUtil;
 import com.liferay.tasks.model.TasksEntry;
 import com.liferay.tasks.service.TasksEntryLocalServiceUtil;
 import com.liferay.tasks.service.TasksEntryServiceUtil;
 import com.liferay.tasks.util.PortletKeys;
-import com.liferay.util.bridges.mvc.MVCPortlet;
 
 import java.io.IOException;
 
@@ -94,17 +94,6 @@ public class TasksPortlet extends MVCPortlet {
 		}
 
 		if (!callActionMethod(actionRequest, actionResponse)) {
-			return;
-		}
-
-		if (SessionErrors.isEmpty(actionRequest)) {
-			SessionMessages.add(actionRequest, "requestProcessed");
-		}
-
-		String actionName = ParamUtil.getString(
-			actionRequest, ActionRequest.ACTION_NAME);
-
-		if (actionName.equals("updateTasksEntry")) {
 			return;
 		}
 
@@ -213,11 +202,10 @@ public class TasksPortlet extends MVCPortlet {
 				actionRequest, PortletKeys.TASKS, layout.getPlid(),
 				PortletRequest.RENDER_PHASE);
 
-			portletURL.setWindowState(LiferayWindowState.EXCLUSIVE);
-
 			portletURL.setParameter("mvcPath", "/tasks/view_task.jsp");
 			portletURL.setParameter(
 				"tasksEntryId", String.valueOf(taskEntry.getTasksEntryId()));
+			portletURL.setWindowState(LiferayWindowState.POP_UP);
 
 			actionResponse.sendRedirect(portletURL.toString());
 		}
@@ -235,6 +223,9 @@ public class TasksPortlet extends MVCPortlet {
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
+		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
 		long tasksEntryId = ParamUtil.getLong(actionRequest, "tasksEntryId");
 
 		long resolverUserId = ParamUtil.getLong(
@@ -246,6 +237,35 @@ public class TasksPortlet extends MVCPortlet {
 
 		TasksEntryLocalServiceUtil.updateTasksEntryStatus(
 			tasksEntryId, resolverUserId, status, serviceContext);
+
+		Layout layout = themeDisplay.getLayout();
+
+		PortletURL portletURL = PortletURLFactoryUtil.create(
+			actionRequest, PortletKeys.TASKS, layout.getPlid(),
+			PortletRequest.RENDER_PHASE);
+
+		portletURL.setParameter("mvcPath", "/tasks/view_task.jsp");
+		portletURL.setParameter("tasksEntryId", String.valueOf(tasksEntryId));
+		portletURL.setWindowState(LiferayWindowState.POP_UP);
+
+		actionResponse.sendRedirect(portletURL.toString());
+	}
+
+	public void updateTasksEntryViewCount(
+			ActionRequest actionRequest, ActionResponse actionResponse)
+		throws Exception {
+
+		long tasksEntryId = ParamUtil.getLong(actionRequest, "tasksEntryId");
+
+		TasksEntry tasksEntry = TasksEntryLocalServiceUtil.fetchTasksEntry(
+			tasksEntryId);
+
+		if (tasksEntry == null) {
+			return;
+		}
+
+		AssetEntryLocalServiceUtil.incrementViewCounter(
+			0, TasksEntry.class.getName(), tasksEntryId);
 	}
 
 }

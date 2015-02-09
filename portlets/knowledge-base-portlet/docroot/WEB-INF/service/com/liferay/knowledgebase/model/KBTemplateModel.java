@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,8 +14,9 @@
 
 package com.liferay.knowledgebase.model;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.portal.kernel.bean.AutoEscape;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.model.StagedGroupedModel;
@@ -40,6 +41,7 @@ import java.util.Date;
  * @see com.liferay.knowledgebase.model.impl.KBTemplateModelImpl
  * @generated
  */
+@ProviderType
 public interface KBTemplateModel extends BaseModel<KBTemplate>,
 	StagedGroupedModel {
 	/*
@@ -145,10 +147,9 @@ public interface KBTemplateModel extends BaseModel<KBTemplate>,
 	 * Returns the user uuid of this k b template.
 	 *
 	 * @return the user uuid of this k b template
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public String getUserUuid() throws SystemException;
+	public String getUserUuid();
 
 	/**
 	 * Sets the user uuid of this k b template.
@@ -274,19 +275,19 @@ public interface KBTemplateModel extends BaseModel<KBTemplate>,
 	public Object clone();
 
 	@Override
-	public int compareTo(KBTemplate kbTemplate);
+	public int compareTo(com.liferay.knowledgebase.model.KBTemplate kbTemplate);
 
 	@Override
 	public int hashCode();
 
 	@Override
-	public CacheModel<KBTemplate> toCacheModel();
+	public CacheModel<com.liferay.knowledgebase.model.KBTemplate> toCacheModel();
 
 	@Override
-	public KBTemplate toEscapedModel();
+	public com.liferay.knowledgebase.model.KBTemplate toEscapedModel();
 
 	@Override
-	public KBTemplate toUnescapedModel();
+	public com.liferay.knowledgebase.model.KBTemplate toUnescapedModel();
 
 	@Override
 	public String toString();

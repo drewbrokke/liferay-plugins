@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,7 +14,6 @@
 
 package com.liferay.portal.workflow.kaleo.runtime.assignment;
 
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.model.ResourceConstants;
@@ -40,9 +39,8 @@ public class ResourceActionTaskAssignmentSelector
 
 	@Override
 	public Collection<KaleoTaskAssignment> calculateTaskAssignments(
-			KaleoTaskAssignment kaleoTaskAssignment,
-			ExecutionContext executionContext, ClassLoader... classLoaders)
-		throws SystemException {
+		KaleoTaskAssignment kaleoTaskAssignment,
+		ExecutionContext executionContext, ClassLoader... classLoaders) {
 
 		ServiceContext serviceContext = executionContext.getServiceContext();
 
@@ -70,8 +68,8 @@ public class ResourceActionTaskAssignmentSelector
 			ResourceConstants.SCOPE_INDIVIDUAL, resourceClassPK,
 			kaleoTaskAssignment.getAssigneeActionId());
 
-		List<KaleoTaskAssignment> kaleoTaskAssignments =
-			new ArrayList<KaleoTaskAssignment>(roles.size());
+		List<KaleoTaskAssignment> kaleoTaskAssignments = new ArrayList<>(
+			roles.size());
 
 		getRoleKaleoTaskAssignments(roles, kaleoTaskAssignments);
 

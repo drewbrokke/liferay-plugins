@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,6 +14,9 @@
 
 package com.liferay.sync.model.impl;
 
+import aQute.bnd.annotation.ProviderType;
+
+import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.model.CacheModel;
 
@@ -33,8 +36,33 @@ import java.util.Date;
  * @see SyncDLFileVersionDiff
  * @generated
  */
+@ProviderType
 public class SyncDLFileVersionDiffCacheModel implements CacheModel<SyncDLFileVersionDiff>,
 	Externalizable {
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof SyncDLFileVersionDiffCacheModel)) {
+			return false;
+		}
+
+		SyncDLFileVersionDiffCacheModel syncDLFileVersionDiffCacheModel = (SyncDLFileVersionDiffCacheModel)obj;
+
+		if (syncDLFileVersionDiffId == syncDLFileVersionDiffCacheModel.syncDLFileVersionDiffId) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashUtil.hash(0, syncDLFileVersionDiffId);
+	}
+
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(15);
@@ -45,8 +73,8 @@ public class SyncDLFileVersionDiffCacheModel implements CacheModel<SyncDLFileVer
 		sb.append(fileEntryId);
 		sb.append(", sourceFileVersionId=");
 		sb.append(sourceFileVersionId);
-		sb.append(", destinationFileVersionId=");
-		sb.append(destinationFileVersionId);
+		sb.append(", targetFileVersionId=");
+		sb.append(targetFileVersionId);
 		sb.append(", dataFileEntryId=");
 		sb.append(dataFileEntryId);
 		sb.append(", size=");
@@ -65,7 +93,7 @@ public class SyncDLFileVersionDiffCacheModel implements CacheModel<SyncDLFileVer
 		syncDLFileVersionDiffImpl.setSyncDLFileVersionDiffId(syncDLFileVersionDiffId);
 		syncDLFileVersionDiffImpl.setFileEntryId(fileEntryId);
 		syncDLFileVersionDiffImpl.setSourceFileVersionId(sourceFileVersionId);
-		syncDLFileVersionDiffImpl.setDestinationFileVersionId(destinationFileVersionId);
+		syncDLFileVersionDiffImpl.setTargetFileVersionId(targetFileVersionId);
 		syncDLFileVersionDiffImpl.setDataFileEntryId(dataFileEntryId);
 		syncDLFileVersionDiffImpl.setSize(size);
 
@@ -86,7 +114,7 @@ public class SyncDLFileVersionDiffCacheModel implements CacheModel<SyncDLFileVer
 		syncDLFileVersionDiffId = objectInput.readLong();
 		fileEntryId = objectInput.readLong();
 		sourceFileVersionId = objectInput.readLong();
-		destinationFileVersionId = objectInput.readLong();
+		targetFileVersionId = objectInput.readLong();
 		dataFileEntryId = objectInput.readLong();
 		size = objectInput.readLong();
 		expirationDate = objectInput.readLong();
@@ -98,7 +126,7 @@ public class SyncDLFileVersionDiffCacheModel implements CacheModel<SyncDLFileVer
 		objectOutput.writeLong(syncDLFileVersionDiffId);
 		objectOutput.writeLong(fileEntryId);
 		objectOutput.writeLong(sourceFileVersionId);
-		objectOutput.writeLong(destinationFileVersionId);
+		objectOutput.writeLong(targetFileVersionId);
 		objectOutput.writeLong(dataFileEntryId);
 		objectOutput.writeLong(size);
 		objectOutput.writeLong(expirationDate);
@@ -107,7 +135,7 @@ public class SyncDLFileVersionDiffCacheModel implements CacheModel<SyncDLFileVer
 	public long syncDLFileVersionDiffId;
 	public long fileEntryId;
 	public long sourceFileVersionId;
-	public long destinationFileVersionId;
+	public long targetFileVersionId;
 	public long dataFileEntryId;
 	public long size;
 	public long expirationDate;

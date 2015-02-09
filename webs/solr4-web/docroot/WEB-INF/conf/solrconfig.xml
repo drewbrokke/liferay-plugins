@@ -13,6 +13,9 @@
 			<maxTime>15000</maxTime>
 			<openSearcher>false</openSearcher>
 		</autoCommit>
+		<autoSoftCommit>
+  			<maxTime>1000</maxTime>
+		</autoSoftCommit>
 		<updateLog>
 			<str name="dir">${solr.data.dir:}</str>
 		</updateLog>
@@ -279,8 +282,8 @@
 			</fragmenter>
 			<formatter class="solr.highlight.HtmlFormatter" default="true" name="html">
 				<lst name="defaults">
-					<str name="hl.simple.pre"><![CDATA[<em>]]></str>
-					<str name="hl.simple.post"><![CDATA[</em>]]></str>
+					<str name="hl.simple.pre"><![CDATA[<liferay-hl>]]></str>
+					<str name="hl.simple.post"><![CDATA[</liferay-hl>]]></str>
 				</lst>
 			</formatter>
 			<encoder class="solr.highlight.HtmlEncoder" name="html" />

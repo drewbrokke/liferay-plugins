@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -107,12 +107,12 @@ PortletURL viewConsumerPortletsURL = renderResponse.createRenderURL();
 viewConsumerPortletsURL.setParameter("mvcPath", "/admin/view_consumer_portlets.jsp");
 viewConsumerPortletsURL.setParameter("wsrpConsumerId", String.valueOf(wsrpConsumer.getWsrpConsumerId()));
 
-PortalUtil.addPortletBreadcrumbEntry(request, LanguageUtil.get(pageContext, "manage-portlets"), viewConsumerPortletsURL.toString());
+PortalUtil.addPortletBreadcrumbEntry(request, LanguageUtil.get(request, "manage-portlets"), viewConsumerPortletsURL.toString());
 
 if (wsrpConsumerPortlet != null) {
-	PortalUtil.addPortletBreadcrumbEntry(request, LanguageUtil.get(pageContext, "edit"), currentURL);
+	PortalUtil.addPortletBreadcrumbEntry(request, LanguageUtil.get(request, "edit"), currentURL);
 }
 else {
-	PortalUtil.addPortletBreadcrumbEntry(request, LanguageUtil.get(pageContext, "add-portlet"), currentURL);
+	PortalUtil.addPortletBreadcrumbEntry(request, LanguageUtil.get(request, "add-portlet"), currentURL);
 }
 %>

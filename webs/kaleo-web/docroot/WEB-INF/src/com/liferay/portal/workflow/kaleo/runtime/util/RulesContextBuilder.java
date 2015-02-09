@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,7 +16,6 @@ package com.liferay.portal.workflow.kaleo.runtime.util;
 
 import com.liferay.portal.kernel.bi.rules.Fact;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.workflow.WorkflowTaskAssignee;
 import com.liferay.portal.workflow.kaleo.model.KaleoInstance;
 import com.liferay.portal.workflow.kaleo.model.KaleoInstanceToken;
@@ -40,7 +39,7 @@ public class RulesContextBuilder {
 
 	public static List<Fact<?>> buildRulesContext(
 			ExecutionContext executionContext)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		Map<String, Serializable> workflowContext =
 			executionContext.getWorkflowContext();
@@ -55,8 +54,7 @@ public class RulesContextBuilder {
 				kaleoInstance.getWorkflowContext());
 		}
 
-		List<Fact<?>> facts = new ArrayList<Fact<?>>(
-			workflowContext.size() + 4);
+		List<Fact<?>> facts = new ArrayList<>(workflowContext.size() + 4);
 
 		facts.add(
 			new Fact<KaleoInstanceToken>(

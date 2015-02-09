@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -15,7 +15,7 @@
 package com.liferay.tasks.model.impl;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
-import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSON;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -23,9 +23,10 @@ import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.model.CacheModel;
+import com.liferay.portal.model.User;
 import com.liferay.portal.model.impl.BaseModelImpl;
 import com.liferay.portal.service.ServiceContext;
-import com.liferay.portal.util.PortalUtil;
+import com.liferay.portal.service.UserLocalServiceUtil;
 
 import com.liferay.portlet.expando.model.ExpandoBridge;
 import com.liferay.portlet.expando.util.ExpandoBridgeFactoryUtil;
@@ -101,10 +102,11 @@ public class TasksEntryModelImpl extends BaseModelImpl<TasksEntry>
 	public static long ASSIGNEEUSERID_COLUMN_BITMASK = 1L;
 	public static long GROUPID_COLUMN_BITMASK = 2L;
 	public static long RESOLVERUSERID_COLUMN_BITMASK = 4L;
-	public static long USERID_COLUMN_BITMASK = 8L;
-	public static long PRIORITY_COLUMN_BITMASK = 16L;
-	public static long DUEDATE_COLUMN_BITMASK = 32L;
-	public static long CREATEDATE_COLUMN_BITMASK = 64L;
+	public static long STATUS_COLUMN_BITMASK = 8L;
+	public static long USERID_COLUMN_BITMASK = 16L;
+	public static long PRIORITY_COLUMN_BITMASK = 32L;
+	public static long DUEDATE_COLUMN_BITMASK = 64L;
+	public static long CREATEDATE_COLUMN_BITMASK = 128L;
 
 	/**
 	 * Converts the soap model instance into a normal model instance.
@@ -370,13 +372,19 @@ public class TasksEntryModelImpl extends BaseModelImpl<TasksEntry>
 	}
 
 	@Override
-	public String getUserUuid() throws SystemException {
-		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
+	public String getUserUuid() {
+		try {
+			User user = UserLocalServiceUtil.getUserById(getUserId());
+
+			return user.getUuid();
+		}
+		catch (PortalException pe) {
+			return StringPool.BLANK;
+		}
 	}
 
 	@Override
 	public void setUserUuid(String userUuid) {
-		_userUuid = userUuid;
 	}
 
 	public long getOriginalUserId() {
@@ -472,14 +480,19 @@ public class TasksEntryModelImpl extends BaseModelImpl<TasksEntry>
 	}
 
 	@Override
-	public String getAssigneeUserUuid() throws SystemException {
-		return PortalUtil.getUserValue(getAssigneeUserId(), "uuid",
-			_assigneeUserUuid);
+	public String getAssigneeUserUuid() {
+		try {
+			User user = UserLocalServiceUtil.getUserById(getAssigneeUserId());
+
+			return user.getUuid();
+		}
+		catch (PortalException pe) {
+			return StringPool.BLANK;
+		}
 	}
 
 	@Override
 	public void setAssigneeUserUuid(String assigneeUserUuid) {
-		_assigneeUserUuid = assigneeUserUuid;
 	}
 
 	public long getOriginalAssigneeUserId() {
@@ -506,14 +519,19 @@ public class TasksEntryModelImpl extends BaseModelImpl<TasksEntry>
 	}
 
 	@Override
-	public String getResolverUserUuid() throws SystemException {
-		return PortalUtil.getUserValue(getResolverUserId(), "uuid",
-			_resolverUserUuid);
+	public String getResolverUserUuid() {
+		try {
+			User user = UserLocalServiceUtil.getUserById(getResolverUserId());
+
+			return user.getUuid();
+		}
+		catch (PortalException pe) {
+			return StringPool.BLANK;
+		}
 	}
 
 	@Override
 	public void setResolverUserUuid(String resolverUserUuid) {
-		_resolverUserUuid = resolverUserUuid;
 	}
 
 	public long getOriginalResolverUserId() {
@@ -552,7 +570,19 @@ public class TasksEntryModelImpl extends BaseModelImpl<TasksEntry>
 
 	@Override
 	public void setStatus(int status) {
+		_columnBitmask |= STATUS_COLUMN_BITMASK;
+
+		if (!_setOriginalStatus) {
+			_setOriginalStatus = true;
+
+			_originalStatus = _status;
+		}
+
 		_status = status;
+	}
+
+	public int getOriginalStatus() {
+		return _originalStatus;
 	}
 
 	public long getColumnBitmask() {
@@ -695,6 +725,10 @@ public class TasksEntryModelImpl extends BaseModelImpl<TasksEntry>
 		tasksEntryModelImpl._originalResolverUserId = tasksEntryModelImpl._resolverUserId;
 
 		tasksEntryModelImpl._setOriginalResolverUserId = false;
+
+		tasksEntryModelImpl._originalStatus = tasksEntryModelImpl._status;
+
+		tasksEntryModelImpl._setOriginalStatus = false;
 
 		tasksEntryModelImpl._columnBitmask = 0;
 	}
@@ -891,7 +925,6 @@ public class TasksEntryModelImpl extends BaseModelImpl<TasksEntry>
 	private boolean _setOriginalGroupId;
 	private long _companyId;
 	private long _userId;
-	private String _userUuid;
 	private long _originalUserId;
 	private boolean _setOriginalUserId;
 	private String _userName;
@@ -900,16 +933,16 @@ public class TasksEntryModelImpl extends BaseModelImpl<TasksEntry>
 	private String _title;
 	private int _priority;
 	private long _assigneeUserId;
-	private String _assigneeUserUuid;
 	private long _originalAssigneeUserId;
 	private boolean _setOriginalAssigneeUserId;
 	private long _resolverUserId;
-	private String _resolverUserUuid;
 	private long _originalResolverUserId;
 	private boolean _setOriginalResolverUserId;
 	private Date _dueDate;
 	private Date _finishDate;
 	private int _status;
+	private int _originalStatus;
+	private boolean _setOriginalStatus;
 	private long _columnBitmask;
 	private TasksEntry _escapedModel;
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -147,8 +147,7 @@ public class LiferayAppDataService implements AppDataService {
 
 		long companyId = getCompanyId(securityToken);
 
-		Map<String, Map<String, String>> peopleAppData =
-			new HashMap<String, Map<String, String>>();
+		Map<String, Map<String, String>> peopleAppData = new HashMap<>();
 
 		List<ExpandoColumn> expandoColumns = getExpandoColumns(
 			companyId, appId);
@@ -158,7 +157,7 @@ public class LiferayAppDataService implements AppDataService {
 		}
 
 		if (fields.isEmpty()) {
-			fields = new LinkedHashSet<String>();
+			fields = new LinkedHashSet<>();
 
 			for (ExpandoColumn expandoColumn : expandoColumns) {
 				fields.add(expandoColumn.getName());
@@ -170,7 +169,7 @@ public class LiferayAppDataService implements AppDataService {
 
 			long userIdLong = GetterUtil.getLong(userIdString);
 
-			Map<String, String> personAppData = new HashMap<String, String>();
+			Map<String, String> personAppData = new HashMap<>();
 
 			for (String field : fields) {
 				String value = getExpandoValue(

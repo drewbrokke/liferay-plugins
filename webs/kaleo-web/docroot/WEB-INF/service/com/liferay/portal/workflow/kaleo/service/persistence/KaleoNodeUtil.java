@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,9 +14,10 @@
 
 package com.liferay.portal.workflow.kaleo.service.persistence;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.portal.kernel.bean.PortletBeanLocatorUtil;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ReferenceRegistry;
 import com.liferay.portal.service.ServiceContext;
@@ -36,6 +37,7 @@ import java.util.List;
  * @see KaleoNodePersistenceImpl
  * @generated
  */
+@ProviderType
 public class KaleoNodeUtil {
 	/*
 	 * NOTE FOR DEVELOPERS:
@@ -60,8 +62,7 @@ public class KaleoNodeUtil {
 	/**
 	 * @see com.liferay.portal.service.persistence.BasePersistence#countWithDynamicQuery(DynamicQuery)
 	 */
-	public static long countWithDynamicQuery(DynamicQuery dynamicQuery)
-		throws SystemException {
+	public static long countWithDynamicQuery(DynamicQuery dynamicQuery) {
 		return getPersistence().countWithDynamicQuery(dynamicQuery);
 	}
 
@@ -69,7 +70,7 @@ public class KaleoNodeUtil {
 	 * @see com.liferay.portal.service.persistence.BasePersistence#findWithDynamicQuery(DynamicQuery)
 	 */
 	public static List<KaleoNode> findWithDynamicQuery(
-		DynamicQuery dynamicQuery) throws SystemException {
+		DynamicQuery dynamicQuery) {
 		return getPersistence().findWithDynamicQuery(dynamicQuery);
 	}
 
@@ -77,8 +78,7 @@ public class KaleoNodeUtil {
 	 * @see com.liferay.portal.service.persistence.BasePersistence#findWithDynamicQuery(DynamicQuery, int, int)
 	 */
 	public static List<KaleoNode> findWithDynamicQuery(
-		DynamicQuery dynamicQuery, int start, int end)
-		throws SystemException {
+		DynamicQuery dynamicQuery, int start, int end) {
 		return getPersistence().findWithDynamicQuery(dynamicQuery, start, end);
 	}
 
@@ -87,7 +87,7 @@ public class KaleoNodeUtil {
 	 */
 	public static List<KaleoNode> findWithDynamicQuery(
 		DynamicQuery dynamicQuery, int start, int end,
-		OrderByComparator orderByComparator) throws SystemException {
+		OrderByComparator<KaleoNode> orderByComparator) {
 		return getPersistence()
 				   .findWithDynamicQuery(dynamicQuery, start, end,
 			orderByComparator);
@@ -96,8 +96,7 @@ public class KaleoNodeUtil {
 	/**
 	 * @see com.liferay.portal.service.persistence.BasePersistence#update(com.liferay.portal.model.BaseModel)
 	 */
-	public static KaleoNode update(KaleoNode kaleoNode)
-		throws SystemException {
+	public static KaleoNode update(KaleoNode kaleoNode) {
 		return getPersistence().update(kaleoNode);
 	}
 
@@ -105,7 +104,7 @@ public class KaleoNodeUtil {
 	 * @see com.liferay.portal.service.persistence.BasePersistence#update(com.liferay.portal.model.BaseModel, ServiceContext)
 	 */
 	public static KaleoNode update(KaleoNode kaleoNode,
-		ServiceContext serviceContext) throws SystemException {
+		ServiceContext serviceContext) {
 		return getPersistence().update(kaleoNode, serviceContext);
 	}
 
@@ -114,11 +113,9 @@ public class KaleoNodeUtil {
 	*
 	* @param companyId the company ID
 	* @return the matching kaleo nodes
-	* @throws SystemException if a system exception occurred
 	*/
 	public static java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoNode> findByCompanyId(
-		long companyId)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		long companyId) {
 		return getPersistence().findByCompanyId(companyId);
 	}
 
@@ -133,11 +130,9 @@ public class KaleoNodeUtil {
 	* @param start the lower bound of the range of kaleo nodes
 	* @param end the upper bound of the range of kaleo nodes (not inclusive)
 	* @return the range of matching kaleo nodes
-	* @throws SystemException if a system exception occurred
 	*/
 	public static java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoNode> findByCompanyId(
-		long companyId, int start, int end)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		long companyId, int start, int end) {
 		return getPersistence().findByCompanyId(companyId, start, end);
 	}
 
@@ -153,12 +148,10 @@ public class KaleoNodeUtil {
 	* @param end the upper bound of the range of kaleo nodes (not inclusive)
 	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	* @return the ordered range of matching kaleo nodes
-	* @throws SystemException if a system exception occurred
 	*/
 	public static java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoNode> findByCompanyId(
 		long companyId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoNode> orderByComparator) {
 		return getPersistence()
 				   .findByCompanyId(companyId, start, end, orderByComparator);
 	}
@@ -170,13 +163,11 @@ public class KaleoNodeUtil {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching kaleo node
 	* @throws com.liferay.portal.workflow.kaleo.NoSuchNodeException if a matching kaleo node could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoNode findByCompanyId_First(
 		long companyId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.portal.workflow.kaleo.NoSuchNodeException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoNode> orderByComparator)
+		throws com.liferay.portal.workflow.kaleo.NoSuchNodeException {
 		return getPersistence()
 				   .findByCompanyId_First(companyId, orderByComparator);
 	}
@@ -187,12 +178,10 @@ public class KaleoNodeUtil {
 	* @param companyId the company ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching kaleo node, or <code>null</code> if a matching kaleo node could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoNode fetchByCompanyId_First(
 		long companyId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoNode> orderByComparator) {
 		return getPersistence()
 				   .fetchByCompanyId_First(companyId, orderByComparator);
 	}
@@ -204,13 +193,11 @@ public class KaleoNodeUtil {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching kaleo node
 	* @throws com.liferay.portal.workflow.kaleo.NoSuchNodeException if a matching kaleo node could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoNode findByCompanyId_Last(
 		long companyId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.portal.workflow.kaleo.NoSuchNodeException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoNode> orderByComparator)
+		throws com.liferay.portal.workflow.kaleo.NoSuchNodeException {
 		return getPersistence()
 				   .findByCompanyId_Last(companyId, orderByComparator);
 	}
@@ -221,12 +208,10 @@ public class KaleoNodeUtil {
 	* @param companyId the company ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching kaleo node, or <code>null</code> if a matching kaleo node could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoNode fetchByCompanyId_Last(
 		long companyId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoNode> orderByComparator) {
 		return getPersistence()
 				   .fetchByCompanyId_Last(companyId, orderByComparator);
 	}
@@ -239,13 +224,11 @@ public class KaleoNodeUtil {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next kaleo node
 	* @throws com.liferay.portal.workflow.kaleo.NoSuchNodeException if a kaleo node with the primary key could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoNode[] findByCompanyId_PrevAndNext(
 		long kaleoNodeId, long companyId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.portal.workflow.kaleo.NoSuchNodeException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoNode> orderByComparator)
+		throws com.liferay.portal.workflow.kaleo.NoSuchNodeException {
 		return getPersistence()
 				   .findByCompanyId_PrevAndNext(kaleoNodeId, companyId,
 			orderByComparator);
@@ -255,10 +238,8 @@ public class KaleoNodeUtil {
 	* Removes all the kaleo nodes where companyId = &#63; from the database.
 	*
 	* @param companyId the company ID
-	* @throws SystemException if a system exception occurred
 	*/
-	public static void removeByCompanyId(long companyId)
-		throws com.liferay.portal.kernel.exception.SystemException {
+	public static void removeByCompanyId(long companyId) {
 		getPersistence().removeByCompanyId(companyId);
 	}
 
@@ -267,10 +248,8 @@ public class KaleoNodeUtil {
 	*
 	* @param companyId the company ID
 	* @return the number of matching kaleo nodes
-	* @throws SystemException if a system exception occurred
 	*/
-	public static int countByCompanyId(long companyId)
-		throws com.liferay.portal.kernel.exception.SystemException {
+	public static int countByCompanyId(long companyId) {
 		return getPersistence().countByCompanyId(companyId);
 	}
 
@@ -279,11 +258,9 @@ public class KaleoNodeUtil {
 	*
 	* @param kaleoDefinitionId the kaleo definition ID
 	* @return the matching kaleo nodes
-	* @throws SystemException if a system exception occurred
 	*/
 	public static java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoNode> findByKaleoDefinitionId(
-		long kaleoDefinitionId)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		long kaleoDefinitionId) {
 		return getPersistence().findByKaleoDefinitionId(kaleoDefinitionId);
 	}
 
@@ -298,11 +275,9 @@ public class KaleoNodeUtil {
 	* @param start the lower bound of the range of kaleo nodes
 	* @param end the upper bound of the range of kaleo nodes (not inclusive)
 	* @return the range of matching kaleo nodes
-	* @throws SystemException if a system exception occurred
 	*/
 	public static java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoNode> findByKaleoDefinitionId(
-		long kaleoDefinitionId, int start, int end)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		long kaleoDefinitionId, int start, int end) {
 		return getPersistence()
 				   .findByKaleoDefinitionId(kaleoDefinitionId, start, end);
 	}
@@ -319,12 +294,10 @@ public class KaleoNodeUtil {
 	* @param end the upper bound of the range of kaleo nodes (not inclusive)
 	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	* @return the ordered range of matching kaleo nodes
-	* @throws SystemException if a system exception occurred
 	*/
 	public static java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoNode> findByKaleoDefinitionId(
 		long kaleoDefinitionId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoNode> orderByComparator) {
 		return getPersistence()
 				   .findByKaleoDefinitionId(kaleoDefinitionId, start, end,
 			orderByComparator);
@@ -337,13 +310,11 @@ public class KaleoNodeUtil {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching kaleo node
 	* @throws com.liferay.portal.workflow.kaleo.NoSuchNodeException if a matching kaleo node could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoNode findByKaleoDefinitionId_First(
 		long kaleoDefinitionId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.portal.workflow.kaleo.NoSuchNodeException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoNode> orderByComparator)
+		throws com.liferay.portal.workflow.kaleo.NoSuchNodeException {
 		return getPersistence()
 				   .findByKaleoDefinitionId_First(kaleoDefinitionId,
 			orderByComparator);
@@ -355,12 +326,10 @@ public class KaleoNodeUtil {
 	* @param kaleoDefinitionId the kaleo definition ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching kaleo node, or <code>null</code> if a matching kaleo node could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoNode fetchByKaleoDefinitionId_First(
 		long kaleoDefinitionId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoNode> orderByComparator) {
 		return getPersistence()
 				   .fetchByKaleoDefinitionId_First(kaleoDefinitionId,
 			orderByComparator);
@@ -373,13 +342,11 @@ public class KaleoNodeUtil {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching kaleo node
 	* @throws com.liferay.portal.workflow.kaleo.NoSuchNodeException if a matching kaleo node could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoNode findByKaleoDefinitionId_Last(
 		long kaleoDefinitionId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.portal.workflow.kaleo.NoSuchNodeException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoNode> orderByComparator)
+		throws com.liferay.portal.workflow.kaleo.NoSuchNodeException {
 		return getPersistence()
 				   .findByKaleoDefinitionId_Last(kaleoDefinitionId,
 			orderByComparator);
@@ -391,12 +358,10 @@ public class KaleoNodeUtil {
 	* @param kaleoDefinitionId the kaleo definition ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching kaleo node, or <code>null</code> if a matching kaleo node could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoNode fetchByKaleoDefinitionId_Last(
 		long kaleoDefinitionId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoNode> orderByComparator) {
 		return getPersistence()
 				   .fetchByKaleoDefinitionId_Last(kaleoDefinitionId,
 			orderByComparator);
@@ -410,13 +375,11 @@ public class KaleoNodeUtil {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next kaleo node
 	* @throws com.liferay.portal.workflow.kaleo.NoSuchNodeException if a kaleo node with the primary key could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoNode[] findByKaleoDefinitionId_PrevAndNext(
 		long kaleoNodeId, long kaleoDefinitionId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.portal.workflow.kaleo.NoSuchNodeException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoNode> orderByComparator)
+		throws com.liferay.portal.workflow.kaleo.NoSuchNodeException {
 		return getPersistence()
 				   .findByKaleoDefinitionId_PrevAndNext(kaleoNodeId,
 			kaleoDefinitionId, orderByComparator);
@@ -426,10 +389,8 @@ public class KaleoNodeUtil {
 	* Removes all the kaleo nodes where kaleoDefinitionId = &#63; from the database.
 	*
 	* @param kaleoDefinitionId the kaleo definition ID
-	* @throws SystemException if a system exception occurred
 	*/
-	public static void removeByKaleoDefinitionId(long kaleoDefinitionId)
-		throws com.liferay.portal.kernel.exception.SystemException {
+	public static void removeByKaleoDefinitionId(long kaleoDefinitionId) {
 		getPersistence().removeByKaleoDefinitionId(kaleoDefinitionId);
 	}
 
@@ -438,10 +399,8 @@ public class KaleoNodeUtil {
 	*
 	* @param kaleoDefinitionId the kaleo definition ID
 	* @return the number of matching kaleo nodes
-	* @throws SystemException if a system exception occurred
 	*/
-	public static int countByKaleoDefinitionId(long kaleoDefinitionId)
-		throws com.liferay.portal.kernel.exception.SystemException {
+	public static int countByKaleoDefinitionId(long kaleoDefinitionId) {
 		return getPersistence().countByKaleoDefinitionId(kaleoDefinitionId);
 	}
 
@@ -451,11 +410,9 @@ public class KaleoNodeUtil {
 	* @param companyId the company ID
 	* @param kaleoDefinitionId the kaleo definition ID
 	* @return the matching kaleo nodes
-	* @throws SystemException if a system exception occurred
 	*/
 	public static java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoNode> findByC_KDI(
-		long companyId, long kaleoDefinitionId)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		long companyId, long kaleoDefinitionId) {
 		return getPersistence().findByC_KDI(companyId, kaleoDefinitionId);
 	}
 
@@ -471,11 +428,9 @@ public class KaleoNodeUtil {
 	* @param start the lower bound of the range of kaleo nodes
 	* @param end the upper bound of the range of kaleo nodes (not inclusive)
 	* @return the range of matching kaleo nodes
-	* @throws SystemException if a system exception occurred
 	*/
 	public static java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoNode> findByC_KDI(
-		long companyId, long kaleoDefinitionId, int start, int end)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		long companyId, long kaleoDefinitionId, int start, int end) {
 		return getPersistence()
 				   .findByC_KDI(companyId, kaleoDefinitionId, start, end);
 	}
@@ -493,12 +448,10 @@ public class KaleoNodeUtil {
 	* @param end the upper bound of the range of kaleo nodes (not inclusive)
 	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	* @return the ordered range of matching kaleo nodes
-	* @throws SystemException if a system exception occurred
 	*/
 	public static java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoNode> findByC_KDI(
 		long companyId, long kaleoDefinitionId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoNode> orderByComparator) {
 		return getPersistence()
 				   .findByC_KDI(companyId, kaleoDefinitionId, start, end,
 			orderByComparator);
@@ -512,13 +465,11 @@ public class KaleoNodeUtil {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching kaleo node
 	* @throws com.liferay.portal.workflow.kaleo.NoSuchNodeException if a matching kaleo node could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoNode findByC_KDI_First(
 		long companyId, long kaleoDefinitionId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.portal.workflow.kaleo.NoSuchNodeException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoNode> orderByComparator)
+		throws com.liferay.portal.workflow.kaleo.NoSuchNodeException {
 		return getPersistence()
 				   .findByC_KDI_First(companyId, kaleoDefinitionId,
 			orderByComparator);
@@ -531,12 +482,10 @@ public class KaleoNodeUtil {
 	* @param kaleoDefinitionId the kaleo definition ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching kaleo node, or <code>null</code> if a matching kaleo node could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoNode fetchByC_KDI_First(
 		long companyId, long kaleoDefinitionId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoNode> orderByComparator) {
 		return getPersistence()
 				   .fetchByC_KDI_First(companyId, kaleoDefinitionId,
 			orderByComparator);
@@ -550,13 +499,11 @@ public class KaleoNodeUtil {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching kaleo node
 	* @throws com.liferay.portal.workflow.kaleo.NoSuchNodeException if a matching kaleo node could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoNode findByC_KDI_Last(
 		long companyId, long kaleoDefinitionId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.portal.workflow.kaleo.NoSuchNodeException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoNode> orderByComparator)
+		throws com.liferay.portal.workflow.kaleo.NoSuchNodeException {
 		return getPersistence()
 				   .findByC_KDI_Last(companyId, kaleoDefinitionId,
 			orderByComparator);
@@ -569,12 +516,10 @@ public class KaleoNodeUtil {
 	* @param kaleoDefinitionId the kaleo definition ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching kaleo node, or <code>null</code> if a matching kaleo node could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoNode fetchByC_KDI_Last(
 		long companyId, long kaleoDefinitionId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoNode> orderByComparator) {
 		return getPersistence()
 				   .fetchByC_KDI_Last(companyId, kaleoDefinitionId,
 			orderByComparator);
@@ -589,13 +534,11 @@ public class KaleoNodeUtil {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next kaleo node
 	* @throws com.liferay.portal.workflow.kaleo.NoSuchNodeException if a kaleo node with the primary key could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoNode[] findByC_KDI_PrevAndNext(
 		long kaleoNodeId, long companyId, long kaleoDefinitionId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.portal.workflow.kaleo.NoSuchNodeException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoNode> orderByComparator)
+		throws com.liferay.portal.workflow.kaleo.NoSuchNodeException {
 		return getPersistence()
 				   .findByC_KDI_PrevAndNext(kaleoNodeId, companyId,
 			kaleoDefinitionId, orderByComparator);
@@ -606,10 +549,8 @@ public class KaleoNodeUtil {
 	*
 	* @param companyId the company ID
 	* @param kaleoDefinitionId the kaleo definition ID
-	* @throws SystemException if a system exception occurred
 	*/
-	public static void removeByC_KDI(long companyId, long kaleoDefinitionId)
-		throws com.liferay.portal.kernel.exception.SystemException {
+	public static void removeByC_KDI(long companyId, long kaleoDefinitionId) {
 		getPersistence().removeByC_KDI(companyId, kaleoDefinitionId);
 	}
 
@@ -619,10 +560,8 @@ public class KaleoNodeUtil {
 	* @param companyId the company ID
 	* @param kaleoDefinitionId the kaleo definition ID
 	* @return the number of matching kaleo nodes
-	* @throws SystemException if a system exception occurred
 	*/
-	public static int countByC_KDI(long companyId, long kaleoDefinitionId)
-		throws com.liferay.portal.kernel.exception.SystemException {
+	public static int countByC_KDI(long companyId, long kaleoDefinitionId) {
 		return getPersistence().countByC_KDI(companyId, kaleoDefinitionId);
 	}
 
@@ -663,18 +602,15 @@ public class KaleoNodeUtil {
 	* @param kaleoNodeId the primary key of the kaleo node
 	* @return the kaleo node that was removed
 	* @throws com.liferay.portal.workflow.kaleo.NoSuchNodeException if a kaleo node with the primary key could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoNode remove(
 		long kaleoNodeId)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.portal.workflow.kaleo.NoSuchNodeException {
+		throws com.liferay.portal.workflow.kaleo.NoSuchNodeException {
 		return getPersistence().remove(kaleoNodeId);
 	}
 
 	public static com.liferay.portal.workflow.kaleo.model.KaleoNode updateImpl(
-		com.liferay.portal.workflow.kaleo.model.KaleoNode kaleoNode)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.workflow.kaleo.model.KaleoNode kaleoNode) {
 		return getPersistence().updateImpl(kaleoNode);
 	}
 
@@ -684,12 +620,10 @@ public class KaleoNodeUtil {
 	* @param kaleoNodeId the primary key of the kaleo node
 	* @return the kaleo node
 	* @throws com.liferay.portal.workflow.kaleo.NoSuchNodeException if a kaleo node with the primary key could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoNode findByPrimaryKey(
 		long kaleoNodeId)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.portal.workflow.kaleo.NoSuchNodeException {
+		throws com.liferay.portal.workflow.kaleo.NoSuchNodeException {
 		return getPersistence().findByPrimaryKey(kaleoNodeId);
 	}
 
@@ -698,22 +632,23 @@ public class KaleoNodeUtil {
 	*
 	* @param kaleoNodeId the primary key of the kaleo node
 	* @return the kaleo node, or <code>null</code> if a kaleo node with the primary key could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.portal.workflow.kaleo.model.KaleoNode fetchByPrimaryKey(
-		long kaleoNodeId)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		long kaleoNodeId) {
 		return getPersistence().fetchByPrimaryKey(kaleoNodeId);
+	}
+
+	public static java.util.Map<java.io.Serializable, com.liferay.portal.workflow.kaleo.model.KaleoNode> fetchByPrimaryKeys(
+		java.util.Set<java.io.Serializable> primaryKeys) {
+		return getPersistence().fetchByPrimaryKeys(primaryKeys);
 	}
 
 	/**
 	* Returns all the kaleo nodes.
 	*
 	* @return the kaleo nodes
-	* @throws SystemException if a system exception occurred
 	*/
-	public static java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoNode> findAll()
-		throws com.liferay.portal.kernel.exception.SystemException {
+	public static java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoNode> findAll() {
 		return getPersistence().findAll();
 	}
 
@@ -727,11 +662,9 @@ public class KaleoNodeUtil {
 	* @param start the lower bound of the range of kaleo nodes
 	* @param end the upper bound of the range of kaleo nodes (not inclusive)
 	* @return the range of kaleo nodes
-	* @throws SystemException if a system exception occurred
 	*/
 	public static java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoNode> findAll(
-		int start, int end)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		int start, int end) {
 		return getPersistence().findAll(start, end);
 	}
 
@@ -746,22 +679,17 @@ public class KaleoNodeUtil {
 	* @param end the upper bound of the range of kaleo nodes (not inclusive)
 	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	* @return the ordered range of kaleo nodes
-	* @throws SystemException if a system exception occurred
 	*/
 	public static java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoNode> findAll(
 		int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoNode> orderByComparator) {
 		return getPersistence().findAll(start, end, orderByComparator);
 	}
 
 	/**
 	* Removes all the kaleo nodes from the database.
-	*
-	* @throws SystemException if a system exception occurred
 	*/
-	public static void removeAll()
-		throws com.liferay.portal.kernel.exception.SystemException {
+	public static void removeAll() {
 		getPersistence().removeAll();
 	}
 
@@ -769,10 +697,8 @@ public class KaleoNodeUtil {
 	* Returns the number of kaleo nodes.
 	*
 	* @return the number of kaleo nodes
-	* @throws SystemException if a system exception occurred
 	*/
-	public static int countAll()
-		throws com.liferay.portal.kernel.exception.SystemException {
+	public static int countAll() {
 		return getPersistence().countAll();
 	}
 

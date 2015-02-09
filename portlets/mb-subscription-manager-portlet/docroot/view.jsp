@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -67,6 +67,7 @@ String keywords = ParamUtil.getString(request, "keywords");
 
 		<liferay-ui:search-container-column-jsp
 			align="right"
+			cssClass="entry-action"
 			path="/category_action.jsp"
 		/>
 	</liferay-ui:search-container-row>
@@ -136,7 +137,7 @@ private String _getSubscribers(PageContext pageContext, MBCategory mbCategory) t
 	sb.append("<a href=\"");
 	sb.append(HtmlUtil.escape(portletURL.toString()));
 	sb.append("\">");
-	sb.append(LanguageUtil.format(pageContext, "and-x-more", String.valueOf(count), false));
+	sb.append(LanguageUtil.format(request, "and-x-more", String.valueOf(count), false));
 	sb.append("</a>");
 
 	return sb.toString();

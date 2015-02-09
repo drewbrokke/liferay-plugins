@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -17,58 +17,56 @@
 <%@ include file="/admin/init.jsp" %>
 
 <%
-int status = (Integer)request.getAttribute(WebKeys.KNOWLEDGE_BASE_STATUS);
-
 KBArticle kbArticle = (KBArticle)request.getAttribute(WebKeys.KNOWLEDGE_BASE_KB_ARTICLE);
 
-List<KBArticle> siblingKBArticles = KBArticleServiceUtil.getSiblingKBArticles(scopeGroupId, kbArticle.getResourcePrimKey(), status, QueryUtil.ALL_POS, QueryUtil.ALL_POS, new KBArticlePriorityComparator(true));
+KBArticle[] previousAndNextKBArticles = KBArticleLocalServiceUtil.getPreviousAndNextKBArticles(kbArticle.getKbArticleId());
+
+KBArticle previousKBArticle = previousAndNextKBArticles[0];
+KBArticle nextKBArticle = previousAndNextKBArticles[2];
+
+KBArticleURLHelper kbArticleURLHelper = new KBArticleURLHelper(renderRequest, renderResponse, templatePath);
 %>
 
-<c:if test="<%= !siblingKBArticles.isEmpty() %>">
-	<div class="kb-article-siblings">
-		<div class="kb-elements">
+<div class="kb-article-siblings">
+	<span class="kb-article-previous">
+		<c:if test="<%= previousKBArticle != null %>">
 
 			<%
-			for (KBArticle siblingKBArticle : siblingKBArticles) {
+			PortletURL previousKBArticleURL = kbArticleURLHelper.createViewURL(previousKBArticle);
 			%>
 
-				<div class="kb-element-header">
-					<liferay-portlet:renderURL var="viewKBArticleURL">
-						<portlet:param name="mvcPath" value='<%= templatePath + "view_article.jsp" %>' />
-						<portlet:param name="resourcePrimKey" value="<%= String.valueOf(siblingKBArticle.getResourcePrimKey()) %>" />
-						<portlet:param name="status" value="<%= String.valueOf(status) %>" />
-					</liferay-portlet:renderURL>
+			<aui:a cssClass="hidden-xs" href="<%= previousKBArticleURL.toString() %>">
+				<i class="icon icon-circle-arrow-left"></i>
 
-					<liferay-ui:icon
-						image="../trees/page"
-						label="<%= true %>"
-						message="<%= siblingKBArticle.getTitle() %>"
-						method="get"
-						url="<%= viewKBArticleURL %>"
-					/>
-				</div>
-				<div class="kb-element-body">
+				<span class="title"><%= HtmlUtil.escape(previousKBArticle.getTitle()) %></span>
+			</aui:a>
 
-					<%
-					request.setAttribute("article_icons.jsp-kb_article", siblingKBArticle);
-					%>
+			<aui:a cssClass="visible-xs" href="<%= previousKBArticleURL.toString() %>">
+				<i class="icon icon-circle-arrow-left"></i>
 
-					<liferay-util:include page="/admin/article_icons.jsp" servletContext="<%= application %>" />
+				<span class="title"><liferay-ui:message key="previous" /></span>
+			</aui:a>
+		</c:if>
+	</span>
 
-					<c:choose>
-						<c:when test="<%= Validator.isNotNull(siblingKBArticle.getDescription()) %>">
-							<%= siblingKBArticle.getDescription() %>
-						</c:when>
-						<c:otherwise>
-							<%= StringUtil.shorten(HtmlUtil.extractText(siblingKBArticle.getContent()), 500) %>
-						</c:otherwise>
-					</c:choose>
-				</div>
+	<span class="kb-article-next">
+		<c:if test="<%= nextKBArticle != null %>">
 
 			<%
-			}
+			PortletURL nextKBArticleURL = kbArticleURLHelper.createViewURL(nextKBArticle);
 			%>
 
-		</div>
-	</div>
-</c:if>
+			<aui:a cssClass="hidden-xs next" href="<%= nextKBArticleURL.toString() %>">
+				<span class="title"><%= HtmlUtil.escape(nextKBArticle.getTitle()) %></span>
+
+				<i class="icon icon-circle-arrow-right"></i>
+			</aui:a>
+
+			<aui:a cssClass="next visible-xs" href="<%= nextKBArticleURL.toString() %>">
+				<span class="title"><liferay-ui:message key="next" /></span>
+
+				<i class="icon icon-circle-arrow-right"></i>
+			</aui:a>
+		</c:if>
+	</span>
+</div>

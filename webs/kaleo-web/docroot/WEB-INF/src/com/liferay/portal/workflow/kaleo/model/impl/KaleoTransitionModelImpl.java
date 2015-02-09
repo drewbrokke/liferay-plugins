@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,16 +14,19 @@
 
 package com.liferay.portal.workflow.kaleo.model.impl;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
-import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.model.CacheModel;
+import com.liferay.portal.model.User;
 import com.liferay.portal.model.impl.BaseModelImpl;
 import com.liferay.portal.service.ServiceContext;
-import com.liferay.portal.util.PortalUtil;
+import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.workflow.kaleo.model.KaleoTransition;
 import com.liferay.portal.workflow.kaleo.model.KaleoTransitionModel;
 
@@ -51,6 +54,7 @@ import java.util.Map;
  * @see com.liferay.portal.workflow.kaleo.model.KaleoTransitionModel
  * @generated
  */
+@ProviderType
 public class KaleoTransitionModelImpl extends BaseModelImpl<KaleoTransition>
 	implements KaleoTransitionModel {
 	/*
@@ -93,12 +97,12 @@ public class KaleoTransitionModelImpl extends BaseModelImpl<KaleoTransition>
 	public static final boolean COLUMN_BITMASK_ENABLED = GetterUtil.getBoolean(com.liferay.util.service.ServiceProps.get(
 				"value.object.column.bitmask.enabled.com.liferay.portal.workflow.kaleo.model.KaleoTransition"),
 			true);
-	public static long COMPANYID_COLUMN_BITMASK = 1L;
-	public static long DEFAULTTRANSITION_COLUMN_BITMASK = 2L;
-	public static long KALEODEFINITIONID_COLUMN_BITMASK = 4L;
-	public static long KALEONODEID_COLUMN_BITMASK = 8L;
-	public static long NAME_COLUMN_BITMASK = 16L;
-	public static long KALEOTRANSITIONID_COLUMN_BITMASK = 32L;
+	public static final long COMPANYID_COLUMN_BITMASK = 1L;
+	public static final long DEFAULTTRANSITION_COLUMN_BITMASK = 2L;
+	public static final long KALEODEFINITIONID_COLUMN_BITMASK = 4L;
+	public static final long KALEONODEID_COLUMN_BITMASK = 8L;
+	public static final long NAME_COLUMN_BITMASK = 16L;
+	public static final long KALEOTRANSITIONID_COLUMN_BITMASK = 32L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(com.liferay.util.service.ServiceProps.get(
 				"lock.expiration.time.com.liferay.portal.workflow.kaleo.model.KaleoTransition"));
 
@@ -318,13 +322,19 @@ public class KaleoTransitionModelImpl extends BaseModelImpl<KaleoTransition>
 	}
 
 	@Override
-	public String getUserUuid() throws SystemException {
-		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
+	public String getUserUuid() {
+		try {
+			User user = UserLocalServiceUtil.getUserById(getUserId());
+
+			return user.getUuid();
+		}
+		catch (PortalException pe) {
+			return StringPool.BLANK;
+		}
 	}
 
 	@Override
 	public void setUserUuid(String userUuid) {
-		_userUuid = userUuid;
 	}
 
 	@Override
@@ -863,8 +873,8 @@ public class KaleoTransitionModelImpl extends BaseModelImpl<KaleoTransition>
 		return sb.toString();
 	}
 
-	private static ClassLoader _classLoader = KaleoTransition.class.getClassLoader();
-	private static Class<?>[] _escapedModelInterfaces = new Class[] {
+	private static final ClassLoader _classLoader = KaleoTransition.class.getClassLoader();
+	private static final Class<?>[] _escapedModelInterfaces = new Class[] {
 			KaleoTransition.class
 		};
 	private long _kaleoTransitionId;
@@ -873,7 +883,6 @@ public class KaleoTransitionModelImpl extends BaseModelImpl<KaleoTransition>
 	private long _originalCompanyId;
 	private boolean _setOriginalCompanyId;
 	private long _userId;
-	private String _userUuid;
 	private String _userName;
 	private Date _createDate;
 	private Date _modifiedDate;

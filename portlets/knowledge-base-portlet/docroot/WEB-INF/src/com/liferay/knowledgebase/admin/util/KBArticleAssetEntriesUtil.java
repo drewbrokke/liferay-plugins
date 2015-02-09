@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -17,10 +17,8 @@ package com.liferay.knowledgebase.admin.util;
 import com.liferay.knowledgebase.model.KBArticle;
 import com.liferay.knowledgebase.util.PortletKeys;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.UniqueList;
 import com.liferay.portal.model.Group;
 import com.liferay.portal.security.auth.PrincipalException;
 import com.liferay.portal.theme.ThemeDisplay;
@@ -30,6 +28,8 @@ import com.liferay.portlet.asset.model.AssetEntry;
 import com.liferay.portlet.asset.model.AssetRenderer;
 import com.liferay.portlet.asset.model.AssetRendererFactory;
 import com.liferay.portlet.asset.model.AssetTag;
+import com.liferay.portlet.asset.provider.PortletProvider;
+import com.liferay.portlet.asset.provider.PortletProviderUtil;
 import com.liferay.portlet.asset.service.AssetEntryServiceUtil;
 import com.liferay.portlet.asset.service.AssetTagLocalServiceUtil;
 import com.liferay.portlet.asset.service.AssetTagServiceUtil;
@@ -38,10 +38,12 @@ import com.liferay.portlet.blogs.model.BlogsEntry;
 import com.liferay.portlet.journal.model.JournalArticle;
 import com.liferay.portlet.journal.service.JournalArticleLocalServiceUtil;
 import com.liferay.portlet.messageboards.model.MBMessage;
-import com.liferay.portlet.wiki.model.WikiPage;
-import com.liferay.portlet.wiki.service.WikiPageLocalServiceUtil;
+import com.liferay.wiki.model.WikiPage;
+import com.liferay.wiki.service.WikiPageLocalServiceUtil;
 
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.portlet.PortletMode;
 import javax.portlet.PortletRequest;
@@ -58,7 +60,7 @@ public class KBArticleAssetEntriesUtil {
 	public static List<AssetEntry> getAssetEntries(
 			long[] groupIds, long[] classNameIds, long[] assetTagIds,
 			long resourcePrimKey, int start, int end, String orderByColumn)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		AssetEntryQuery assetEntryQuery = new AssetEntryQuery();
 
@@ -86,7 +88,7 @@ public class KBArticleAssetEntriesUtil {
 	}
 
 	public static long[] getAssetTagIds(long[] groupIds, KBArticle kbArticle)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		List<AssetTag> assetTags = AssetTagServiceUtil.getTags(
 			KBArticle.class.getName(), kbArticle.getClassPK());
@@ -94,7 +96,7 @@ public class KBArticleAssetEntriesUtil {
 		long[] tagIds = AssetTagLocalServiceUtil.getTagIds(
 			groupIds, StringUtil.split(ListUtil.toString(assetTags, "name")));
 
-		List<Long> filteredTagIds = new UniqueList<Long>();
+		Set<Long> filteredTagIds = new LinkedHashSet<>();
 
 		for (long tagId : tagIds) {
 			try {
@@ -122,12 +124,14 @@ public class KBArticleAssetEntriesUtil {
 
 		long classPK = assetRenderer.getClassPK();
 		String className = assetRendererFactory.getClassName();
+		String portletId = PortletProviderUtil.getPortletId(
+			className, PortletProvider.Action.VIEW);
 
 		PortletURL portletURL = null;
 
 		if (className.equals(BlogsEntry.class.getName())) {
 			portletURL = PortletURLFactoryUtil.create(
-				request, PortletKeys.BLOGS, themeDisplay.getPlid(),
+				request, portletId, themeDisplay.getPlid(),
 				PortletRequest.RENDER_PHASE);
 
 			portletURL.setParameter("struts_action", "/blogs/view_entry");
@@ -138,7 +142,7 @@ public class KBArticleAssetEntriesUtil {
 				JournalArticleLocalServiceUtil.getLatestArticle(classPK);
 
 			portletURL = PortletURLFactoryUtil.create(
-				request, PortletKeys.JOURNAL_CONTENT, themeDisplay.getPlid(),
+				request, portletId, themeDisplay.getPlid(),
 				PortletRequest.RENDER_PHASE);
 
 			portletURL.setParameter("struts_action", "/journal_content/view");
@@ -156,7 +160,7 @@ public class KBArticleAssetEntriesUtil {
 		}
 		else if (className.equals(MBMessage.class.getName())) {
 			portletURL = PortletURLFactoryUtil.create(
-				request, PortletKeys.MESSAGE_BOARDS, themeDisplay.getPlid(),
+				request, portletId, themeDisplay.getPlid(),
 				PortletRequest.RENDER_PHASE);
 
 			portletURL.setParameter(
@@ -167,7 +171,7 @@ public class KBArticleAssetEntriesUtil {
 			WikiPage wikiPage = WikiPageLocalServiceUtil.getPage(classPK);
 
 			portletURL = PortletURLFactoryUtil.create(
-				request, PortletKeys.WIKI, themeDisplay.getPlid(),
+				request, portletId, themeDisplay.getPlid(),
 				PortletRequest.RENDER_PHASE);
 
 			portletURL.setParameter("struts_action", "/wiki/view");

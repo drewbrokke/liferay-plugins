@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,17 +19,23 @@ import com.liferay.calendar.model.CalendarBooking;
 import com.liferay.calendar.model.CalendarBookingConstants;
 import com.liferay.calendar.service.CalendarBookingLocalServiceUtil;
 import com.liferay.calendar.workflow.CalendarBookingWorkflowConstants;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.lar.BaseStagedModelDataHandler;
 import com.liferay.portal.kernel.lar.ExportImportPathUtil;
 import com.liferay.portal.kernel.lar.PortletDataContext;
 import com.liferay.portal.kernel.lar.StagedModelDataHandlerUtil;
+import com.liferay.portal.kernel.lar.StagedModelModifiedDateComparator;
 import com.liferay.portal.kernel.trash.TrashHandler;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.service.ServiceContext;
+import com.liferay.portlet.messageboards.model.MBMessage;
+import com.liferay.portlet.messageboards.service.MBMessageLocalServiceUtil;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,16 +51,40 @@ public class CalendarBookingStagedModelDataHandler
 	@Override
 	public void deleteStagedModel(
 			String uuid, long groupId, String className, String extraData)
-		throws PortalException, SystemException {
+		throws PortalException {
 
-		CalendarBooking calendarBooking =
-			CalendarBookingLocalServiceUtil.
-				fetchCalendarBookingByUuidAndGroupId(uuid, groupId);
+		CalendarBooking calendarBooking = fetchStagedModelByUuidAndGroupId(
+			uuid, groupId);
 
 		if (calendarBooking != null) {
 			CalendarBookingLocalServiceUtil.deleteCalendarBooking(
 				calendarBooking);
 		}
+	}
+
+	@Override
+	public CalendarBooking fetchStagedModelByUuidAndCompanyId(
+		String uuid, long companyId) {
+
+		List<CalendarBooking> calendarBookings =
+			CalendarBookingLocalServiceUtil.
+				getCalendarBookingsByUuidAndCompanyId(
+					uuid, companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					new StagedModelModifiedDateComparator<CalendarBooking>());
+
+		if (ListUtil.isEmpty(calendarBookings)) {
+			return null;
+		}
+
+		return calendarBookings.get(0);
+	}
+
+	@Override
+	public CalendarBooking fetchStagedModelByUuidAndGroupId(
+		String uuid, long groupId) {
+
+		return CalendarBookingLocalServiceUtil.
+			fetchCalendarBookingByUuidAndGroupId(uuid, groupId);
 	}
 
 	@Override
@@ -107,9 +137,6 @@ public class CalendarBookingStagedModelDataHandler
 		long userId = portletDataContext.getUserId(
 			calendarBooking.getUserUuid());
 
-		StagedModelDataHandlerUtil.importReferenceStagedModels(
-			portletDataContext, calendarBooking, Calendar.class);
-
 		Map<Long, Long> calendarIds =
 			(Map<Long, Long>)portletDataContext.getNewPrimaryKeysMap(
 				Calendar.class);
@@ -122,9 +149,6 @@ public class CalendarBookingStagedModelDataHandler
 			CalendarBookingConstants.PARENT_CALENDAR_BOOKING_ID_DEFAULT;
 
 		if (!calendarBooking.isMasterBooking()) {
-			StagedModelDataHandlerUtil.importReferenceStagedModels(
-				portletDataContext, calendarBooking, CalendarBooking.class);
-
 			Map<Long, Long> calendarBookingIds =
 				(Map<Long, Long>)portletDataContext.getNewPrimaryKeysMap(
 					CalendarBooking.class);
@@ -142,10 +166,9 @@ public class CalendarBookingStagedModelDataHandler
 
 		if (portletDataContext.isDataStrategyMirror()) {
 			CalendarBooking existingCalendarBooking =
-				CalendarBookingLocalServiceUtil.
-					fetchCalendarBookingByUuidAndGroupId(
-						calendarBooking.getUuid(),
-						portletDataContext.getScopeGroupId());
+				fetchStagedModelByUuidAndGroupId(
+					calendarBooking.getUuid(),
+					portletDataContext.getScopeGroupId());
 
 			if (existingCalendarBooking == null) {
 				serviceContext.setUuid(calendarBooking.getUuid());
@@ -200,6 +223,22 @@ public class CalendarBookingStagedModelDataHandler
 					calendarBooking.getSecondReminderType(), serviceContext);
 		}
 
+		// The root discussion message is not automatically imported when
+		// importing a calendar booking
+
+		List<Element> mbMessageElements =
+			portletDataContext.getReferenceElements(
+				calendarBooking, MBMessage.class);
+
+		if (ListUtil.isNotEmpty(mbMessageElements)) {
+			MBMessageLocalServiceUtil.addDiscussionMessage(
+				userId, importedCalendarBooking.getUserName(),
+				importedCalendarBooking.getGroupId(),
+				CalendarBooking.class.getName(),
+				importedCalendarBooking.getCalendarBookingId(),
+				WorkflowConstants.ACTION_PUBLISH);
+		}
+
 		portletDataContext.importClassedModel(
 			calendarBooking, importedCalendarBooking);
 	}
@@ -213,10 +252,8 @@ public class CalendarBookingStagedModelDataHandler
 		long userId = portletDataContext.getUserId(
 			calendarBooking.getUserUuid());
 
-		CalendarBooking existingBooking =
-			CalendarBookingLocalServiceUtil.fetchCalendarBooking(
-				calendarBooking.getUuid(),
-				portletDataContext.getScopeGroupId());
+		CalendarBooking existingBooking = fetchStagedModelByUuidAndGroupId(
+			calendarBooking.getUuid(), portletDataContext.getScopeGroupId());
 
 		if ((existingBooking == null) || !existingBooking.isInTrash()) {
 			return;

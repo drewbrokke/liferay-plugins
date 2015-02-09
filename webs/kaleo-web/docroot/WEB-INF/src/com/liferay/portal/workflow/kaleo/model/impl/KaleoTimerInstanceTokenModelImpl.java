@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,16 +14,19 @@
 
 package com.liferay.portal.workflow.kaleo.model.impl;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
-import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.model.CacheModel;
+import com.liferay.portal.model.User;
 import com.liferay.portal.model.impl.BaseModelImpl;
 import com.liferay.portal.service.ServiceContext;
-import com.liferay.portal.util.PortalUtil;
+import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.workflow.kaleo.model.KaleoTimerInstanceToken;
 import com.liferay.portal.workflow.kaleo.model.KaleoTimerInstanceTokenModel;
 
@@ -51,6 +54,7 @@ import java.util.Map;
  * @see com.liferay.portal.workflow.kaleo.model.KaleoTimerInstanceTokenModel
  * @generated
  */
+@ProviderType
 public class KaleoTimerInstanceTokenModelImpl extends BaseModelImpl<KaleoTimerInstanceToken>
 	implements KaleoTimerInstanceTokenModel {
 	/*
@@ -97,12 +101,12 @@ public class KaleoTimerInstanceTokenModelImpl extends BaseModelImpl<KaleoTimerIn
 	public static final boolean COLUMN_BITMASK_ENABLED = GetterUtil.getBoolean(com.liferay.util.service.ServiceProps.get(
 				"value.object.column.bitmask.enabled.com.liferay.portal.workflow.kaleo.model.KaleoTimerInstanceToken"),
 			true);
-	public static long BLOCKING_COLUMN_BITMASK = 1L;
-	public static long COMPLETED_COLUMN_BITMASK = 2L;
-	public static long KALEOINSTANCEID_COLUMN_BITMASK = 4L;
-	public static long KALEOINSTANCETOKENID_COLUMN_BITMASK = 8L;
-	public static long KALEOTIMERID_COLUMN_BITMASK = 16L;
-	public static long KALEOTIMERINSTANCETOKENID_COLUMN_BITMASK = 32L;
+	public static final long BLOCKING_COLUMN_BITMASK = 1L;
+	public static final long COMPLETED_COLUMN_BITMASK = 2L;
+	public static final long KALEOINSTANCEID_COLUMN_BITMASK = 4L;
+	public static final long KALEOINSTANCETOKENID_COLUMN_BITMASK = 8L;
+	public static final long KALEOTIMERID_COLUMN_BITMASK = 16L;
+	public static final long KALEOTIMERINSTANCETOKENID_COLUMN_BITMASK = 32L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(com.liferay.util.service.ServiceProps.get(
 				"lock.expiration.time.com.liferay.portal.workflow.kaleo.model.KaleoTimerInstanceToken"));
 
@@ -339,13 +343,19 @@ public class KaleoTimerInstanceTokenModelImpl extends BaseModelImpl<KaleoTimerIn
 	}
 
 	@Override
-	public String getUserUuid() throws SystemException {
-		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
+	public String getUserUuid() {
+		try {
+			User user = UserLocalServiceUtil.getUserById(getUserId());
+
+			return user.getUuid();
+		}
+		catch (PortalException pe) {
+			return StringPool.BLANK;
+		}
 	}
 
 	@Override
 	public void setUserUuid(String userUuid) {
-		_userUuid = userUuid;
 	}
 
 	@Override
@@ -547,14 +557,19 @@ public class KaleoTimerInstanceTokenModelImpl extends BaseModelImpl<KaleoTimerIn
 	}
 
 	@Override
-	public String getCompletionUserUuid() throws SystemException {
-		return PortalUtil.getUserValue(getCompletionUserId(), "uuid",
-			_completionUserUuid);
+	public String getCompletionUserUuid() {
+		try {
+			User user = UserLocalServiceUtil.getUserById(getCompletionUserId());
+
+			return user.getUuid();
+		}
+		catch (PortalException pe) {
+			return StringPool.BLANK;
+		}
 	}
 
 	@Override
 	public void setCompletionUserUuid(String completionUserUuid) {
-		_completionUserUuid = completionUserUuid;
 	}
 
 	@Override
@@ -987,15 +1002,14 @@ public class KaleoTimerInstanceTokenModelImpl extends BaseModelImpl<KaleoTimerIn
 		return sb.toString();
 	}
 
-	private static ClassLoader _classLoader = KaleoTimerInstanceToken.class.getClassLoader();
-	private static Class<?>[] _escapedModelInterfaces = new Class[] {
+	private static final ClassLoader _classLoader = KaleoTimerInstanceToken.class.getClassLoader();
+	private static final Class<?>[] _escapedModelInterfaces = new Class[] {
 			KaleoTimerInstanceToken.class
 		};
 	private long _kaleoTimerInstanceTokenId;
 	private long _groupId;
 	private long _companyId;
 	private long _userId;
-	private String _userUuid;
 	private String _userName;
 	private Date _createDate;
 	private Date _modifiedDate;
@@ -1017,7 +1031,6 @@ public class KaleoTimerInstanceTokenModelImpl extends BaseModelImpl<KaleoTimerIn
 	private boolean _originalBlocking;
 	private boolean _setOriginalBlocking;
 	private long _completionUserId;
-	private String _completionUserUuid;
 	private boolean _completed;
 	private boolean _originalCompleted;
 	private boolean _setOriginalCompleted;

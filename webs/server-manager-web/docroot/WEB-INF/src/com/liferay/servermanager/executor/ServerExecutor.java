@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -26,7 +26,7 @@ public class ServerExecutor extends BaseExecutor {
 
 	@Override
 	protected Map<String, Executor> initNextExecutors() {
-		Map<String, Executor> executors = new HashMap<String, Executor>();
+		Map<String, Executor> executors = new HashMap<>();
 
 		executors.put("debug-port", new DebugPortExecutor());
 		executors.put("freemarker", new FreeMarkerExecutor());

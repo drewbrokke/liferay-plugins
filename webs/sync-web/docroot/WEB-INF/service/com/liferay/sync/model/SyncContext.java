@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,14 +16,20 @@ package com.liferay.sync.model;
 
 import com.liferay.portal.kernel.json.JSON;
 import com.liferay.portal.model.Group;
+import com.liferay.portal.model.User;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Dennis Ju
  */
 @JSON
 public class SyncContext {
+
+	public String getAuthType() {
+		return _authType;
+	}
 
 	public String getPluginVersion() {
 		return _pluginVersion;
@@ -33,8 +39,14 @@ public class SyncContext {
 		return _portalBuildNumber;
 	}
 
-	public long getUserId() {
-		return _userId;
+	@JSON
+	public Map<String, String> getPortletPreferencesMap() {
+		return _portletPreferencesMap;
+	}
+
+	@JSON
+	public User getUser() {
+		return _user;
 	}
 
 	@JSON
@@ -46,6 +58,10 @@ public class SyncContext {
 		return _socialOfficeInstalled;
 	}
 
+	public void setAuthType(String authType) {
+		_authType = authType;
+	}
+
 	public void setPluginVersion(String pluginVersion) {
 		_pluginVersion = pluginVersion;
 	}
@@ -54,22 +70,30 @@ public class SyncContext {
 		_portalBuildNumber = portalBuildNumber;
 	}
 
+	public void setPortletPreferencesMap(
+		Map<String, String> portletPreferencesMap) {
+
+		_portletPreferencesMap = portletPreferencesMap;
+	}
+
 	public void setSocialOfficeInstalled(boolean socialOfficeInstalled) {
 		_socialOfficeInstalled = socialOfficeInstalled;
 	}
 
-	public void setUserId(long userId) {
-		_userId = userId;
+	public void setUser(User user) {
+		_user = user;
 	}
 
 	public void setUserSitesGroups(List<Group> userSitesGroups) {
 		_userSitesGroups = userSitesGroups;
 	}
 
+	private String _authType;
 	private String _pluginVersion;
 	private int _portalBuildNumber;
+	private Map<String, String> _portletPreferencesMap;
 	private boolean _socialOfficeInstalled;
-	private long _userId;
+	private User _user;
 	private List<Group> _userSitesGroups;
 
 }

@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -62,9 +62,15 @@ if (user2 != null) {
 }
 %>
 
-<div class="lfr-button-column">
+<div class="lfr-button-column" id="<portlet:namespace />buttonColumn">
 	<div class="lfr-button-column-content">
 		<aui:button-row cssClass="edit-toolbar" id='<%= renderResponse.getNamespace() + "userToolbar" %>' />
+
+		<div class="btn view-more-button">
+			<i class="icon-ellipsis-horizontal"></i>
+
+			<liferay-ui:message key="more" />
+		</div>
 	</div>
 </div>
 
@@ -83,7 +89,7 @@ if (user2 != null) {
 				},
 				icon: 'icon-plus-sign',
 				id: '<portlet:namespace />addConnectionButton',
-				label: '<%= UnicodeLanguageUtil.get(pageContext, "connect") %>',
+				label: '<%= UnicodeLanguageUtil.get(request, "connect") %>',
 				render: true,
 				visible: <%= showAddAsConnectionButton %>
 			}
@@ -100,7 +106,7 @@ if (user2 != null) {
 				},
 				icon: 'icon-minus-sign',
 				id: '<portlet:namespace />removeConnectionButton',
-				label: '<%= UnicodeLanguageUtil.get(pageContext, "disconnect") %>',
+				label: '<%= UnicodeLanguageUtil.get(request, "disconnect") %>',
 				render: true,
 				visible: <%= showRemoveAsConnectionButton %>
 			}
@@ -110,6 +116,7 @@ if (user2 != null) {
 	contactsToolbarChildren.push(
 		new A.Button(
 			{
+				cssClass: 'more',
 				on: {
 					click: function(event) {
 						<portlet:namespace />relationAction(event, '<portlet:actionURL name="addSocialRelation" windowState="<%= LiferayWindowState.NORMAL.toString() %>"><portlet:param name="type" value="<%= String.valueOf(SocialRelationConstants.TYPE_UNI_FOLLOWER) %>" /></portlet:actionURL>');
@@ -117,7 +124,7 @@ if (user2 != null) {
 				},
 				icon: 'icon-plus-sign',
 				id: '<portlet:namespace />followButton',
-				label: '<%= UnicodeLanguageUtil.get(pageContext, "follow") %>',
+				label: '<%= UnicodeLanguageUtil.get(request, "follow") %>',
 				render: true,
 				visible: <%= showFollowButton %>
 			}
@@ -127,6 +134,7 @@ if (user2 != null) {
 	contactsToolbarChildren.push(
 		new A.Button(
 			{
+				cssClass: 'more',
 				on: {
 					click: function(event) {
 						<portlet:namespace />relationAction(event, '<portlet:actionURL name="deleteSocialRelation" windowState="<%= LiferayWindowState.NORMAL.toString() %>"><portlet:param name="type" value="<%= String.valueOf(SocialRelationConstants.TYPE_UNI_FOLLOWER) %>" /></portlet:actionURL>');
@@ -134,7 +142,7 @@ if (user2 != null) {
 				},
 				icon: 'icon-minus-sign',
 				id: '<portlet:namespace />unfollowButton',
-				label: '<%= UnicodeLanguageUtil.get(pageContext, "unfollow") %>',
+				label: '<%= UnicodeLanguageUtil.get(request, "unfollow") %>',
 				render: true,
 				visible: <%= showUnFollowButton %>
 			}
@@ -144,6 +152,7 @@ if (user2 != null) {
 	contactsToolbarChildren.push(
 		new A.Button(
 			{
+				cssClass: 'more',
 				on: {
 					click: function(event) {
 						<portlet:namespace />relationAction(event, '<portlet:actionURL name="addSocialRelation" windowState="<%= LiferayWindowState.NORMAL.toString() %>"><portlet:param name="type" value="<%= String.valueOf(SocialRelationConstants.TYPE_UNI_ENEMY) %>" /></portlet:actionURL>');
@@ -151,7 +160,7 @@ if (user2 != null) {
 				},
 				icon: 'icon-ban-circle',
 				id: '<portlet:namespace />blockButton',
-				label: '<%= UnicodeLanguageUtil.get(pageContext, "block") %>',
+				label: '<%= UnicodeLanguageUtil.get(request, "block") %>',
 				render: true,
 				visible: <%= showBlockButton %>
 			}
@@ -161,6 +170,7 @@ if (user2 != null) {
 	contactsToolbarChildren.push(
 		new A.Button(
 			{
+				cssClass: 'more',
 				on: {
 					click: function(event) {
 						<portlet:namespace />relationAction(event, '<portlet:actionURL name="deleteSocialRelation" windowState="<%= LiferayWindowState.NORMAL.toString() %>"><portlet:param name="type" value="<%= String.valueOf(SocialRelationConstants.TYPE_UNI_ENEMY) %>" /></portlet:actionURL>');
@@ -168,7 +178,7 @@ if (user2 != null) {
 				},
 				icon: 'icon-ok',
 				id: '<portlet:namespace />unblockButton',
-				label: '<%= UnicodeLanguageUtil.get(pageContext, "unblock") %>',
+				label: '<%= UnicodeLanguageUtil.get(request, "unblock") %>',
 				render: true,
 				visible: <%= showUnBlockButton %>
 			}
@@ -184,7 +194,7 @@ if (user2 != null) {
 			{
 				icon: 'icon-envelope',
 				id: '<portlet:namespace />sendMessageButton',
-				label: '<%= UnicodeLanguageUtil.get(pageContext, "message") %>',
+				label: '<%= UnicodeLanguageUtil.get(request, "message") %>',
 				on: {
 					click: function(event) {
 						<portlet:renderURL var="redirectURL" windowState="<%= LiferayWindowState.NORMAL.toString() %>" />
@@ -215,7 +225,7 @@ if (user2 != null) {
 									width: 600
 								},
 								id: '<%= PortalUtil.getPortletNamespace(PortletKeys.PRIVATE_MESSAGING) %>Dialog',
-								title: '<%= UnicodeLanguageUtil.get(pageContext, "new-message") %>',
+								title: '<%= UnicodeLanguageUtil.get(request, "new-message") %>',
 								uri: uri
 							}
 						);
@@ -228,9 +238,10 @@ if (user2 != null) {
 	contactsToolbarChildren.push(
 		new A.Button(
 			{
+				cssClass: 'more',
 				icon: 'icon-save',
 				id: '<portlet:namespace />exportButton',
-				label: '<%= UnicodeLanguageUtil.get(pageContext, "vcard") %>',
+				label: '<%= UnicodeLanguageUtil.get(request, "vcard") %>',
 				on: {
 					click: function(event) {
 						<c:choose>
@@ -254,6 +265,24 @@ if (user2 != null) {
 			children: contactsToolbarChildren
 		}
 	).render();
+
+	var editToolbar = A.one('.edit-toolbar');
+
+	editToolbar.toggleClass('hide-more-buttons', true);
+
+	var buttonColumn = A.one('#<portlet:namespace />buttonColumn');
+
+	var viewMoreButton = buttonColumn.one('.view-more-button');
+
+	buttonColumn.delegate(
+		'click',
+		function(event) {
+			editToolbar.toggleClass('hide-more-buttons', false);
+
+			viewMoreButton.hide();
+		},
+		'.view-more-button'
+	);
 
 	function <portlet:namespace />relationAction(event, uri) {
 		var end = <%= ContactsConstants.MAX_RESULT_COUNT %>;
@@ -306,7 +335,7 @@ if (user2 != null) {
 					<portlet:namespace />start: 0,
 					<portlet:namespace />userIds: userIds.join()
 				},
-				dataType: 'json'
+				dataType: 'JSON'
 			}
 		);
 	}

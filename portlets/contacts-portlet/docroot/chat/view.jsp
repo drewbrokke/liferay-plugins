@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -37,7 +37,7 @@ Portlet portlet = PortletLocalServiceUtil.getPortletById(company.getCompanyId(),
 					fn: function(user) {
 						var groupId = user.getAttribute('data-groupId');
 
-						var url = Liferay.Util.addParams("<%= PortalUtil.getPortletNamespace(PortletKeys.SITE_REDIRECTOR) %>groupId=" + groupId, '<%= profileURL %>');
+						var url = Liferay.Util.addParams('<%= PortalUtil.getPortletNamespace(PortletKeys.SITE_REDIRECTOR) %>groupId=' + groupId, '<%= profileURL %>');
 
 						window.location = url;
 					},

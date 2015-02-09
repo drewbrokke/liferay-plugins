@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,8 +14,9 @@
 
 package com.liferay.portal.workflow.kaleo.model;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.portal.kernel.bean.AutoEscape;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.model.GroupedModel;
@@ -40,6 +41,7 @@ import java.util.Date;
  * @see com.liferay.portal.workflow.kaleo.model.impl.KaleoInstanceModelImpl
  * @generated
  */
+@ProviderType
 public interface KaleoInstanceModel extends BaseModel<KaleoInstance>,
 	GroupedModel {
 	/*
@@ -128,10 +130,9 @@ public interface KaleoInstanceModel extends BaseModel<KaleoInstance>,
 	 * Returns the user uuid of this kaleo instance.
 	 *
 	 * @return the user uuid of this kaleo instance
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public String getUserUuid() throws SystemException;
+	public String getUserUuid();
 
 	/**
 	 * Sets the user uuid of this kaleo instance.
@@ -363,19 +364,20 @@ public interface KaleoInstanceModel extends BaseModel<KaleoInstance>,
 	public Object clone();
 
 	@Override
-	public int compareTo(KaleoInstance kaleoInstance);
+	public int compareTo(
+		com.liferay.portal.workflow.kaleo.model.KaleoInstance kaleoInstance);
 
 	@Override
 	public int hashCode();
 
 	@Override
-	public CacheModel<KaleoInstance> toCacheModel();
+	public CacheModel<com.liferay.portal.workflow.kaleo.model.KaleoInstance> toCacheModel();
 
 	@Override
-	public KaleoInstance toEscapedModel();
+	public com.liferay.portal.workflow.kaleo.model.KaleoInstance toEscapedModel();
 
 	@Override
-	public KaleoInstance toUnescapedModel();
+	public com.liferay.portal.workflow.kaleo.model.KaleoInstance toUnescapedModel();
 
 	@Override
 	public String toString();

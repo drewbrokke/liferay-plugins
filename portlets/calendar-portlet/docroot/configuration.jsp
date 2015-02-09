@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -22,13 +22,14 @@ String tabs2 = ParamUtil.getString(request, "tabs2", "user-settings");
 
 <liferay-portlet:actionURL portletConfiguration="true" var="configurationActionURL" />
 
-<liferay-portlet:renderURL portletConfiguration="true" var="configurationRenderURL">
-	<portlet:param name="tabs2" value="<%= tabs2 %>" />
-</liferay-portlet:renderURL>
-
 <aui:form action="<%= configurationActionURL %>" method="post" name="fm" onSubmit='<%= "event.preventDefault(); " + renderResponse.getNamespace() + "saveConfiguration();" %>'>
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.UPDATE %>" />
 	<aui:input name="tabs2" type="hidden" value="<%= tabs2 %>" />
+
+	<liferay-portlet:renderURL portletConfiguration="true" var="configurationRenderURL">
+		<portlet:param name="tabs2" value="<%= tabs2 %>" />
+	</liferay-portlet:renderURL>
+
 	<aui:input name="redirect" type="hidden" value="<%= configurationRenderURL %>" />
 
 	<%
@@ -54,10 +55,10 @@ String tabs2 = ParamUtil.getString(request, "tabs2", "user-settings");
 				</aui:select>
 
 				<aui:select label="default-duration" name="defaultDuration" value="<%= defaultDuration %>">
-					<aui:option label='<%= LanguageUtil.format(pageContext, "x-minutes", "15", false) %>' value="15" />
-					<aui:option label='<%= LanguageUtil.format(pageContext, "x-minutes", "30", false) %>' value="30" />
-					<aui:option label='<%= LanguageUtil.format(pageContext, "x-minutes", "60", false) %>' value="60" />
-					<aui:option label='<%= LanguageUtil.format(pageContext, "x-minutes", "120", false) %>' value="120" />
+					<aui:option label='<%= LanguageUtil.format(request, "x-minutes", "15", false) %>' value="15" />
+					<aui:option label='<%= LanguageUtil.format(request, "x-minutes", "30", false) %>' value="30" />
+					<aui:option label='<%= LanguageUtil.format(request, "x-minutes", "60", false) %>' value="60" />
+					<aui:option label='<%= LanguageUtil.format(request, "x-minutes", "120", false) %>' value="120" />
 				</aui:select>
 
 				<aui:select label="default-view" name="defaultView" value="<%= defaultView %>">
@@ -101,7 +102,7 @@ String tabs2 = ParamUtil.getString(request, "tabs2", "user-settings");
 </aui:form>
 
 <aui:script use="aui-base">
-	var usePortalTimeZoneCheckbox = A.one('#<portlet:namespace />usePortalTimeZoneCheckbox');
+	var usePortalTimeZoneCheckbox = A.one('#<portlet:namespace />usePortalTimeZone');
 
 	if (usePortalTimeZoneCheckbox) {
 		usePortalTimeZoneCheckbox.on(
@@ -118,5 +119,5 @@ String tabs2 = ParamUtil.getString(request, "tabs2", "user-settings");
 		submitForm(document.<portlet:namespace />fm);
 	}
 
-	Liferay.Util.toggleBoxes('<portlet:namespace />enableRssCheckbox', '<portlet:namespace />rssTimeIntervalContainer');
+	Liferay.Util.toggleBoxes('<portlet:namespace />enableRss', '<portlet:namespace />rssTimeIntervalContainer');
 </aui:script>

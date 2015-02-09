@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,6 +14,8 @@
 
 package com.liferay.knowledgebase.model;
 
+import aQute.bnd.annotation.ProviderType;
+
 import java.io.Serializable;
 
 import java.util.ArrayList;
@@ -27,6 +29,7 @@ import java.util.List;
  * @see com.liferay.knowledgebase.service.http.KBCommentServiceSoap
  * @generated
  */
+@ProviderType
 public class KBCommentSoap implements Serializable {
 	public static KBCommentSoap toSoapModel(KBComment model) {
 		KBCommentSoap soapModel = new KBCommentSoap();
@@ -42,7 +45,8 @@ public class KBCommentSoap implements Serializable {
 		soapModel.setClassNameId(model.getClassNameId());
 		soapModel.setClassPK(model.getClassPK());
 		soapModel.setContent(model.getContent());
-		soapModel.setHelpful(model.getHelpful());
+		soapModel.setUserRating(model.getUserRating());
+		soapModel.setStatus(model.getStatus());
 
 		return soapModel;
 	}
@@ -183,16 +187,20 @@ public class KBCommentSoap implements Serializable {
 		_content = content;
 	}
 
-	public boolean getHelpful() {
-		return _helpful;
+	public int getUserRating() {
+		return _userRating;
 	}
 
-	public boolean isHelpful() {
-		return _helpful;
+	public void setUserRating(int userRating) {
+		_userRating = userRating;
 	}
 
-	public void setHelpful(boolean helpful) {
-		_helpful = helpful;
+	public int getStatus() {
+		return _status;
+	}
+
+	public void setStatus(int status) {
+		_status = status;
 	}
 
 	private String _uuid;
@@ -206,5 +214,6 @@ public class KBCommentSoap implements Serializable {
 	private long _classNameId;
 	private long _classPK;
 	private String _content;
-	private boolean _helpful;
+	private int _userRating;
+	private int _status;
 }

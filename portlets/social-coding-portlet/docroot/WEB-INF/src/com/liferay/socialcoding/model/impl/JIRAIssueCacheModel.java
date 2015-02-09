@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -13,6 +13,8 @@
  */
 
 package com.liferay.socialcoding.model.impl;
+
+import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
@@ -34,6 +36,7 @@ import java.util.Date;
  * @see JIRAIssue
  * @generated
  */
+@ProviderType
 public class JIRAIssueCacheModel implements CacheModel<JIRAIssue>,
 	Externalizable {
 	@Override
@@ -48,8 +51,8 @@ public class JIRAIssueCacheModel implements CacheModel<JIRAIssue>,
 		sb.append(modifiedDate);
 		sb.append(", projectId=");
 		sb.append(projectId);
-		sb.append(", key=");
-		sb.append(key);
+		sb.append(", issueNumber=");
+		sb.append(issueNumber);
 		sb.append(", summary=");
 		sb.append(summary);
 		sb.append(", description=");
@@ -88,13 +91,7 @@ public class JIRAIssueCacheModel implements CacheModel<JIRAIssue>,
 		}
 
 		jiraIssueImpl.setProjectId(projectId);
-
-		if (key == null) {
-			jiraIssueImpl.setKey(StringPool.BLANK);
-		}
-		else {
-			jiraIssueImpl.setKey(key);
-		}
+		jiraIssueImpl.setIssueNumber(issueNumber);
 
 		if (summary == null) {
 			jiraIssueImpl.setSummary(StringPool.BLANK);
@@ -149,7 +146,7 @@ public class JIRAIssueCacheModel implements CacheModel<JIRAIssue>,
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 		projectId = objectInput.readLong();
-		key = objectInput.readUTF();
+		issueNumber = objectInput.readLong();
 		summary = objectInput.readUTF();
 		description = objectInput.readUTF();
 		reporterJiraUserId = objectInput.readUTF();
@@ -165,13 +162,7 @@ public class JIRAIssueCacheModel implements CacheModel<JIRAIssue>,
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 		objectOutput.writeLong(projectId);
-
-		if (key == null) {
-			objectOutput.writeUTF(StringPool.BLANK);
-		}
-		else {
-			objectOutput.writeUTF(key);
-		}
+		objectOutput.writeLong(issueNumber);
 
 		if (summary == null) {
 			objectOutput.writeUTF(StringPool.BLANK);
@@ -220,7 +211,7 @@ public class JIRAIssueCacheModel implements CacheModel<JIRAIssue>,
 	public long createDate;
 	public long modifiedDate;
 	public long projectId;
-	public String key;
+	public long issueNumber;
 	public String summary;
 	public String description;
 	public String reporterJiraUserId;

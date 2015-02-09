@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -18,7 +18,6 @@ import com.liferay.akismet.service.AkismetDataLocalServiceUtil;
 import com.liferay.akismet.service.ClpSerializer;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
@@ -461,7 +460,7 @@ public class AkismetDataClp extends BaseModelImpl<AkismetData>
 	}
 
 	@Override
-	public void persist() throws SystemException {
+	public void persist() {
 		if (this.isNew()) {
 			AkismetDataLocalServiceUtil.addAkismetData(this);
 		}
@@ -529,6 +528,10 @@ public class AkismetDataClp extends BaseModelImpl<AkismetData>
 		else {
 			return false;
 		}
+	}
+
+	public Class<?> getClpSerializerClass() {
+		return _clpSerializerClass;
 	}
 
 	@Override
@@ -640,6 +643,7 @@ public class AkismetDataClp extends BaseModelImpl<AkismetData>
 	private String _userIP;
 	private String _userURL;
 	private BaseModel<?> _akismetDataRemoteModel;
+	private Class<?> _clpSerializerClass = com.liferay.akismet.service.ClpSerializer.class;
 	private boolean _entityCacheEnabled;
 	private boolean _finderCacheEnabled;
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -23,11 +23,9 @@ import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.search.BaseIndexer;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchEngineUtil;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -40,6 +38,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Locale;
 
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletResponse;
 import javax.portlet.PortletURL;
 
 /**
@@ -48,20 +48,18 @@ import javax.portlet.PortletURL;
  */
 public class CalendarBookingIndexer extends BaseIndexer {
 
-	public static final String[] CLASS_NAMES = {
-		CalendarBooking.class.getName()
-	};
+	public static final String CLASS_NAME = CalendarBooking.class.getName();
 
-	public static final String PORTLET_ID = PortletKeys.CALENDAR;
-
-	@Override
-	public String[] getClassNames() {
-		return CLASS_NAMES;
+	public CalendarBookingIndexer() {
+		setDefaultSelectedFieldNames(
+			Field.COMPANY_ID, Field.ENTRY_CLASS_NAME, Field.ENTRY_CLASS_PK,
+			Field.UID);
+		setDefaultSelectedLocalizedFieldNames(Field.DESCRIPTION, Field.TITLE);
 	}
 
 	@Override
-	public String getPortletId() {
-		return PORTLET_ID;
+	public String getClassName() {
+		return CLASS_NAME;
 	}
 
 	@Override
@@ -77,7 +75,7 @@ public class CalendarBookingIndexer extends BaseIndexer {
 	protected Document doGetDocument(Object obj) throws Exception {
 		CalendarBooking calendarBooking = (CalendarBooking)obj;
 
-		Document document = getBaseModelDocument(PORTLET_ID, calendarBooking);
+		Document document = getBaseModelDocument(CLASS_NAME, calendarBooking);
 
 		Locale defaultLocale = LocaleUtil.getSiteDefault();
 
@@ -100,7 +98,8 @@ public class CalendarBookingIndexer extends BaseIndexer {
 
 			document.addText(
 				Field.DESCRIPTION.concat(StringPool.UNDERLINE).concat(
-					descriptionLanguageId), description);
+					descriptionLanguageId),
+				description);
 		}
 
 		String titleDefaultLanguageId = LocalizationUtil.getDefaultLanguageId(
@@ -118,7 +117,8 @@ public class CalendarBookingIndexer extends BaseIndexer {
 
 			document.addText(
 				Field.TITLE.concat(StringPool.UNDERLINE).concat(
-					titleLanguageId), title);
+					titleLanguageId),
+				title);
 		}
 
 		String calendarBookingId = String.valueOf(
@@ -140,8 +140,8 @@ public class CalendarBookingIndexer extends BaseIndexer {
 
 	@Override
 	protected Summary doGetSummary(
-		Document document, Locale locale, String snippet,
-		PortletURL portletURL) {
+		Document document, Locale locale, String snippet, PortletURL portletURL,
+		PortletRequest portletRequest, PortletResponse portletResponse) {
 
 		String calendarBookingId = document.get(Field.ENTRY_CLASS_PK);
 
@@ -169,7 +169,8 @@ public class CalendarBookingIndexer extends BaseIndexer {
 			Document document = getDocument(calendarBooking);
 
 			SearchEngineUtil.updateDocument(
-				getSearchEngineId(), calendarBooking.getCompanyId(), document);
+				getSearchEngineId(), calendarBooking.getCompanyId(), document,
+				isCommitImmediately());
 		}
 		else if ((status == CalendarBookingWorkflowConstants.STATUS_DENIED) ||
 				 (status == CalendarBookingWorkflowConstants.STATUS_IN_TRASH)) {
@@ -206,15 +207,10 @@ public class CalendarBookingIndexer extends BaseIndexer {
 		return languageIds;
 	}
 
-	@Override
-	protected String getPortletId(SearchContext searchContext) {
-		return PORTLET_ID;
-	}
-
 	protected void reindexCalendarBookings(long companyId)
-		throws PortalException, SystemException {
+		throws PortalException {
 
-		final Collection<Document> documents = new ArrayList<Document>();
+		final Collection<Document> documents = new ArrayList<>();
 
 		ActionableDynamicQuery actionableDynamicQuery =
 			new CalendarBookingActionableDynamicQuery() {
@@ -247,7 +243,7 @@ public class CalendarBookingIndexer extends BaseIndexer {
 		actionableDynamicQuery.performActions();
 
 		SearchEngineUtil.updateDocuments(
-			getSearchEngineId(), companyId, documents);
+			getSearchEngineId(), companyId, documents, isCommitImmediately());
 	}
 
 }

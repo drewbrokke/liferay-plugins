@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,8 +14,9 @@
 
 package com.liferay.portal.workflow.kaleo.model;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.portal.kernel.bean.AutoEscape;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.model.GroupedModel;
@@ -40,6 +41,7 @@ import java.util.Date;
  * @see com.liferay.portal.workflow.kaleo.model.impl.KaleoInstanceTokenModelImpl
  * @generated
  */
+@ProviderType
 public interface KaleoInstanceTokenModel extends BaseModel<KaleoInstanceToken>,
 	GroupedModel {
 	/*
@@ -128,10 +130,9 @@ public interface KaleoInstanceTokenModel extends BaseModel<KaleoInstanceToken>,
 	 * Returns the user uuid of this kaleo instance token.
 	 *
 	 * @return the user uuid of this kaleo instance token
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public String getUserUuid() throws SystemException;
+	public String getUserUuid();
 
 	/**
 	 * Sets the user uuid of this kaleo instance token.
@@ -362,19 +363,20 @@ public interface KaleoInstanceTokenModel extends BaseModel<KaleoInstanceToken>,
 	public Object clone();
 
 	@Override
-	public int compareTo(KaleoInstanceToken kaleoInstanceToken);
+	public int compareTo(
+		com.liferay.portal.workflow.kaleo.model.KaleoInstanceToken kaleoInstanceToken);
 
 	@Override
 	public int hashCode();
 
 	@Override
-	public CacheModel<KaleoInstanceToken> toCacheModel();
+	public CacheModel<com.liferay.portal.workflow.kaleo.model.KaleoInstanceToken> toCacheModel();
 
 	@Override
-	public KaleoInstanceToken toEscapedModel();
+	public com.liferay.portal.workflow.kaleo.model.KaleoInstanceToken toEscapedModel();
 
 	@Override
-	public KaleoInstanceToken toUnescapedModel();
+	public com.liferay.portal.workflow.kaleo.model.KaleoInstanceToken toUnescapedModel();
 
 	@Override
 	public String toString();

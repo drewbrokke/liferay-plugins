@@ -43,7 +43,7 @@
 	<portlet>
 		<portlet-name>2</portlet-name>
 		<display-name>Friends</display-name>
-		<portlet-class>com.liferay.util.bridges.mvc.MVCPortlet</portlet-class>
+		<portlet-class>com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet</portlet-class>
 		<init-param>
 			<name>view-template</name>
 			<value>/friends/view.jsp</value>
@@ -52,6 +52,7 @@
 		<supports>
 			<mime-type>text/html</mime-type>
 		</supports>
+		<resource-bundle>content.Language</resource-bundle>
 		<portlet-info>
 			<title>Friends</title>
 			<short-title>Friends</short-title>
@@ -86,6 +87,7 @@
 		<supports>
 			<mime-type>text/html</mime-type>
 		</supports>
+		<resource-bundle>content.Language</resource-bundle>
 		<portlet-info>
 			<title>Wall</title>
 			<short-title>Wall</short-title>
@@ -107,7 +109,7 @@
 	<portlet>
 		<portlet-name>4</portlet-name>
 		<display-name>Friends' Activities</display-name>
-		<portlet-class>com.liferay.util.bridges.mvc.MVCPortlet</portlet-class>
+		<portlet-class>com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet</portlet-class>
 		<init-param>
 			<name>config-template</name>
 			<value>/friends_activities/configuration.jsp</value>
@@ -120,6 +122,7 @@
 		<supports>
 			<mime-type>text/html</mime-type>
 		</supports>
+		<resource-bundle>content.Language</resource-bundle>
 		<portlet-info>
 			<title>Friends' Activities</title>
 			<short-title>Friends' Activities</short-title>
@@ -141,7 +144,7 @@
 	<portlet>
 		<portlet-name>5</portlet-name>
 		<display-name>Members</display-name>
-		<portlet-class>com.liferay.util.bridges.mvc.MVCPortlet</portlet-class>
+		<portlet-class>com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet</portlet-class>
 		<init-param>
 			<name>view-template</name>
 			<value>/members/view.jsp</value>
@@ -150,6 +153,7 @@
 		<supports>
 			<mime-type>text/html</mime-type>
 		</supports>
+		<resource-bundle>content.Language</resource-bundle>
 		<portlet-info>
 			<title>Members</title>
 			<short-title>Members</short-title>
@@ -171,7 +175,7 @@
 	<portlet>
 		<portlet-name>6</portlet-name>
 		<display-name>Map</display-name>
-		<portlet-class>com.liferay.util.bridges.mvc.MVCPortlet</portlet-class>
+		<portlet-class>com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet</portlet-class>
 		<init-param>
 			<name>view-template</name>
 			<value>/map/view.jsp</value>
@@ -180,6 +184,7 @@
 		<supports>
 			<mime-type>text/html</mime-type>
 		</supports>
+		<resource-bundle>content.Language</resource-bundle>
 		<portlet-info>
 			<title>Map</title>
 			<short-title>Map</short-title>
@@ -236,7 +241,7 @@
 	<portlet>
 		<portlet-name>8</portlet-name>
 		<display-name>Members' Activities</display-name>
-		<portlet-class>com.liferay.util.bridges.mvc.MVCPortlet</portlet-class>
+		<portlet-class>com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet</portlet-class>
 		<init-param>
 			<name>config-template</name>
 			<value>/members_activities/configuration.jsp</value>
@@ -249,6 +254,7 @@
 		<supports>
 			<mime-type>text/html</mime-type>
 		</supports>
+		<resource-bundle>content.Language</resource-bundle>
 		<portlet-info>
 			<title>Members' Activities</title>
 			<short-title>Members' Activities</short-title>

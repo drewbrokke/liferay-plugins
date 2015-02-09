@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -103,8 +103,7 @@ public class ExtRepositoryAdapterCache implements Cloneable {
 		_getExtRepositoryAdapters() {
 
 		if (_extRepositoryAdapters == null) {
-			_extRepositoryAdapters =
-				new HashMap<String, ExtRepositoryModelAdapter<?>>();
+			_extRepositoryAdapters = new HashMap<>();
 		}
 
 		return _extRepositoryAdapters;
@@ -119,7 +118,6 @@ public class ExtRepositoryAdapterCache implements Cloneable {
 				ExtRepositoryAdapterCache.class.getName(),
 				new ExtRepositoryAdapterCache());
 
-	private Map<String, ExtRepositoryModelAdapter<?>>
-		_extRepositoryAdapters;
+	private Map<String, ExtRepositoryModelAdapter<?>> _extRepositoryAdapters;
 
 }

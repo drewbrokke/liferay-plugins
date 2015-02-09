@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,7 +14,8 @@
 
 package com.liferay.portal.workflow.kaleo.model.impl;
 
-import com.liferay.portal.kernel.exception.SystemException;
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.portal.workflow.kaleo.model.KaleoInstanceToken;
 import com.liferay.portal.workflow.kaleo.service.KaleoInstanceTokenLocalServiceUtil;
 
@@ -30,6 +31,7 @@ import com.liferay.portal.workflow.kaleo.service.KaleoInstanceTokenLocalServiceU
  * @see com.liferay.portal.workflow.kaleo.model.KaleoInstanceToken
  * @generated
  */
+@ProviderType
 public abstract class KaleoInstanceTokenBaseImpl
 	extends KaleoInstanceTokenModelImpl implements KaleoInstanceToken {
 	/*
@@ -38,7 +40,7 @@ public abstract class KaleoInstanceTokenBaseImpl
 	 * Never modify or reference this class directly. All methods that expect a kaleo instance token model instance should use the {@link KaleoInstanceToken} interface instead.
 	 */
 	@Override
-	public void persist() throws SystemException {
+	public void persist() {
 		if (this.isNew()) {
 			KaleoInstanceTokenLocalServiceUtil.addKaleoInstanceToken(this);
 		}

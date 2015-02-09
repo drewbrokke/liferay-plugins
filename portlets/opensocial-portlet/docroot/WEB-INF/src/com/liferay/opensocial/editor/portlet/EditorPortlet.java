@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.security.auth.AuthTokenUtil;
 import com.liferay.portal.security.permission.PermissionChecker;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.ServiceContextFactory;
@@ -66,6 +67,10 @@ public class EditorPortlet extends AdminPortlet {
 		throws IOException, PortletException {
 
 		try {
+			AuthTokenUtil.checkCSRFToken(
+				PortalUtil.getHttpServletRequest(resourceRequest),
+				this.getClass().getName());
+
 			String resourceID = resourceRequest.getResourceID();
 
 			if (resourceID.equals("addFileEntry")) {

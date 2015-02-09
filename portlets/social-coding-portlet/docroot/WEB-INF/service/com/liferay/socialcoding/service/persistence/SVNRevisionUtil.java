@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,9 +14,10 @@
 
 package com.liferay.socialcoding.service.persistence;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.portal.kernel.bean.PortletBeanLocatorUtil;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ReferenceRegistry;
 import com.liferay.portal.service.ServiceContext;
@@ -37,6 +38,7 @@ import java.util.List;
  * @see SVNRevisionPersistenceImpl
  * @generated
  */
+@ProviderType
 public class SVNRevisionUtil {
 	/*
 	 * NOTE FOR DEVELOPERS:
@@ -61,8 +63,7 @@ public class SVNRevisionUtil {
 	/**
 	 * @see com.liferay.portal.service.persistence.BasePersistence#countWithDynamicQuery(DynamicQuery)
 	 */
-	public static long countWithDynamicQuery(DynamicQuery dynamicQuery)
-		throws SystemException {
+	public static long countWithDynamicQuery(DynamicQuery dynamicQuery) {
 		return getPersistence().countWithDynamicQuery(dynamicQuery);
 	}
 
@@ -70,7 +71,7 @@ public class SVNRevisionUtil {
 	 * @see com.liferay.portal.service.persistence.BasePersistence#findWithDynamicQuery(DynamicQuery)
 	 */
 	public static List<SVNRevision> findWithDynamicQuery(
-		DynamicQuery dynamicQuery) throws SystemException {
+		DynamicQuery dynamicQuery) {
 		return getPersistence().findWithDynamicQuery(dynamicQuery);
 	}
 
@@ -78,8 +79,7 @@ public class SVNRevisionUtil {
 	 * @see com.liferay.portal.service.persistence.BasePersistence#findWithDynamicQuery(DynamicQuery, int, int)
 	 */
 	public static List<SVNRevision> findWithDynamicQuery(
-		DynamicQuery dynamicQuery, int start, int end)
-		throws SystemException {
+		DynamicQuery dynamicQuery, int start, int end) {
 		return getPersistence().findWithDynamicQuery(dynamicQuery, start, end);
 	}
 
@@ -88,7 +88,7 @@ public class SVNRevisionUtil {
 	 */
 	public static List<SVNRevision> findWithDynamicQuery(
 		DynamicQuery dynamicQuery, int start, int end,
-		OrderByComparator orderByComparator) throws SystemException {
+		OrderByComparator<SVNRevision> orderByComparator) {
 		return getPersistence()
 				   .findWithDynamicQuery(dynamicQuery, start, end,
 			orderByComparator);
@@ -97,8 +97,7 @@ public class SVNRevisionUtil {
 	/**
 	 * @see com.liferay.portal.service.persistence.BasePersistence#update(com.liferay.portal.model.BaseModel)
 	 */
-	public static SVNRevision update(SVNRevision svnRevision)
-		throws SystemException {
+	public static SVNRevision update(SVNRevision svnRevision) {
 		return getPersistence().update(svnRevision);
 	}
 
@@ -106,7 +105,7 @@ public class SVNRevisionUtil {
 	 * @see com.liferay.portal.service.persistence.BasePersistence#update(com.liferay.portal.model.BaseModel, ServiceContext)
 	 */
 	public static SVNRevision update(SVNRevision svnRevision,
-		ServiceContext serviceContext) throws SystemException {
+		ServiceContext serviceContext) {
 		return getPersistence().update(svnRevision, serviceContext);
 	}
 
@@ -115,11 +114,9 @@ public class SVNRevisionUtil {
 	*
 	* @param svnUserId the svn user ID
 	* @return the matching s v n revisions
-	* @throws SystemException if a system exception occurred
 	*/
 	public static java.util.List<com.liferay.socialcoding.model.SVNRevision> findBySVNUserId(
-		java.lang.String svnUserId)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		java.lang.String svnUserId) {
 		return getPersistence().findBySVNUserId(svnUserId);
 	}
 
@@ -134,11 +131,9 @@ public class SVNRevisionUtil {
 	* @param start the lower bound of the range of s v n revisions
 	* @param end the upper bound of the range of s v n revisions (not inclusive)
 	* @return the range of matching s v n revisions
-	* @throws SystemException if a system exception occurred
 	*/
 	public static java.util.List<com.liferay.socialcoding.model.SVNRevision> findBySVNUserId(
-		java.lang.String svnUserId, int start, int end)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		java.lang.String svnUserId, int start, int end) {
 		return getPersistence().findBySVNUserId(svnUserId, start, end);
 	}
 
@@ -154,12 +149,10 @@ public class SVNRevisionUtil {
 	* @param end the upper bound of the range of s v n revisions (not inclusive)
 	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	* @return the ordered range of matching s v n revisions
-	* @throws SystemException if a system exception occurred
 	*/
 	public static java.util.List<com.liferay.socialcoding.model.SVNRevision> findBySVNUserId(
 		java.lang.String svnUserId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.socialcoding.model.SVNRevision> orderByComparator) {
 		return getPersistence()
 				   .findBySVNUserId(svnUserId, start, end, orderByComparator);
 	}
@@ -171,13 +164,11 @@ public class SVNRevisionUtil {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching s v n revision
 	* @throws com.liferay.socialcoding.NoSuchSVNRevisionException if a matching s v n revision could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.socialcoding.model.SVNRevision findBySVNUserId_First(
 		java.lang.String svnUserId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.socialcoding.NoSuchSVNRevisionException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.socialcoding.model.SVNRevision> orderByComparator)
+		throws com.liferay.socialcoding.NoSuchSVNRevisionException {
 		return getPersistence()
 				   .findBySVNUserId_First(svnUserId, orderByComparator);
 	}
@@ -188,12 +179,10 @@ public class SVNRevisionUtil {
 	* @param svnUserId the svn user ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching s v n revision, or <code>null</code> if a matching s v n revision could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.socialcoding.model.SVNRevision fetchBySVNUserId_First(
 		java.lang.String svnUserId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.socialcoding.model.SVNRevision> orderByComparator) {
 		return getPersistence()
 				   .fetchBySVNUserId_First(svnUserId, orderByComparator);
 	}
@@ -205,13 +194,11 @@ public class SVNRevisionUtil {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching s v n revision
 	* @throws com.liferay.socialcoding.NoSuchSVNRevisionException if a matching s v n revision could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.socialcoding.model.SVNRevision findBySVNUserId_Last(
 		java.lang.String svnUserId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.socialcoding.NoSuchSVNRevisionException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.socialcoding.model.SVNRevision> orderByComparator)
+		throws com.liferay.socialcoding.NoSuchSVNRevisionException {
 		return getPersistence()
 				   .findBySVNUserId_Last(svnUserId, orderByComparator);
 	}
@@ -222,12 +209,10 @@ public class SVNRevisionUtil {
 	* @param svnUserId the svn user ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching s v n revision, or <code>null</code> if a matching s v n revision could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.socialcoding.model.SVNRevision fetchBySVNUserId_Last(
 		java.lang.String svnUserId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.socialcoding.model.SVNRevision> orderByComparator) {
 		return getPersistence()
 				   .fetchBySVNUserId_Last(svnUserId, orderByComparator);
 	}
@@ -240,13 +225,11 @@ public class SVNRevisionUtil {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next s v n revision
 	* @throws com.liferay.socialcoding.NoSuchSVNRevisionException if a s v n revision with the primary key could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.socialcoding.model.SVNRevision[] findBySVNUserId_PrevAndNext(
 		long svnRevisionId, java.lang.String svnUserId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.socialcoding.NoSuchSVNRevisionException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.socialcoding.model.SVNRevision> orderByComparator)
+		throws com.liferay.socialcoding.NoSuchSVNRevisionException {
 		return getPersistence()
 				   .findBySVNUserId_PrevAndNext(svnRevisionId, svnUserId,
 			orderByComparator);
@@ -256,10 +239,8 @@ public class SVNRevisionUtil {
 	* Removes all the s v n revisions where svnUserId = &#63; from the database.
 	*
 	* @param svnUserId the svn user ID
-	* @throws SystemException if a system exception occurred
 	*/
-	public static void removeBySVNUserId(java.lang.String svnUserId)
-		throws com.liferay.portal.kernel.exception.SystemException {
+	public static void removeBySVNUserId(java.lang.String svnUserId) {
 		getPersistence().removeBySVNUserId(svnUserId);
 	}
 
@@ -268,10 +249,8 @@ public class SVNRevisionUtil {
 	*
 	* @param svnUserId the svn user ID
 	* @return the number of matching s v n revisions
-	* @throws SystemException if a system exception occurred
 	*/
-	public static int countBySVNUserId(java.lang.String svnUserId)
-		throws com.liferay.portal.kernel.exception.SystemException {
+	public static int countBySVNUserId(java.lang.String svnUserId) {
 		return getPersistence().countBySVNUserId(svnUserId);
 	}
 
@@ -280,11 +259,9 @@ public class SVNRevisionUtil {
 	*
 	* @param svnRepositoryId the svn repository ID
 	* @return the matching s v n revisions
-	* @throws SystemException if a system exception occurred
 	*/
 	public static java.util.List<com.liferay.socialcoding.model.SVNRevision> findBySVNRepositoryId(
-		long svnRepositoryId)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		long svnRepositoryId) {
 		return getPersistence().findBySVNRepositoryId(svnRepositoryId);
 	}
 
@@ -299,11 +276,9 @@ public class SVNRevisionUtil {
 	* @param start the lower bound of the range of s v n revisions
 	* @param end the upper bound of the range of s v n revisions (not inclusive)
 	* @return the range of matching s v n revisions
-	* @throws SystemException if a system exception occurred
 	*/
 	public static java.util.List<com.liferay.socialcoding.model.SVNRevision> findBySVNRepositoryId(
-		long svnRepositoryId, int start, int end)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		long svnRepositoryId, int start, int end) {
 		return getPersistence()
 				   .findBySVNRepositoryId(svnRepositoryId, start, end);
 	}
@@ -320,12 +295,10 @@ public class SVNRevisionUtil {
 	* @param end the upper bound of the range of s v n revisions (not inclusive)
 	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	* @return the ordered range of matching s v n revisions
-	* @throws SystemException if a system exception occurred
 	*/
 	public static java.util.List<com.liferay.socialcoding.model.SVNRevision> findBySVNRepositoryId(
 		long svnRepositoryId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.socialcoding.model.SVNRevision> orderByComparator) {
 		return getPersistence()
 				   .findBySVNRepositoryId(svnRepositoryId, start, end,
 			orderByComparator);
@@ -338,13 +311,11 @@ public class SVNRevisionUtil {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching s v n revision
 	* @throws com.liferay.socialcoding.NoSuchSVNRevisionException if a matching s v n revision could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.socialcoding.model.SVNRevision findBySVNRepositoryId_First(
 		long svnRepositoryId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.socialcoding.NoSuchSVNRevisionException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.socialcoding.model.SVNRevision> orderByComparator)
+		throws com.liferay.socialcoding.NoSuchSVNRevisionException {
 		return getPersistence()
 				   .findBySVNRepositoryId_First(svnRepositoryId,
 			orderByComparator);
@@ -356,12 +327,10 @@ public class SVNRevisionUtil {
 	* @param svnRepositoryId the svn repository ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching s v n revision, or <code>null</code> if a matching s v n revision could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.socialcoding.model.SVNRevision fetchBySVNRepositoryId_First(
 		long svnRepositoryId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.socialcoding.model.SVNRevision> orderByComparator) {
 		return getPersistence()
 				   .fetchBySVNRepositoryId_First(svnRepositoryId,
 			orderByComparator);
@@ -374,13 +343,11 @@ public class SVNRevisionUtil {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching s v n revision
 	* @throws com.liferay.socialcoding.NoSuchSVNRevisionException if a matching s v n revision could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.socialcoding.model.SVNRevision findBySVNRepositoryId_Last(
 		long svnRepositoryId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.socialcoding.NoSuchSVNRevisionException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.socialcoding.model.SVNRevision> orderByComparator)
+		throws com.liferay.socialcoding.NoSuchSVNRevisionException {
 		return getPersistence()
 				   .findBySVNRepositoryId_Last(svnRepositoryId,
 			orderByComparator);
@@ -392,12 +359,10 @@ public class SVNRevisionUtil {
 	* @param svnRepositoryId the svn repository ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching s v n revision, or <code>null</code> if a matching s v n revision could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.socialcoding.model.SVNRevision fetchBySVNRepositoryId_Last(
 		long svnRepositoryId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.socialcoding.model.SVNRevision> orderByComparator) {
 		return getPersistence()
 				   .fetchBySVNRepositoryId_Last(svnRepositoryId,
 			orderByComparator);
@@ -411,13 +376,11 @@ public class SVNRevisionUtil {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next s v n revision
 	* @throws com.liferay.socialcoding.NoSuchSVNRevisionException if a s v n revision with the primary key could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.socialcoding.model.SVNRevision[] findBySVNRepositoryId_PrevAndNext(
 		long svnRevisionId, long svnRepositoryId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.socialcoding.NoSuchSVNRevisionException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.socialcoding.model.SVNRevision> orderByComparator)
+		throws com.liferay.socialcoding.NoSuchSVNRevisionException {
 		return getPersistence()
 				   .findBySVNRepositoryId_PrevAndNext(svnRevisionId,
 			svnRepositoryId, orderByComparator);
@@ -427,10 +390,8 @@ public class SVNRevisionUtil {
 	* Removes all the s v n revisions where svnRepositoryId = &#63; from the database.
 	*
 	* @param svnRepositoryId the svn repository ID
-	* @throws SystemException if a system exception occurred
 	*/
-	public static void removeBySVNRepositoryId(long svnRepositoryId)
-		throws com.liferay.portal.kernel.exception.SystemException {
+	public static void removeBySVNRepositoryId(long svnRepositoryId) {
 		getPersistence().removeBySVNRepositoryId(svnRepositoryId);
 	}
 
@@ -439,10 +400,8 @@ public class SVNRevisionUtil {
 	*
 	* @param svnRepositoryId the svn repository ID
 	* @return the number of matching s v n revisions
-	* @throws SystemException if a system exception occurred
 	*/
-	public static int countBySVNRepositoryId(long svnRepositoryId)
-		throws com.liferay.portal.kernel.exception.SystemException {
+	public static int countBySVNRepositoryId(long svnRepositoryId) {
 		return getPersistence().countBySVNRepositoryId(svnRepositoryId);
 	}
 
@@ -452,11 +411,9 @@ public class SVNRevisionUtil {
 	* @param svnUserId the svn user ID
 	* @param svnRepositoryId the svn repository ID
 	* @return the matching s v n revisions
-	* @throws SystemException if a system exception occurred
 	*/
 	public static java.util.List<com.liferay.socialcoding.model.SVNRevision> findBySVNU_SVNR(
-		java.lang.String svnUserId, long svnRepositoryId)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		java.lang.String svnUserId, long svnRepositoryId) {
 		return getPersistence().findBySVNU_SVNR(svnUserId, svnRepositoryId);
 	}
 
@@ -472,11 +429,9 @@ public class SVNRevisionUtil {
 	* @param start the lower bound of the range of s v n revisions
 	* @param end the upper bound of the range of s v n revisions (not inclusive)
 	* @return the range of matching s v n revisions
-	* @throws SystemException if a system exception occurred
 	*/
 	public static java.util.List<com.liferay.socialcoding.model.SVNRevision> findBySVNU_SVNR(
-		java.lang.String svnUserId, long svnRepositoryId, int start, int end)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		java.lang.String svnUserId, long svnRepositoryId, int start, int end) {
 		return getPersistence()
 				   .findBySVNU_SVNR(svnUserId, svnRepositoryId, start, end);
 	}
@@ -494,12 +449,10 @@ public class SVNRevisionUtil {
 	* @param end the upper bound of the range of s v n revisions (not inclusive)
 	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	* @return the ordered range of matching s v n revisions
-	* @throws SystemException if a system exception occurred
 	*/
 	public static java.util.List<com.liferay.socialcoding.model.SVNRevision> findBySVNU_SVNR(
 		java.lang.String svnUserId, long svnRepositoryId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.socialcoding.model.SVNRevision> orderByComparator) {
 		return getPersistence()
 				   .findBySVNU_SVNR(svnUserId, svnRepositoryId, start, end,
 			orderByComparator);
@@ -513,13 +466,11 @@ public class SVNRevisionUtil {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching s v n revision
 	* @throws com.liferay.socialcoding.NoSuchSVNRevisionException if a matching s v n revision could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.socialcoding.model.SVNRevision findBySVNU_SVNR_First(
 		java.lang.String svnUserId, long svnRepositoryId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.socialcoding.NoSuchSVNRevisionException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.socialcoding.model.SVNRevision> orderByComparator)
+		throws com.liferay.socialcoding.NoSuchSVNRevisionException {
 		return getPersistence()
 				   .findBySVNU_SVNR_First(svnUserId, svnRepositoryId,
 			orderByComparator);
@@ -532,12 +483,10 @@ public class SVNRevisionUtil {
 	* @param svnRepositoryId the svn repository ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching s v n revision, or <code>null</code> if a matching s v n revision could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.socialcoding.model.SVNRevision fetchBySVNU_SVNR_First(
 		java.lang.String svnUserId, long svnRepositoryId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.socialcoding.model.SVNRevision> orderByComparator) {
 		return getPersistence()
 				   .fetchBySVNU_SVNR_First(svnUserId, svnRepositoryId,
 			orderByComparator);
@@ -551,13 +500,11 @@ public class SVNRevisionUtil {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching s v n revision
 	* @throws com.liferay.socialcoding.NoSuchSVNRevisionException if a matching s v n revision could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.socialcoding.model.SVNRevision findBySVNU_SVNR_Last(
 		java.lang.String svnUserId, long svnRepositoryId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.socialcoding.NoSuchSVNRevisionException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.socialcoding.model.SVNRevision> orderByComparator)
+		throws com.liferay.socialcoding.NoSuchSVNRevisionException {
 		return getPersistence()
 				   .findBySVNU_SVNR_Last(svnUserId, svnRepositoryId,
 			orderByComparator);
@@ -570,12 +517,10 @@ public class SVNRevisionUtil {
 	* @param svnRepositoryId the svn repository ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching s v n revision, or <code>null</code> if a matching s v n revision could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.socialcoding.model.SVNRevision fetchBySVNU_SVNR_Last(
 		java.lang.String svnUserId, long svnRepositoryId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.socialcoding.model.SVNRevision> orderByComparator) {
 		return getPersistence()
 				   .fetchBySVNU_SVNR_Last(svnUserId, svnRepositoryId,
 			orderByComparator);
@@ -590,13 +535,11 @@ public class SVNRevisionUtil {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next s v n revision
 	* @throws com.liferay.socialcoding.NoSuchSVNRevisionException if a s v n revision with the primary key could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.socialcoding.model.SVNRevision[] findBySVNU_SVNR_PrevAndNext(
 		long svnRevisionId, java.lang.String svnUserId, long svnRepositoryId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.socialcoding.NoSuchSVNRevisionException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.socialcoding.model.SVNRevision> orderByComparator)
+		throws com.liferay.socialcoding.NoSuchSVNRevisionException {
 		return getPersistence()
 				   .findBySVNU_SVNR_PrevAndNext(svnRevisionId, svnUserId,
 			svnRepositoryId, orderByComparator);
@@ -607,11 +550,9 @@ public class SVNRevisionUtil {
 	*
 	* @param svnUserId the svn user ID
 	* @param svnRepositoryId the svn repository ID
-	* @throws SystemException if a system exception occurred
 	*/
 	public static void removeBySVNU_SVNR(java.lang.String svnUserId,
-		long svnRepositoryId)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		long svnRepositoryId) {
 		getPersistence().removeBySVNU_SVNR(svnUserId, svnRepositoryId);
 	}
 
@@ -621,11 +562,9 @@ public class SVNRevisionUtil {
 	* @param svnUserId the svn user ID
 	* @param svnRepositoryId the svn repository ID
 	* @return the number of matching s v n revisions
-	* @throws SystemException if a system exception occurred
 	*/
 	public static int countBySVNU_SVNR(java.lang.String svnUserId,
-		long svnRepositoryId)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		long svnRepositoryId) {
 		return getPersistence().countBySVNU_SVNR(svnUserId, svnRepositoryId);
 	}
 
@@ -666,18 +605,15 @@ public class SVNRevisionUtil {
 	* @param svnRevisionId the primary key of the s v n revision
 	* @return the s v n revision that was removed
 	* @throws com.liferay.socialcoding.NoSuchSVNRevisionException if a s v n revision with the primary key could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.socialcoding.model.SVNRevision remove(
 		long svnRevisionId)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.socialcoding.NoSuchSVNRevisionException {
+		throws com.liferay.socialcoding.NoSuchSVNRevisionException {
 		return getPersistence().remove(svnRevisionId);
 	}
 
 	public static com.liferay.socialcoding.model.SVNRevision updateImpl(
-		com.liferay.socialcoding.model.SVNRevision svnRevision)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.socialcoding.model.SVNRevision svnRevision) {
 		return getPersistence().updateImpl(svnRevision);
 	}
 
@@ -687,12 +623,10 @@ public class SVNRevisionUtil {
 	* @param svnRevisionId the primary key of the s v n revision
 	* @return the s v n revision
 	* @throws com.liferay.socialcoding.NoSuchSVNRevisionException if a s v n revision with the primary key could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.socialcoding.model.SVNRevision findByPrimaryKey(
 		long svnRevisionId)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.socialcoding.NoSuchSVNRevisionException {
+		throws com.liferay.socialcoding.NoSuchSVNRevisionException {
 		return getPersistence().findByPrimaryKey(svnRevisionId);
 	}
 
@@ -701,22 +635,23 @@ public class SVNRevisionUtil {
 	*
 	* @param svnRevisionId the primary key of the s v n revision
 	* @return the s v n revision, or <code>null</code> if a s v n revision with the primary key could not be found
-	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.socialcoding.model.SVNRevision fetchByPrimaryKey(
-		long svnRevisionId)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		long svnRevisionId) {
 		return getPersistence().fetchByPrimaryKey(svnRevisionId);
+	}
+
+	public static java.util.Map<java.io.Serializable, com.liferay.socialcoding.model.SVNRevision> fetchByPrimaryKeys(
+		java.util.Set<java.io.Serializable> primaryKeys) {
+		return getPersistence().fetchByPrimaryKeys(primaryKeys);
 	}
 
 	/**
 	* Returns all the s v n revisions.
 	*
 	* @return the s v n revisions
-	* @throws SystemException if a system exception occurred
 	*/
-	public static java.util.List<com.liferay.socialcoding.model.SVNRevision> findAll()
-		throws com.liferay.portal.kernel.exception.SystemException {
+	public static java.util.List<com.liferay.socialcoding.model.SVNRevision> findAll() {
 		return getPersistence().findAll();
 	}
 
@@ -730,11 +665,9 @@ public class SVNRevisionUtil {
 	* @param start the lower bound of the range of s v n revisions
 	* @param end the upper bound of the range of s v n revisions (not inclusive)
 	* @return the range of s v n revisions
-	* @throws SystemException if a system exception occurred
 	*/
 	public static java.util.List<com.liferay.socialcoding.model.SVNRevision> findAll(
-		int start, int end)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		int start, int end) {
 		return getPersistence().findAll(start, end);
 	}
 
@@ -749,22 +682,17 @@ public class SVNRevisionUtil {
 	* @param end the upper bound of the range of s v n revisions (not inclusive)
 	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	* @return the ordered range of s v n revisions
-	* @throws SystemException if a system exception occurred
 	*/
 	public static java.util.List<com.liferay.socialcoding.model.SVNRevision> findAll(
 		int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.socialcoding.model.SVNRevision> orderByComparator) {
 		return getPersistence().findAll(start, end, orderByComparator);
 	}
 
 	/**
 	* Removes all the s v n revisions from the database.
-	*
-	* @throws SystemException if a system exception occurred
 	*/
-	public static void removeAll()
-		throws com.liferay.portal.kernel.exception.SystemException {
+	public static void removeAll() {
 		getPersistence().removeAll();
 	}
 
@@ -772,10 +700,8 @@ public class SVNRevisionUtil {
 	* Returns the number of s v n revisions.
 	*
 	* @return the number of s v n revisions
-	* @throws SystemException if a system exception occurred
 	*/
-	public static int countAll()
-		throws com.liferay.portal.kernel.exception.SystemException {
+	public static int countAll() {
 		return getPersistence().countAll();
 	}
 

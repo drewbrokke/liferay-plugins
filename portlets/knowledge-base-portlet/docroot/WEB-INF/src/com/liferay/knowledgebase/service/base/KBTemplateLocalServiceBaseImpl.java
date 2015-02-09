@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,10 +14,14 @@
 
 package com.liferay.knowledgebase.service.base;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.knowledgebase.model.KBTemplate;
 import com.liferay.knowledgebase.service.KBTemplateLocalService;
+import com.liferay.knowledgebase.service.persistence.KBArticleFinder;
 import com.liferay.knowledgebase.service.persistence.KBArticlePersistence;
 import com.liferay.knowledgebase.service.persistence.KBCommentPersistence;
+import com.liferay.knowledgebase.service.persistence.KBFolderPersistence;
 import com.liferay.knowledgebase.service.persistence.KBTemplatePersistence;
 
 import com.liferay.portal.kernel.bean.BeanReference;
@@ -26,11 +30,19 @@ import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBFactoryUtil;
 import com.liferay.portal.kernel.dao.jdbc.SqlUpdate;
 import com.liferay.portal.kernel.dao.jdbc.SqlUpdateFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.DefaultActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.lar.ExportImportHelperUtil;
+import com.liferay.portal.kernel.lar.ManifestSummary;
+import com.liferay.portal.kernel.lar.PortletDataContext;
+import com.liferay.portal.kernel.lar.StagedModelDataHandlerUtil;
+import com.liferay.portal.kernel.lar.StagedModelType;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.util.OrderByComparator;
@@ -62,6 +74,7 @@ import javax.sql.DataSource;
  * @see com.liferay.knowledgebase.service.KBTemplateLocalServiceUtil
  * @generated
  */
+@ProviderType
 public abstract class KBTemplateLocalServiceBaseImpl
 	extends BaseLocalServiceImpl implements KBTemplateLocalService,
 		IdentifiableBean {
@@ -76,12 +89,10 @@ public abstract class KBTemplateLocalServiceBaseImpl
 	 *
 	 * @param kbTemplate the k b template
 	 * @return the k b template that was added
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
-	public KBTemplate addKBTemplate(KBTemplate kbTemplate)
-		throws SystemException {
+	public KBTemplate addKBTemplate(KBTemplate kbTemplate) {
 		kbTemplate.setNew(true);
 
 		return kbTemplatePersistence.update(kbTemplate);
@@ -104,12 +115,11 @@ public abstract class KBTemplateLocalServiceBaseImpl
 	 * @param kbTemplateId the primary key of the k b template
 	 * @return the k b template that was removed
 	 * @throws PortalException if a k b template with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	public KBTemplate deleteKBTemplate(long kbTemplateId)
-		throws PortalException, SystemException {
+		throws PortalException {
 		return kbTemplatePersistence.remove(kbTemplateId);
 	}
 
@@ -119,12 +129,11 @@ public abstract class KBTemplateLocalServiceBaseImpl
 	 * @param kbTemplate the k b template
 	 * @return the k b template that was removed
 	 * @throws PortalException
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	public KBTemplate deleteKBTemplate(KBTemplate kbTemplate)
-		throws PortalException, SystemException {
+		throws PortalException {
 		return kbTemplatePersistence.remove(kbTemplate);
 	}
 
@@ -141,12 +150,9 @@ public abstract class KBTemplateLocalServiceBaseImpl
 	 *
 	 * @param dynamicQuery the dynamic query
 	 * @return the matching rows
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	@SuppressWarnings("rawtypes")
-	public List dynamicQuery(DynamicQuery dynamicQuery)
-		throws SystemException {
+	public <T> List<T> dynamicQuery(DynamicQuery dynamicQuery) {
 		return kbTemplatePersistence.findWithDynamicQuery(dynamicQuery);
 	}
 
@@ -161,12 +167,10 @@ public abstract class KBTemplateLocalServiceBaseImpl
 	 * @param start the lower bound of the range of model instances
 	 * @param end the upper bound of the range of model instances (not inclusive)
 	 * @return the range of matching rows
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	@SuppressWarnings("rawtypes")
-	public List dynamicQuery(DynamicQuery dynamicQuery, int start, int end)
-		throws SystemException {
+	public <T> List<T> dynamicQuery(DynamicQuery dynamicQuery, int start,
+		int end) {
 		return kbTemplatePersistence.findWithDynamicQuery(dynamicQuery, start,
 			end);
 	}
@@ -183,62 +187,42 @@ public abstract class KBTemplateLocalServiceBaseImpl
 	 * @param end the upper bound of the range of model instances (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @return the ordered range of matching rows
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	@SuppressWarnings("rawtypes")
-	public List dynamicQuery(DynamicQuery dynamicQuery, int start, int end,
-		OrderByComparator orderByComparator) throws SystemException {
+	public <T> List<T> dynamicQuery(DynamicQuery dynamicQuery, int start,
+		int end, OrderByComparator<T> orderByComparator) {
 		return kbTemplatePersistence.findWithDynamicQuery(dynamicQuery, start,
 			end, orderByComparator);
 	}
 
 	/**
-	 * Returns the number of rows that match the dynamic query.
+	 * Returns the number of rows matching the dynamic query.
 	 *
 	 * @param dynamicQuery the dynamic query
-	 * @return the number of rows that match the dynamic query
-	 * @throws SystemException if a system exception occurred
+	 * @return the number of rows matching the dynamic query
 	 */
 	@Override
-	public long dynamicQueryCount(DynamicQuery dynamicQuery)
-		throws SystemException {
+	public long dynamicQueryCount(DynamicQuery dynamicQuery) {
 		return kbTemplatePersistence.countWithDynamicQuery(dynamicQuery);
 	}
 
 	/**
-	 * Returns the number of rows that match the dynamic query.
+	 * Returns the number of rows matching the dynamic query.
 	 *
 	 * @param dynamicQuery the dynamic query
 	 * @param projection the projection to apply to the query
-	 * @return the number of rows that match the dynamic query
-	 * @throws SystemException if a system exception occurred
+	 * @return the number of rows matching the dynamic query
 	 */
 	@Override
 	public long dynamicQueryCount(DynamicQuery dynamicQuery,
-		Projection projection) throws SystemException {
+		Projection projection) {
 		return kbTemplatePersistence.countWithDynamicQuery(dynamicQuery,
 			projection);
 	}
 
 	@Override
-	public KBTemplate fetchKBTemplate(long kbTemplateId)
-		throws SystemException {
+	public KBTemplate fetchKBTemplate(long kbTemplateId) {
 		return kbTemplatePersistence.fetchByPrimaryKey(kbTemplateId);
-	}
-
-	/**
-	 * Returns the k b template with the matching UUID and company.
-	 *
-	 * @param uuid the k b template's UUID
-	 * @param  companyId the primary key of the company
-	 * @return the matching k b template, or <code>null</code> if a matching k b template could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	@Override
-	public KBTemplate fetchKBTemplateByUuidAndCompanyId(String uuid,
-		long companyId) throws SystemException {
-		return kbTemplatePersistence.fetchByUuid_C_First(uuid, companyId, null);
 	}
 
 	/**
@@ -247,11 +231,9 @@ public abstract class KBTemplateLocalServiceBaseImpl
 	 * @param uuid the k b template's UUID
 	 * @param groupId the primary key of the group
 	 * @return the matching k b template, or <code>null</code> if a matching k b template could not be found
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public KBTemplate fetchKBTemplateByUuidAndGroupId(String uuid, long groupId)
-		throws SystemException {
+	public KBTemplate fetchKBTemplateByUuidAndGroupId(String uuid, long groupId) {
 		return kbTemplatePersistence.fetchByUUID_G(uuid, groupId);
 	}
 
@@ -261,33 +243,134 @@ public abstract class KBTemplateLocalServiceBaseImpl
 	 * @param kbTemplateId the primary key of the k b template
 	 * @return the k b template
 	 * @throws PortalException if a k b template with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public KBTemplate getKBTemplate(long kbTemplateId)
-		throws PortalException, SystemException {
+		throws PortalException {
 		return kbTemplatePersistence.findByPrimaryKey(kbTemplateId);
 	}
 
 	@Override
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		ActionableDynamicQuery actionableDynamicQuery = new DefaultActionableDynamicQuery();
+
+		actionableDynamicQuery.setBaseLocalService(com.liferay.knowledgebase.service.KBTemplateLocalServiceUtil.getService());
+		actionableDynamicQuery.setClass(KBTemplate.class);
+		actionableDynamicQuery.setClassLoader(getClassLoader());
+
+		actionableDynamicQuery.setPrimaryKeyPropertyName("kbTemplateId");
+
+		return actionableDynamicQuery;
+	}
+
+	protected void initActionableDynamicQuery(
+		ActionableDynamicQuery actionableDynamicQuery) {
+		actionableDynamicQuery.setBaseLocalService(com.liferay.knowledgebase.service.KBTemplateLocalServiceUtil.getService());
+		actionableDynamicQuery.setClass(KBTemplate.class);
+		actionableDynamicQuery.setClassLoader(getClassLoader());
+
+		actionableDynamicQuery.setPrimaryKeyPropertyName("kbTemplateId");
+	}
+
+	@Override
+	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
+		final PortletDataContext portletDataContext) {
+		final ExportActionableDynamicQuery exportActionableDynamicQuery = new ExportActionableDynamicQuery() {
+				@Override
+				public long performCount() throws PortalException {
+					ManifestSummary manifestSummary = portletDataContext.getManifestSummary();
+
+					StagedModelType stagedModelType = getStagedModelType();
+
+					long modelAdditionCount = super.performCount();
+
+					manifestSummary.addModelAdditionCount(stagedModelType.toString(),
+						modelAdditionCount);
+
+					long modelDeletionCount = ExportImportHelperUtil.getModelDeletionCount(portletDataContext,
+							stagedModelType);
+
+					manifestSummary.addModelDeletionCount(stagedModelType.toString(),
+						modelDeletionCount);
+
+					return modelAdditionCount;
+				}
+			};
+
+		initActionableDynamicQuery(exportActionableDynamicQuery);
+
+		exportActionableDynamicQuery.setAddCriteriaMethod(new ActionableDynamicQuery.AddCriteriaMethod() {
+				@Override
+				public void addCriteria(DynamicQuery dynamicQuery) {
+					portletDataContext.addDateRangeCriteria(dynamicQuery,
+						"modifiedDate");
+				}
+			});
+
+		exportActionableDynamicQuery.setCompanyId(portletDataContext.getCompanyId());
+
+		exportActionableDynamicQuery.setGroupId(portletDataContext.getScopeGroupId());
+
+		exportActionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod() {
+				@Override
+				public void performAction(Object object)
+					throws PortalException {
+					KBTemplate stagedModel = (KBTemplate)object;
+
+					StagedModelDataHandlerUtil.exportStagedModel(portletDataContext,
+						stagedModel);
+				}
+			});
+		exportActionableDynamicQuery.setStagedModelType(new StagedModelType(
+				PortalUtil.getClassNameId(KBTemplate.class.getName())));
+
+		return exportActionableDynamicQuery;
+	}
+
+	/**
+	 * @throws PortalException
+	 */
+	@Override
+	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
+		throws PortalException {
+		return kbTemplateLocalService.deleteKBTemplate((KBTemplate)persistedModel);
+	}
+
+	@Override
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
-		throws PortalException, SystemException {
+		throws PortalException {
 		return kbTemplatePersistence.findByPrimaryKey(primaryKeyObj);
 	}
 
 	/**
-	 * Returns the k b template with the matching UUID and company.
+	 * Returns all the k b templates matching the UUID and company.
 	 *
-	 * @param uuid the k b template's UUID
-	 * @param  companyId the primary key of the company
-	 * @return the matching k b template
-	 * @throws PortalException if a matching k b template could not be found
-	 * @throws SystemException if a system exception occurred
+	 * @param uuid the UUID of the k b templates
+	 * @param companyId the primary key of the company
+	 * @return the matching k b templates, or an empty list if no matches were found
 	 */
 	@Override
-	public KBTemplate getKBTemplateByUuidAndCompanyId(String uuid,
-		long companyId) throws PortalException, SystemException {
-		return kbTemplatePersistence.findByUuid_C_First(uuid, companyId, null);
+	public List<KBTemplate> getKBTemplatesByUuidAndCompanyId(String uuid,
+		long companyId) {
+		return kbTemplatePersistence.findByUuid_C(uuid, companyId);
+	}
+
+	/**
+	 * Returns a range of k b templates matching the UUID and company.
+	 *
+	 * @param uuid the UUID of the k b templates
+	 * @param companyId the primary key of the company
+	 * @param start the lower bound of the range of k b templates
+	 * @param end the upper bound of the range of k b templates (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the range of matching k b templates, or an empty list if no matches were found
+	 */
+	@Override
+	public List<KBTemplate> getKBTemplatesByUuidAndCompanyId(String uuid,
+		long companyId, int start, int end,
+		OrderByComparator<KBTemplate> orderByComparator) {
+		return kbTemplatePersistence.findByUuid_C(uuid, companyId, start, end,
+			orderByComparator);
 	}
 
 	/**
@@ -297,11 +380,10 @@ public abstract class KBTemplateLocalServiceBaseImpl
 	 * @param groupId the primary key of the group
 	 * @return the matching k b template
 	 * @throws PortalException if a matching k b template could not be found
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public KBTemplate getKBTemplateByUuidAndGroupId(String uuid, long groupId)
-		throws PortalException, SystemException {
+		throws PortalException {
 		return kbTemplatePersistence.findByUUID_G(uuid, groupId);
 	}
 
@@ -315,11 +397,9 @@ public abstract class KBTemplateLocalServiceBaseImpl
 	 * @param start the lower bound of the range of k b templates
 	 * @param end the upper bound of the range of k b templates (not inclusive)
 	 * @return the range of k b templates
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public List<KBTemplate> getKBTemplates(int start, int end)
-		throws SystemException {
+	public List<KBTemplate> getKBTemplates(int start, int end) {
 		return kbTemplatePersistence.findAll(start, end);
 	}
 
@@ -327,10 +407,9 @@ public abstract class KBTemplateLocalServiceBaseImpl
 	 * Returns the number of k b templates.
 	 *
 	 * @return the number of k b templates
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public int getKBTemplatesCount() throws SystemException {
+	public int getKBTemplatesCount() {
 		return kbTemplatePersistence.countAll();
 	}
 
@@ -339,12 +418,10 @@ public abstract class KBTemplateLocalServiceBaseImpl
 	 *
 	 * @param kbTemplate the k b template
 	 * @return the k b template that was updated
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
-	public KBTemplate updateKBTemplate(KBTemplate kbTemplate)
-		throws SystemException {
+	public KBTemplate updateKBTemplate(KBTemplate kbTemplate) {
 		return kbTemplatePersistence.update(kbTemplate);
 	}
 
@@ -406,6 +483,24 @@ public abstract class KBTemplateLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the k b article finder.
+	 *
+	 * @return the k b article finder
+	 */
+	public KBArticleFinder getKBArticleFinder() {
+		return kbArticleFinder;
+	}
+
+	/**
+	 * Sets the k b article finder.
+	 *
+	 * @param kbArticleFinder the k b article finder
+	 */
+	public void setKBArticleFinder(KBArticleFinder kbArticleFinder) {
+		this.kbArticleFinder = kbArticleFinder;
+	}
+
+	/**
 	 * Returns the k b comment local service.
 	 *
 	 * @return the k b comment local service
@@ -460,6 +555,62 @@ public abstract class KBTemplateLocalServiceBaseImpl
 	public void setKBCommentPersistence(
 		KBCommentPersistence kbCommentPersistence) {
 		this.kbCommentPersistence = kbCommentPersistence;
+	}
+
+	/**
+	 * Returns the k b folder local service.
+	 *
+	 * @return the k b folder local service
+	 */
+	public com.liferay.knowledgebase.service.KBFolderLocalService getKBFolderLocalService() {
+		return kbFolderLocalService;
+	}
+
+	/**
+	 * Sets the k b folder local service.
+	 *
+	 * @param kbFolderLocalService the k b folder local service
+	 */
+	public void setKBFolderLocalService(
+		com.liferay.knowledgebase.service.KBFolderLocalService kbFolderLocalService) {
+		this.kbFolderLocalService = kbFolderLocalService;
+	}
+
+	/**
+	 * Returns the k b folder remote service.
+	 *
+	 * @return the k b folder remote service
+	 */
+	public com.liferay.knowledgebase.service.KBFolderService getKBFolderService() {
+		return kbFolderService;
+	}
+
+	/**
+	 * Sets the k b folder remote service.
+	 *
+	 * @param kbFolderService the k b folder remote service
+	 */
+	public void setKBFolderService(
+		com.liferay.knowledgebase.service.KBFolderService kbFolderService) {
+		this.kbFolderService = kbFolderService;
+	}
+
+	/**
+	 * Returns the k b folder persistence.
+	 *
+	 * @return the k b folder persistence
+	 */
+	public KBFolderPersistence getKBFolderPersistence() {
+		return kbFolderPersistence;
+	}
+
+	/**
+	 * Sets the k b folder persistence.
+	 *
+	 * @param kbFolderPersistence the k b folder persistence
+	 */
+	public void setKBFolderPersistence(KBFolderPersistence kbFolderPersistence) {
+		this.kbFolderPersistence = kbFolderPersistence;
 	}
 
 	/**
@@ -852,7 +1003,7 @@ public abstract class KBTemplateLocalServiceBaseImpl
 	 *
 	 * @param sql the sql query
 	 */
-	protected void runSQL(String sql) throws SystemException {
+	protected void runSQL(String sql) {
 		try {
 			DataSource dataSource = kbTemplatePersistence.getDataSource();
 
@@ -877,12 +1028,20 @@ public abstract class KBTemplateLocalServiceBaseImpl
 	protected com.liferay.knowledgebase.service.KBArticleService kbArticleService;
 	@BeanReference(type = KBArticlePersistence.class)
 	protected KBArticlePersistence kbArticlePersistence;
+	@BeanReference(type = KBArticleFinder.class)
+	protected KBArticleFinder kbArticleFinder;
 	@BeanReference(type = com.liferay.knowledgebase.service.KBCommentLocalService.class)
 	protected com.liferay.knowledgebase.service.KBCommentLocalService kbCommentLocalService;
 	@BeanReference(type = com.liferay.knowledgebase.service.KBCommentService.class)
 	protected com.liferay.knowledgebase.service.KBCommentService kbCommentService;
 	@BeanReference(type = KBCommentPersistence.class)
 	protected KBCommentPersistence kbCommentPersistence;
+	@BeanReference(type = com.liferay.knowledgebase.service.KBFolderLocalService.class)
+	protected com.liferay.knowledgebase.service.KBFolderLocalService kbFolderLocalService;
+	@BeanReference(type = com.liferay.knowledgebase.service.KBFolderService.class)
+	protected com.liferay.knowledgebase.service.KBFolderService kbFolderService;
+	@BeanReference(type = KBFolderPersistence.class)
+	protected KBFolderPersistence kbFolderPersistence;
 	@BeanReference(type = com.liferay.knowledgebase.service.KBTemplateLocalService.class)
 	protected com.liferay.knowledgebase.service.KBTemplateLocalService kbTemplateLocalService;
 	@BeanReference(type = com.liferay.knowledgebase.service.KBTemplateService.class)

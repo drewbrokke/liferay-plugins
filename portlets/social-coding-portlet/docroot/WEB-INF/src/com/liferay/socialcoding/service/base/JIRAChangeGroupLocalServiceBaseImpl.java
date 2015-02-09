@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,12 +14,16 @@
 
 package com.liferay.socialcoding.service.base;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.bean.IdentifiableBean;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBFactoryUtil;
 import com.liferay.portal.kernel.dao.jdbc.SqlUpdate;
 import com.liferay.portal.kernel.dao.jdbc.SqlUpdateFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.DefaultActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.Projection;
@@ -44,6 +48,7 @@ import com.liferay.socialcoding.service.persistence.JIRAChangeGroupPersistence;
 import com.liferay.socialcoding.service.persistence.JIRAChangeItemPersistence;
 import com.liferay.socialcoding.service.persistence.JIRAIssueFinder;
 import com.liferay.socialcoding.service.persistence.JIRAIssuePersistence;
+import com.liferay.socialcoding.service.persistence.JIRAProjectPersistence;
 import com.liferay.socialcoding.service.persistence.SVNRepositoryPersistence;
 import com.liferay.socialcoding.service.persistence.SVNRevisionPersistence;
 
@@ -65,6 +70,7 @@ import javax.sql.DataSource;
  * @see com.liferay.socialcoding.service.JIRAChangeGroupLocalServiceUtil
  * @generated
  */
+@ProviderType
 public abstract class JIRAChangeGroupLocalServiceBaseImpl
 	extends BaseLocalServiceImpl implements JIRAChangeGroupLocalService,
 		IdentifiableBean {
@@ -79,12 +85,10 @@ public abstract class JIRAChangeGroupLocalServiceBaseImpl
 	 *
 	 * @param jiraChangeGroup the j i r a change group
 	 * @return the j i r a change group that was added
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
-	public JIRAChangeGroup addJIRAChangeGroup(JIRAChangeGroup jiraChangeGroup)
-		throws SystemException {
+	public JIRAChangeGroup addJIRAChangeGroup(JIRAChangeGroup jiraChangeGroup) {
 		jiraChangeGroup.setNew(true);
 
 		return jiraChangeGroupPersistence.update(jiraChangeGroup);
@@ -107,12 +111,11 @@ public abstract class JIRAChangeGroupLocalServiceBaseImpl
 	 * @param jiraChangeGroupId the primary key of the j i r a change group
 	 * @return the j i r a change group that was removed
 	 * @throws PortalException if a j i r a change group with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	public JIRAChangeGroup deleteJIRAChangeGroup(long jiraChangeGroupId)
-		throws PortalException, SystemException {
+		throws PortalException {
 		return jiraChangeGroupPersistence.remove(jiraChangeGroupId);
 	}
 
@@ -121,12 +124,11 @@ public abstract class JIRAChangeGroupLocalServiceBaseImpl
 	 *
 	 * @param jiraChangeGroup the j i r a change group
 	 * @return the j i r a change group that was removed
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	public JIRAChangeGroup deleteJIRAChangeGroup(
-		JIRAChangeGroup jiraChangeGroup) throws SystemException {
+		JIRAChangeGroup jiraChangeGroup) {
 		return jiraChangeGroupPersistence.remove(jiraChangeGroup);
 	}
 
@@ -143,12 +145,9 @@ public abstract class JIRAChangeGroupLocalServiceBaseImpl
 	 *
 	 * @param dynamicQuery the dynamic query
 	 * @return the matching rows
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	@SuppressWarnings("rawtypes")
-	public List dynamicQuery(DynamicQuery dynamicQuery)
-		throws SystemException {
+	public <T> List<T> dynamicQuery(DynamicQuery dynamicQuery) {
 		return jiraChangeGroupPersistence.findWithDynamicQuery(dynamicQuery);
 	}
 
@@ -163,12 +162,10 @@ public abstract class JIRAChangeGroupLocalServiceBaseImpl
 	 * @param start the lower bound of the range of model instances
 	 * @param end the upper bound of the range of model instances (not inclusive)
 	 * @return the range of matching rows
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	@SuppressWarnings("rawtypes")
-	public List dynamicQuery(DynamicQuery dynamicQuery, int start, int end)
-		throws SystemException {
+	public <T> List<T> dynamicQuery(DynamicQuery dynamicQuery, int start,
+		int end) {
 		return jiraChangeGroupPersistence.findWithDynamicQuery(dynamicQuery,
 			start, end);
 	}
@@ -185,12 +182,10 @@ public abstract class JIRAChangeGroupLocalServiceBaseImpl
 	 * @param end the upper bound of the range of model instances (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @return the ordered range of matching rows
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	@SuppressWarnings("rawtypes")
-	public List dynamicQuery(DynamicQuery dynamicQuery, int start, int end,
-		OrderByComparator orderByComparator) throws SystemException {
+	public <T> List<T> dynamicQuery(DynamicQuery dynamicQuery, int start,
+		int end, OrderByComparator<T> orderByComparator) {
 		return jiraChangeGroupPersistence.findWithDynamicQuery(dynamicQuery,
 			start, end, orderByComparator);
 	}
@@ -200,11 +195,9 @@ public abstract class JIRAChangeGroupLocalServiceBaseImpl
 	 *
 	 * @param dynamicQuery the dynamic query
 	 * @return the number of rows that match the dynamic query
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public long dynamicQueryCount(DynamicQuery dynamicQuery)
-		throws SystemException {
+	public long dynamicQueryCount(DynamicQuery dynamicQuery) {
 		return jiraChangeGroupPersistence.countWithDynamicQuery(dynamicQuery);
 	}
 
@@ -214,18 +207,16 @@ public abstract class JIRAChangeGroupLocalServiceBaseImpl
 	 * @param dynamicQuery the dynamic query
 	 * @param projection the projection to apply to the query
 	 * @return the number of rows that match the dynamic query
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public long dynamicQueryCount(DynamicQuery dynamicQuery,
-		Projection projection) throws SystemException {
+		Projection projection) {
 		return jiraChangeGroupPersistence.countWithDynamicQuery(dynamicQuery,
 			projection);
 	}
 
 	@Override
-	public JIRAChangeGroup fetchJIRAChangeGroup(long jiraChangeGroupId)
-		throws SystemException {
+	public JIRAChangeGroup fetchJIRAChangeGroup(long jiraChangeGroupId) {
 		return jiraChangeGroupPersistence.fetchByPrimaryKey(jiraChangeGroupId);
 	}
 
@@ -235,17 +226,47 @@ public abstract class JIRAChangeGroupLocalServiceBaseImpl
 	 * @param jiraChangeGroupId the primary key of the j i r a change group
 	 * @return the j i r a change group
 	 * @throws PortalException if a j i r a change group with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public JIRAChangeGroup getJIRAChangeGroup(long jiraChangeGroupId)
-		throws PortalException, SystemException {
+		throws PortalException {
 		return jiraChangeGroupPersistence.findByPrimaryKey(jiraChangeGroupId);
 	}
 
 	@Override
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		ActionableDynamicQuery actionableDynamicQuery = new DefaultActionableDynamicQuery();
+
+		actionableDynamicQuery.setBaseLocalService(com.liferay.socialcoding.service.JIRAChangeGroupLocalServiceUtil.getService());
+		actionableDynamicQuery.setClass(JIRAChangeGroup.class);
+		actionableDynamicQuery.setClassLoader(getClassLoader());
+
+		actionableDynamicQuery.setPrimaryKeyPropertyName("jiraChangeGroupId");
+
+		return actionableDynamicQuery;
+	}
+
+	protected void initActionableDynamicQuery(
+		ActionableDynamicQuery actionableDynamicQuery) {
+		actionableDynamicQuery.setBaseLocalService(com.liferay.socialcoding.service.JIRAChangeGroupLocalServiceUtil.getService());
+		actionableDynamicQuery.setClass(JIRAChangeGroup.class);
+		actionableDynamicQuery.setClassLoader(getClassLoader());
+
+		actionableDynamicQuery.setPrimaryKeyPropertyName("jiraChangeGroupId");
+	}
+
+	/**
+	 * @throws PortalException
+	 */
+	@Override
+	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
+		throws PortalException {
+		return jiraChangeGroupLocalService.deleteJIRAChangeGroup((JIRAChangeGroup)persistedModel);
+	}
+
+	@Override
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
-		throws PortalException, SystemException {
+		throws PortalException {
 		return jiraChangeGroupPersistence.findByPrimaryKey(primaryKeyObj);
 	}
 
@@ -259,11 +280,9 @@ public abstract class JIRAChangeGroupLocalServiceBaseImpl
 	 * @param start the lower bound of the range of j i r a change groups
 	 * @param end the upper bound of the range of j i r a change groups (not inclusive)
 	 * @return the range of j i r a change groups
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public List<JIRAChangeGroup> getJIRAChangeGroups(int start, int end)
-		throws SystemException {
+	public List<JIRAChangeGroup> getJIRAChangeGroups(int start, int end) {
 		return jiraChangeGroupPersistence.findAll(start, end);
 	}
 
@@ -271,10 +290,9 @@ public abstract class JIRAChangeGroupLocalServiceBaseImpl
 	 * Returns the number of j i r a change groups.
 	 *
 	 * @return the number of j i r a change groups
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public int getJIRAChangeGroupsCount() throws SystemException {
+	public int getJIRAChangeGroupsCount() {
 		return jiraChangeGroupPersistence.countAll();
 	}
 
@@ -283,12 +301,11 @@ public abstract class JIRAChangeGroupLocalServiceBaseImpl
 	 *
 	 * @param jiraChangeGroup the j i r a change group
 	 * @return the j i r a change group that was updated
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public JIRAChangeGroup updateJIRAChangeGroup(
-		JIRAChangeGroup jiraChangeGroup) throws SystemException {
+		JIRAChangeGroup jiraChangeGroup) {
 		return jiraChangeGroupPersistence.update(jiraChangeGroup);
 	}
 
@@ -497,6 +514,44 @@ public abstract class JIRAChangeGroupLocalServiceBaseImpl
 	 */
 	public void setJIRAIssueFinder(JIRAIssueFinder jiraIssueFinder) {
 		this.jiraIssueFinder = jiraIssueFinder;
+	}
+
+	/**
+	 * Returns the j i r a project local service.
+	 *
+	 * @return the j i r a project local service
+	 */
+	public com.liferay.socialcoding.service.JIRAProjectLocalService getJIRAProjectLocalService() {
+		return jiraProjectLocalService;
+	}
+
+	/**
+	 * Sets the j i r a project local service.
+	 *
+	 * @param jiraProjectLocalService the j i r a project local service
+	 */
+	public void setJIRAProjectLocalService(
+		com.liferay.socialcoding.service.JIRAProjectLocalService jiraProjectLocalService) {
+		this.jiraProjectLocalService = jiraProjectLocalService;
+	}
+
+	/**
+	 * Returns the j i r a project persistence.
+	 *
+	 * @return the j i r a project persistence
+	 */
+	public JIRAProjectPersistence getJIRAProjectPersistence() {
+		return jiraProjectPersistence;
+	}
+
+	/**
+	 * Sets the j i r a project persistence.
+	 *
+	 * @param jiraProjectPersistence the j i r a project persistence
+	 */
+	public void setJIRAProjectPersistence(
+		JIRAProjectPersistence jiraProjectPersistence) {
+		this.jiraProjectPersistence = jiraProjectPersistence;
 	}
 
 	/**
@@ -794,7 +849,7 @@ public abstract class JIRAChangeGroupLocalServiceBaseImpl
 	 *
 	 * @param sql the sql query
 	 */
-	protected void runSQL(String sql) throws SystemException {
+	protected void runSQL(String sql) {
 		try {
 			DataSource dataSource = jiraChangeGroupPersistence.getDataSource();
 
@@ -835,6 +890,10 @@ public abstract class JIRAChangeGroupLocalServiceBaseImpl
 	protected JIRAIssuePersistence jiraIssuePersistence;
 	@BeanReference(type = JIRAIssueFinder.class)
 	protected JIRAIssueFinder jiraIssueFinder;
+	@BeanReference(type = com.liferay.socialcoding.service.JIRAProjectLocalService.class)
+	protected com.liferay.socialcoding.service.JIRAProjectLocalService jiraProjectLocalService;
+	@BeanReference(type = JIRAProjectPersistence.class)
+	protected JIRAProjectPersistence jiraProjectPersistence;
 	@BeanReference(type = com.liferay.socialcoding.service.SVNRepositoryLocalService.class)
 	protected com.liferay.socialcoding.service.SVNRepositoryLocalService svnRepositoryLocalService;
 	@BeanReference(type = SVNRepositoryPersistence.class)

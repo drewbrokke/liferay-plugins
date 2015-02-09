@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -25,7 +25,6 @@
 
 <%@ page import="com.liferay.mysubscriptions.util.MySubscriptionsUtil" %><%@
 page import="com.liferay.portal.NoSuchSubscriptionException" %><%@
-page import="com.liferay.portal.kernel.dao.search.ResultRow" %><%@
 page import="com.liferay.portal.kernel.dao.search.RowChecker" %><%@
 page import="com.liferay.portal.kernel.language.UnicodeLanguageUtil" %><%@
 page import="com.liferay.portal.kernel.portlet.LiferayPortletRequest" %><%@
@@ -40,7 +39,8 @@ page import="com.liferay.portal.security.permission.ResourceActionsUtil" %><%@
 page import="com.liferay.portal.service.SubscriptionLocalServiceUtil" %><%@
 page import="com.liferay.portal.util.PortalUtil" %><%@
 page import="com.liferay.portal.util.comparator.SubscriptionClassNameIdComparator" %><%@
-page import="com.liferay.portlet.asset.model.AssetRenderer" %>
+page import="com.liferay.portlet.asset.model.AssetRenderer" %><%@
+page import="com.liferay.taglib.search.ResultRow" %>
 
 <%@ page import="java.util.List" %>
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,6 +14,8 @@
 
 package com.liferay.calendar.service.base;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.calendar.service.CalendarResourceServiceUtil;
 
 import java.util.Arrays;
@@ -22,6 +24,7 @@ import java.util.Arrays;
  * @author Eduardo Lundgren
  * @generated
  */
+@ProviderType
 public class CalendarResourceServiceClpInvoker {
 	public CalendarResourceServiceClpInvoker() {
 		_methodName56 = "getBeanIdentifier";
@@ -140,7 +143,7 @@ public class CalendarResourceServiceClpInvoker {
 				((Boolean)arguments[5]).booleanValue(),
 				((Integer)arguments[6]).intValue(),
 				((Integer)arguments[7]).intValue(),
-				(com.liferay.portal.kernel.util.OrderByComparator)arguments[8]);
+				(com.liferay.portal.kernel.util.OrderByComparator<com.liferay.calendar.model.CalendarResource>)arguments[8]);
 		}
 
 		if (_methodName67.equals(name) &&
@@ -153,7 +156,7 @@ public class CalendarResourceServiceClpInvoker {
 				((Boolean)arguments[7]).booleanValue(),
 				((Integer)arguments[8]).intValue(),
 				((Integer)arguments[9]).intValue(),
-				(com.liferay.portal.kernel.util.OrderByComparator)arguments[10]);
+				(com.liferay.portal.kernel.util.OrderByComparator<com.liferay.calendar.model.CalendarResource>)arguments[10]);
 		}
 
 		if (_methodName68.equals(name) &&

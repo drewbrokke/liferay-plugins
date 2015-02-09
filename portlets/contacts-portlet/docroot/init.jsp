@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -48,6 +48,7 @@ page import="com.liferay.portal.kernel.util.ParamUtil" %><%@
 page import="com.liferay.portal.kernel.util.PrefsParamUtil" %><%@
 page import="com.liferay.portal.kernel.util.PrefsPropsUtil" %><%@
 page import="com.liferay.portal.kernel.util.PropsKeys" %><%@
+page import="com.liferay.portal.kernel.util.StringBundler" %><%@
 page import="com.liferay.portal.kernel.util.StringPool" %><%@
 page import="com.liferay.portal.kernel.util.StringUtil" %><%@
 page import="com.liferay.portal.kernel.util.TextFormatter" %><%@
@@ -78,14 +79,15 @@ page import="com.liferay.portal.service.WebsiteServiceUtil" %><%@
 page import="com.liferay.portal.service.permission.UserPermissionUtil" %><%@
 page import="com.liferay.portal.util.PortalUtil" %><%@
 page import="com.liferay.portal.util.comparator.UserLastNameComparator" %><%@
-page import="com.liferay.portal.util.comparator.UserLoginDateComparator" %><%@
 page import="com.liferay.portlet.PortletURLFactoryUtil" %><%@
 page import="com.liferay.portlet.asset.model.AssetTag" %><%@
 page import="com.liferay.portlet.asset.service.AssetTagLocalServiceUtil" %><%@
 page import="com.liferay.portlet.social.model.SocialRequestConstants" %><%@
 page import="com.liferay.portlet.social.service.SocialActivityLocalServiceUtil" %><%@
 page import="com.liferay.portlet.social.service.SocialRelationLocalServiceUtil" %><%@
-page import="com.liferay.portlet.social.service.SocialRequestLocalServiceUtil" %>
+page import="com.liferay.portlet.social.service.SocialRequestLocalServiceUtil" %><%@
+page import="com.liferay.portlet.usersadmin.util.UsersAdminUtil" %><%@
+page import="com.liferay.so.service.SocialOfficeServiceUtil" %>
 
 <%@ page import="java.util.ArrayList" %><%@
 page import="java.util.LinkedHashMap" %><%@

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,8 +14,9 @@
 
 package com.liferay.portal.workflow.kaleo.model;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.portal.kernel.bean.AutoEscape;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.model.GroupedModel;
@@ -40,6 +41,7 @@ import java.util.Date;
  * @see com.liferay.portal.workflow.kaleo.model.impl.KaleoTaskInstanceTokenModelImpl
  * @generated
  */
+@ProviderType
 public interface KaleoTaskInstanceTokenModel extends BaseModel<KaleoTaskInstanceToken>,
 	GroupedModel {
 	/*
@@ -128,10 +130,9 @@ public interface KaleoTaskInstanceTokenModel extends BaseModel<KaleoTaskInstance
 	 * Returns the user uuid of this kaleo task instance token.
 	 *
 	 * @return the user uuid of this kaleo task instance token
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public String getUserUuid() throws SystemException;
+	public String getUserUuid();
 
 	/**
 	 * Sets the user uuid of this kaleo task instance token.
@@ -308,9 +309,8 @@ public interface KaleoTaskInstanceTokenModel extends BaseModel<KaleoTaskInstance
 	 * Returns the completion user uuid of this kaleo task instance token.
 	 *
 	 * @return the completion user uuid of this kaleo task instance token
-	 * @throws SystemException if a system exception occurred
 	 */
-	public String getCompletionUserUuid() throws SystemException;
+	public String getCompletionUserUuid();
 
 	/**
 	 * Sets the completion user uuid of this kaleo task instance token.
@@ -420,19 +420,20 @@ public interface KaleoTaskInstanceTokenModel extends BaseModel<KaleoTaskInstance
 	public Object clone();
 
 	@Override
-	public int compareTo(KaleoTaskInstanceToken kaleoTaskInstanceToken);
+	public int compareTo(
+		com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken kaleoTaskInstanceToken);
 
 	@Override
 	public int hashCode();
 
 	@Override
-	public CacheModel<KaleoTaskInstanceToken> toCacheModel();
+	public CacheModel<com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken> toCacheModel();
 
 	@Override
-	public KaleoTaskInstanceToken toEscapedModel();
+	public com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken toEscapedModel();
 
 	@Override
-	public KaleoTaskInstanceToken toUnescapedModel();
+	public com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken toUnescapedModel();
 
 	@Override
 	public String toString();

@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -132,12 +132,12 @@ request.setAttribute("view_user.jsp-user", user2);
 				</aui:layout>
 			</aui:layout>
 
-			<div class="lfr-detail-info field-group" data-sectionId="details" data-title="<%= LanguageUtil.get(pageContext, "details") %>">
+			<div class="lfr-detail-info field-group" data-sectionId="details" data-title="<%= LanguageUtil.get(request, "details") %>">
 				<i class="icon-edit"></i>
 
 				<c:if test="<%= showIcon %>">
 					<div class="lfr-contact-thumb">
-						<a href="<%= user2.getDisplayURL(themeDisplay) %>"><img alt="<%= user2.getFullName() %>" src="<%= user2.getPortraitURL(themeDisplay) %>" /></a>
+						<a href="<%= user2.getDisplayURL(themeDisplay) %>"><img alt="<%= HtmlUtil.escapeAttribute(user2.getFullName()) %>" src="<%= user2.getPortraitURL(themeDisplay) %>" /></a>
 					</div>
 				</c:if>
 
@@ -254,7 +254,7 @@ request.setAttribute("view_user.jsp-user", user2);
 													<portlet:param name="privateLayout" value="<%= String.valueOf(!curGroup.hasPublicLayouts()) %>" />
 												</liferay-portlet:actionURL>
 
-												<li class="user-information-sites"><a href="<%= siteURL %>"><%= HtmlUtil.escape(curGroup.getDescriptiveName(locale)) %></a></li>
+												<li class="user-information-sites <%= SocialOfficeServiceUtil.isSocialOfficeGroup(curGroup.getGroupId()) ? "social-office-enabled" : "social-office-disabled" %>"><a href="<%= siteURL %>"><%= HtmlUtil.escape(curGroup.getDescriptiveName(locale)) %></a></li>
 
 											<%
 											}
@@ -281,7 +281,7 @@ request.setAttribute("view_user.jsp-user", user2);
 
 								<c:choose>
 									<c:when test="<%= !assetTags.isEmpty() %>">
-										<div class="field-group" data-sectionId="categorization" data-title="<%= LanguageUtil.get(pageContext, "tags") %>">
+										<div class="field-group" data-sectionId="categorization" data-title="<%= LanguageUtil.get(request, "tags") %>">
 											<i class="icon-edit"></i>
 
 											<ul class="user-tags">
@@ -382,7 +382,7 @@ request.setAttribute("view_user.jsp-user", user2);
 							destroyOnClose: true,
 							modal: true,
 							resizable: false,
-							width: 500
+							width: 800
 						},
 						id: '<portlet:namespace />Dialog',
 						title: node.getAttribute('data-title'),

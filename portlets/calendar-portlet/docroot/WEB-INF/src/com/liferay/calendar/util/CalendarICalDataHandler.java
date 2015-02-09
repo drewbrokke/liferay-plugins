@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -33,8 +33,10 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.model.Company;
 import com.liferay.portal.model.ModelHintsUtil;
 import com.liferay.portal.model.User;
+import com.liferay.portal.service.CompanyLocalServiceUtil;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.UserLocalServiceUtil;
 
@@ -113,8 +115,7 @@ public class CalendarICalDataHandler implements CalendarDataHandler {
 	public String exportCalendarBooking(long calendarBookingId)
 		throws Exception {
 
-		List<CalendarBooking> calendarBookings =
-			new ArrayList<CalendarBooking>();
+		List<CalendarBooking> calendarBookings = new ArrayList<>();
 
 		CalendarBooking calendarBooking =
 			CalendarBookingLocalServiceUtil.getCalendarBooking(
@@ -153,7 +154,7 @@ public class CalendarICalDataHandler implements CalendarDataHandler {
 
 		User user = UserLocalServiceUtil.getUser(calendar.getUserId());
 
-		Map<Locale, String> titleMap = new HashMap<Locale, String>();
+		Map<Locale, String> titleMap = new HashMap<>();
 
 		Summary summary = vEvent.getSummary();
 
@@ -166,7 +167,7 @@ public class CalendarICalDataHandler implements CalendarDataHandler {
 
 		// Description
 
-		Map<Locale, String> descriptionMap = new HashMap<Locale, String>();
+		Map<Locale, String> descriptionMap = new HashMap<>();
 
 		Description description = vEvent.getDescription();
 
@@ -342,7 +343,7 @@ public class CalendarICalDataHandler implements CalendarDataHandler {
 
 		PropertyList propertyList = vEvent.getProperties(Property.ATTENDEE);
 
-		List<Long> childCalendarIds = new ArrayList<Long>();
+		List<Long> childCalendarIds = new ArrayList<>();
 
 		for (Iterator<Attendee> iterator = propertyList.iterator();
 				iterator.hasNext();) {
@@ -403,6 +404,7 @@ public class CalendarICalDataHandler implements CalendarDataHandler {
 
 		serviceContext.setAddGroupPermissions(true);
 		serviceContext.setAddGuestPermissions(true);
+		serviceContext.setAttribute("sendNotification", Boolean.FALSE);
 		serviceContext.setScopeGroupId(calendar.getGroupId());
 
 		if (calendarBooking == null) {
@@ -634,13 +636,27 @@ public class CalendarICalDataHandler implements CalendarDataHandler {
 
 		// Description
 
-		Description description = new Description(
-			calendarBooking.getDescription(user.getLocale()));
+		Company company = CompanyLocalServiceUtil.getCompany(
+			calendarBooking.getCompanyId());
+
+		String calendarBookingDescription = StringUtil.replace(
+			calendarBooking.getDescription(user.getLocale()),
+			new String[] {
+				"href=\"/", "src=\"/"
+			},
+			new String[] {
+				"href=\"" +
+					company.getPortalURL(calendarBooking.getGroupId()) + "/",
+				"src=\"" +
+					company.getPortalURL(calendarBooking.getGroupId()) + "/"
+		});
+
+		Description description = new Description(calendarBookingDescription);
 
 		propertyList.add(description);
 
 		XProperty xProperty = new XProperty(
-			"X-ALT-DESC", calendarBooking.getDescription(user.getLocale()));
+			"X-ALT-DESC", calendarBookingDescription);
 
 		ParameterList parameters = xProperty.getParameters();
 

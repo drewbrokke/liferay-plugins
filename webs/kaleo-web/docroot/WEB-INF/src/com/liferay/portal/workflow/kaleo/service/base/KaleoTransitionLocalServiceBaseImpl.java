@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,12 +14,16 @@
 
 package com.liferay.portal.workflow.kaleo.service.base;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.bean.IdentifiableBean;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBFactoryUtil;
 import com.liferay.portal.kernel.dao.jdbc.SqlUpdate;
 import com.liferay.portal.kernel.dao.jdbc.SqlUpdateFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.DefaultActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.Projection;
@@ -72,6 +76,7 @@ import javax.sql.DataSource;
  * @see com.liferay.portal.workflow.kaleo.service.KaleoTransitionLocalServiceUtil
  * @generated
  */
+@ProviderType
 public abstract class KaleoTransitionLocalServiceBaseImpl
 	extends BaseLocalServiceImpl implements KaleoTransitionLocalService,
 		IdentifiableBean {
@@ -86,12 +91,10 @@ public abstract class KaleoTransitionLocalServiceBaseImpl
 	 *
 	 * @param kaleoTransition the kaleo transition
 	 * @return the kaleo transition that was added
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
-	public KaleoTransition addKaleoTransition(KaleoTransition kaleoTransition)
-		throws SystemException {
+	public KaleoTransition addKaleoTransition(KaleoTransition kaleoTransition) {
 		kaleoTransition.setNew(true);
 
 		return kaleoTransitionPersistence.update(kaleoTransition);
@@ -114,12 +117,11 @@ public abstract class KaleoTransitionLocalServiceBaseImpl
 	 * @param kaleoTransitionId the primary key of the kaleo transition
 	 * @return the kaleo transition that was removed
 	 * @throws PortalException if a kaleo transition with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	public KaleoTransition deleteKaleoTransition(long kaleoTransitionId)
-		throws PortalException, SystemException {
+		throws PortalException {
 		return kaleoTransitionPersistence.remove(kaleoTransitionId);
 	}
 
@@ -128,12 +130,11 @@ public abstract class KaleoTransitionLocalServiceBaseImpl
 	 *
 	 * @param kaleoTransition the kaleo transition
 	 * @return the kaleo transition that was removed
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	public KaleoTransition deleteKaleoTransition(
-		KaleoTransition kaleoTransition) throws SystemException {
+		KaleoTransition kaleoTransition) {
 		return kaleoTransitionPersistence.remove(kaleoTransition);
 	}
 
@@ -150,12 +151,9 @@ public abstract class KaleoTransitionLocalServiceBaseImpl
 	 *
 	 * @param dynamicQuery the dynamic query
 	 * @return the matching rows
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	@SuppressWarnings("rawtypes")
-	public List dynamicQuery(DynamicQuery dynamicQuery)
-		throws SystemException {
+	public <T> List<T> dynamicQuery(DynamicQuery dynamicQuery) {
 		return kaleoTransitionPersistence.findWithDynamicQuery(dynamicQuery);
 	}
 
@@ -170,12 +168,10 @@ public abstract class KaleoTransitionLocalServiceBaseImpl
 	 * @param start the lower bound of the range of model instances
 	 * @param end the upper bound of the range of model instances (not inclusive)
 	 * @return the range of matching rows
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	@SuppressWarnings("rawtypes")
-	public List dynamicQuery(DynamicQuery dynamicQuery, int start, int end)
-		throws SystemException {
+	public <T> List<T> dynamicQuery(DynamicQuery dynamicQuery, int start,
+		int end) {
 		return kaleoTransitionPersistence.findWithDynamicQuery(dynamicQuery,
 			start, end);
 	}
@@ -192,47 +188,41 @@ public abstract class KaleoTransitionLocalServiceBaseImpl
 	 * @param end the upper bound of the range of model instances (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @return the ordered range of matching rows
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	@SuppressWarnings("rawtypes")
-	public List dynamicQuery(DynamicQuery dynamicQuery, int start, int end,
-		OrderByComparator orderByComparator) throws SystemException {
+	public <T> List<T> dynamicQuery(DynamicQuery dynamicQuery, int start,
+		int end, OrderByComparator<T> orderByComparator) {
 		return kaleoTransitionPersistence.findWithDynamicQuery(dynamicQuery,
 			start, end, orderByComparator);
 	}
 
 	/**
-	 * Returns the number of rows that match the dynamic query.
+	 * Returns the number of rows matching the dynamic query.
 	 *
 	 * @param dynamicQuery the dynamic query
-	 * @return the number of rows that match the dynamic query
-	 * @throws SystemException if a system exception occurred
+	 * @return the number of rows matching the dynamic query
 	 */
 	@Override
-	public long dynamicQueryCount(DynamicQuery dynamicQuery)
-		throws SystemException {
+	public long dynamicQueryCount(DynamicQuery dynamicQuery) {
 		return kaleoTransitionPersistence.countWithDynamicQuery(dynamicQuery);
 	}
 
 	/**
-	 * Returns the number of rows that match the dynamic query.
+	 * Returns the number of rows matching the dynamic query.
 	 *
 	 * @param dynamicQuery the dynamic query
 	 * @param projection the projection to apply to the query
-	 * @return the number of rows that match the dynamic query
-	 * @throws SystemException if a system exception occurred
+	 * @return the number of rows matching the dynamic query
 	 */
 	@Override
 	public long dynamicQueryCount(DynamicQuery dynamicQuery,
-		Projection projection) throws SystemException {
+		Projection projection) {
 		return kaleoTransitionPersistence.countWithDynamicQuery(dynamicQuery,
 			projection);
 	}
 
 	@Override
-	public KaleoTransition fetchKaleoTransition(long kaleoTransitionId)
-		throws SystemException {
+	public KaleoTransition fetchKaleoTransition(long kaleoTransitionId) {
 		return kaleoTransitionPersistence.fetchByPrimaryKey(kaleoTransitionId);
 	}
 
@@ -242,17 +232,47 @@ public abstract class KaleoTransitionLocalServiceBaseImpl
 	 * @param kaleoTransitionId the primary key of the kaleo transition
 	 * @return the kaleo transition
 	 * @throws PortalException if a kaleo transition with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public KaleoTransition getKaleoTransition(long kaleoTransitionId)
-		throws PortalException, SystemException {
+		throws PortalException {
 		return kaleoTransitionPersistence.findByPrimaryKey(kaleoTransitionId);
 	}
 
 	@Override
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		ActionableDynamicQuery actionableDynamicQuery = new DefaultActionableDynamicQuery();
+
+		actionableDynamicQuery.setBaseLocalService(com.liferay.portal.workflow.kaleo.service.KaleoTransitionLocalServiceUtil.getService());
+		actionableDynamicQuery.setClass(KaleoTransition.class);
+		actionableDynamicQuery.setClassLoader(getClassLoader());
+
+		actionableDynamicQuery.setPrimaryKeyPropertyName("kaleoTransitionId");
+
+		return actionableDynamicQuery;
+	}
+
+	protected void initActionableDynamicQuery(
+		ActionableDynamicQuery actionableDynamicQuery) {
+		actionableDynamicQuery.setBaseLocalService(com.liferay.portal.workflow.kaleo.service.KaleoTransitionLocalServiceUtil.getService());
+		actionableDynamicQuery.setClass(KaleoTransition.class);
+		actionableDynamicQuery.setClassLoader(getClassLoader());
+
+		actionableDynamicQuery.setPrimaryKeyPropertyName("kaleoTransitionId");
+	}
+
+	/**
+	 * @throws PortalException
+	 */
+	@Override
+	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
+		throws PortalException {
+		return kaleoTransitionLocalService.deleteKaleoTransition((KaleoTransition)persistedModel);
+	}
+
+	@Override
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
-		throws PortalException, SystemException {
+		throws PortalException {
 		return kaleoTransitionPersistence.findByPrimaryKey(primaryKeyObj);
 	}
 
@@ -266,11 +286,9 @@ public abstract class KaleoTransitionLocalServiceBaseImpl
 	 * @param start the lower bound of the range of kaleo transitions
 	 * @param end the upper bound of the range of kaleo transitions (not inclusive)
 	 * @return the range of kaleo transitions
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public List<KaleoTransition> getKaleoTransitions(int start, int end)
-		throws SystemException {
+	public List<KaleoTransition> getKaleoTransitions(int start, int end) {
 		return kaleoTransitionPersistence.findAll(start, end);
 	}
 
@@ -278,10 +296,9 @@ public abstract class KaleoTransitionLocalServiceBaseImpl
 	 * Returns the number of kaleo transitions.
 	 *
 	 * @return the number of kaleo transitions
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public int getKaleoTransitionsCount() throws SystemException {
+	public int getKaleoTransitionsCount() {
 		return kaleoTransitionPersistence.countAll();
 	}
 
@@ -290,12 +307,11 @@ public abstract class KaleoTransitionLocalServiceBaseImpl
 	 *
 	 * @param kaleoTransition the kaleo transition
 	 * @return the kaleo transition that was updated
-	 * @throws SystemException if a system exception occurred
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public KaleoTransition updateKaleoTransition(
-		KaleoTransition kaleoTransition) throws SystemException {
+		KaleoTransition kaleoTransition) {
 		return kaleoTransitionPersistence.update(kaleoTransition);
 	}
 
@@ -1163,7 +1179,7 @@ public abstract class KaleoTransitionLocalServiceBaseImpl
 	 *
 	 * @param sql the sql query
 	 */
-	protected void runSQL(String sql) throws SystemException {
+	protected void runSQL(String sql) {
 		try {
 			DataSource dataSource = kaleoTransitionPersistence.getDataSource();
 
