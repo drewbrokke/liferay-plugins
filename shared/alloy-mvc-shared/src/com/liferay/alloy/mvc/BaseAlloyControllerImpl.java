@@ -35,11 +35,11 @@ import com.liferay.portal.kernel.portlet.LiferayPortletConfig;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.PortletBag;
 import com.liferay.portal.kernel.portlet.PortletBagPool;
-import com.liferay.portal.kernel.scheduler.CronText;
-import com.liferay.portal.kernel.scheduler.CronTrigger;
 import com.liferay.portal.kernel.scheduler.SchedulerEngineHelperUtil;
 import com.liferay.portal.kernel.scheduler.StorageType;
+import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.Trigger;
+import com.liferay.portal.kernel.scheduler.TriggerFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
@@ -83,6 +83,7 @@ import java.io.StringWriter;
 
 import java.lang.reflect.Method;
 
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -535,12 +536,11 @@ public abstract class BaseAlloyControllerImpl implements AlloyController {
 	}
 
 	protected Trigger getSchedulerTrigger() {
-		CronText cronText = new CronText(
-			CalendarFactoryUtil.getCalendar(), CronText.DAILY_FREQUENCY, 1);
+		Calendar calendar = CalendarFactoryUtil.getCalendar();
 
-		return new CronTrigger(
+		return TriggerFactoryUtil.createTrigger(
 			getSchedulerJobName(), getMessageListenerGroupName(),
-			cronText.toString());
+			calendar.getTime(), 1, TimeUnit.DAY);
 	}
 
 	protected Map<String, Serializable> getSearchAttributes(

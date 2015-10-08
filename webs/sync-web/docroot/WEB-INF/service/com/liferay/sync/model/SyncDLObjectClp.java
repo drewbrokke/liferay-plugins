@@ -89,6 +89,7 @@ public class SyncDLObjectClp extends BaseModelImpl<SyncDLObject>
 		attributes.put("modifiedTime", getModifiedTime());
 		attributes.put("repositoryId", getRepositoryId());
 		attributes.put("parentFolderId", getParentFolderId());
+		attributes.put("treePath", getTreePath());
 		attributes.put("name", getName());
 		attributes.put("extension", getExtension());
 		attributes.put("mimeType", getMimeType());
@@ -100,6 +101,7 @@ public class SyncDLObjectClp extends BaseModelImpl<SyncDLObject>
 		attributes.put("size", getSize());
 		attributes.put("checksum", getChecksum());
 		attributes.put("event", getEvent());
+		attributes.put("lastPermissionChangeDate", getLastPermissionChangeDate());
 		attributes.put("lockExpirationDate", getLockExpirationDate());
 		attributes.put("lockUserId", getLockUserId());
 		attributes.put("lockUserName", getLockUserName());
@@ -161,6 +163,12 @@ public class SyncDLObjectClp extends BaseModelImpl<SyncDLObject>
 
 		if (parentFolderId != null) {
 			setParentFolderId(parentFolderId);
+		}
+
+		String treePath = (String)attributes.get("treePath");
+
+		if (treePath != null) {
+			setTreePath(treePath);
 		}
 
 		String name = (String)attributes.get("name");
@@ -227,6 +235,13 @@ public class SyncDLObjectClp extends BaseModelImpl<SyncDLObject>
 
 		if (event != null) {
 			setEvent(event);
+		}
+
+		Date lastPermissionChangeDate = (Date)attributes.get(
+				"lastPermissionChangeDate");
+
+		if (lastPermissionChangeDate != null) {
+			setLastPermissionChangeDate(lastPermissionChangeDate);
 		}
 
 		Date lockExpirationDate = (Date)attributes.get("lockExpirationDate");
@@ -462,6 +477,29 @@ public class SyncDLObjectClp extends BaseModelImpl<SyncDLObject>
 				Method method = clazz.getMethod("setParentFolderId", long.class);
 
 				method.invoke(_syncDLObjectRemoteModel, parentFolderId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
+	}
+
+	@Override
+	public String getTreePath() {
+		return _treePath;
+	}
+
+	@Override
+	public void setTreePath(String treePath) {
+		_treePath = treePath;
+
+		if (_syncDLObjectRemoteModel != null) {
+			try {
+				Class<?> clazz = _syncDLObjectRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setTreePath", String.class);
+
+				method.invoke(_syncDLObjectRemoteModel, treePath);
 			}
 			catch (Exception e) {
 				throw new UnsupportedOperationException(e);
@@ -723,6 +761,30 @@ public class SyncDLObjectClp extends BaseModelImpl<SyncDLObject>
 	}
 
 	@Override
+	public Date getLastPermissionChangeDate() {
+		return _lastPermissionChangeDate;
+	}
+
+	@Override
+	public void setLastPermissionChangeDate(Date lastPermissionChangeDate) {
+		_lastPermissionChangeDate = lastPermissionChangeDate;
+
+		if (_syncDLObjectRemoteModel != null) {
+			try {
+				Class<?> clazz = _syncDLObjectRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setLastPermissionChangeDate",
+						Date.class);
+
+				method.invoke(_syncDLObjectRemoteModel, lastPermissionChangeDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
+	}
+
+	@Override
 	public Date getLockExpirationDate() {
 		return _lockExpirationDate;
 	}
@@ -878,6 +940,25 @@ public class SyncDLObjectClp extends BaseModelImpl<SyncDLObject>
 	}
 
 	@Override
+	public java.lang.String buildTreePath() {
+		try {
+			String methodName = "buildTreePath";
+
+			Class<?>[] parameterTypes = new Class<?>[] {  };
+
+			Object[] parameterValues = new Object[] {  };
+
+			java.lang.String returnObj = (java.lang.String)invokeOnRemoteModel(methodName,
+					parameterTypes, parameterValues);
+
+			return returnObj;
+		}
+		catch (Exception e) {
+			throw new UnsupportedOperationException(e);
+		}
+	}
+
+	@Override
 	public void setCreateDate(Date createDate) {
 		try {
 			String methodName = "setCreateDate";
@@ -903,6 +984,19 @@ public class SyncDLObjectClp extends BaseModelImpl<SyncDLObject>
 			Object[] parameterValues = new Object[] { modifiedDate };
 
 			invokeOnRemoteModel(methodName, parameterTypes, parameterValues);
+		}
+		catch (Exception e) {
+			throw new UnsupportedOperationException(e);
+		}
+	}
+
+	@Override
+	public void updateTreePath(String treePath) {
+		try {
+			_treePath = treePath;
+
+			invokeOnRemoteModel("updateTreePath",
+				new Class<?>[] { String.class }, new Object[] { treePath });
 		}
 		catch (Exception e) {
 			throw new UnsupportedOperationException(e);
@@ -986,6 +1080,7 @@ public class SyncDLObjectClp extends BaseModelImpl<SyncDLObject>
 		clone.setModifiedTime(getModifiedTime());
 		clone.setRepositoryId(getRepositoryId());
 		clone.setParentFolderId(getParentFolderId());
+		clone.setTreePath(getTreePath());
 		clone.setName(getName());
 		clone.setExtension(getExtension());
 		clone.setMimeType(getMimeType());
@@ -997,6 +1092,7 @@ public class SyncDLObjectClp extends BaseModelImpl<SyncDLObject>
 		clone.setSize(getSize());
 		clone.setChecksum(getChecksum());
 		clone.setEvent(getEvent());
+		clone.setLastPermissionChangeDate(getLastPermissionChangeDate());
 		clone.setLockExpirationDate(getLockExpirationDate());
 		clone.setLockUserId(getLockUserId());
 		clone.setLockUserName(getLockUserName());
@@ -1085,7 +1181,7 @@ public class SyncDLObjectClp extends BaseModelImpl<SyncDLObject>
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(51);
+		StringBundler sb = new StringBundler(55);
 
 		sb.append("{syncDLObjectId=");
 		sb.append(getSyncDLObjectId());
@@ -1103,6 +1199,8 @@ public class SyncDLObjectClp extends BaseModelImpl<SyncDLObject>
 		sb.append(getRepositoryId());
 		sb.append(", parentFolderId=");
 		sb.append(getParentFolderId());
+		sb.append(", treePath=");
+		sb.append(getTreePath());
 		sb.append(", name=");
 		sb.append(getName());
 		sb.append(", extension=");
@@ -1125,6 +1223,8 @@ public class SyncDLObjectClp extends BaseModelImpl<SyncDLObject>
 		sb.append(getChecksum());
 		sb.append(", event=");
 		sb.append(getEvent());
+		sb.append(", lastPermissionChangeDate=");
+		sb.append(getLastPermissionChangeDate());
 		sb.append(", lockExpirationDate=");
 		sb.append(getLockExpirationDate());
 		sb.append(", lockUserId=");
@@ -1144,7 +1244,7 @@ public class SyncDLObjectClp extends BaseModelImpl<SyncDLObject>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(79);
+		StringBundler sb = new StringBundler(85);
 
 		sb.append("<model><model-name>");
 		sb.append("com.liferay.sync.model.SyncDLObject");
@@ -1181,6 +1281,10 @@ public class SyncDLObjectClp extends BaseModelImpl<SyncDLObject>
 		sb.append(
 			"<column><column-name>parentFolderId</column-name><column-value><![CDATA[");
 		sb.append(getParentFolderId());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>treePath</column-name><column-value><![CDATA[");
+		sb.append(getTreePath());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>name</column-name><column-value><![CDATA[");
@@ -1227,6 +1331,10 @@ public class SyncDLObjectClp extends BaseModelImpl<SyncDLObject>
 		sb.append(getEvent());
 		sb.append("]]></column-value></column>");
 		sb.append(
+			"<column><column-name>lastPermissionChangeDate</column-name><column-value><![CDATA[");
+		sb.append(getLastPermissionChangeDate());
+		sb.append("]]></column-value></column>");
+		sb.append(
 			"<column><column-name>lockExpirationDate</column-name><column-value><![CDATA[");
 		sb.append(getLockExpirationDate());
 		sb.append("]]></column-value></column>");
@@ -1264,6 +1372,7 @@ public class SyncDLObjectClp extends BaseModelImpl<SyncDLObject>
 	private long _modifiedTime;
 	private long _repositoryId;
 	private long _parentFolderId;
+	private String _treePath;
 	private String _name;
 	private String _extension;
 	private String _mimeType;
@@ -1275,6 +1384,7 @@ public class SyncDLObjectClp extends BaseModelImpl<SyncDLObject>
 	private long _size;
 	private String _checksum;
 	private String _event;
+	private Date _lastPermissionChangeDate;
 	private Date _lockExpirationDate;
 	private long _lockUserId;
 	private String _lockUserName;

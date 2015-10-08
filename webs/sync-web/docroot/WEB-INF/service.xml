@@ -55,6 +55,7 @@
 
 		<column name="repositoryId" type="long" />
 		<column name="parentFolderId" type="long" />
+		<column name="treePath" type="String" json-enabled="false" />
 		<column name="name" type="String" />
 		<column name="extension" type="String" />
 		<column name="mimeType" type="String" />
@@ -66,6 +67,7 @@
 		<column name="size" type="long" />
 		<column name="checksum" type="String" />
 		<column name="event" type="String" />
+		<column name="lastPermissionChangeDate" type="Date" json-enabled="false" />
 		<column name="lockExpirationDate" type="Date" />
 		<column name="lockUserId" type="long" />
 		<column name="lockUserName" type="String" />

@@ -45,11 +45,14 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.zip.ZipReader;
 import com.liferay.portal.kernel.zip.ZipReaderFactoryUtil;
 import com.liferay.portal.model.Group;
+import com.liferay.portal.model.GroupConstants;
 import com.liferay.portal.model.Organization;
+import com.liferay.portal.model.ResourceConstants;
 import com.liferay.portal.model.User;
 import com.liferay.portal.security.auth.CompanyThreadLocal;
 import com.liferay.portal.security.permission.ActionKeys;
 import com.liferay.portal.security.permission.PermissionChecker;
+import com.liferay.portal.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.util.comparator.GroupNameComparator;
 import com.liferay.portlet.documentlibrary.DuplicateFileException;
@@ -78,7 +81,9 @@ import java.io.InputStream;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -107,7 +112,7 @@ public class SyncDLObjectServiceImpl extends SyncDLObjectServiceBaseImpl {
 			SyncUtil.checkSyncEnabled(group.getGroupId());
 
 			if (!group.isUser() &&
-				(serviceContext.getGroupPermissions() == null)) {
+				ArrayUtil.isEmpty(serviceContext.getGroupPermissions())) {
 
 				SyncUtil.setFilePermissions(group, false, serviceContext);
 			}
@@ -152,7 +157,7 @@ public class SyncDLObjectServiceImpl extends SyncDLObjectServiceBaseImpl {
 			SyncUtil.checkSyncEnabled(group.getGroupId());
 
 			if (!group.isUser() &&
-				(serviceContext.getGroupPermissions() == null)) {
+				ArrayUtil.isEmpty(serviceContext.getGroupPermissions())) {
 
 				SyncUtil.setFilePermissions(group, true, serviceContext);
 			}
@@ -284,7 +289,7 @@ public class SyncDLObjectServiceImpl extends SyncDLObjectServiceBaseImpl {
 				sourceFileEntryId);
 
 			if (!group.isUser() &&
-				(serviceContext.getGroupPermissions() == null)) {
+				ArrayUtil.isEmpty(serviceContext.getGroupPermissions())) {
 
 				SyncUtil.setFilePermissions(group, false, serviceContext);
 			}
@@ -315,7 +320,7 @@ public class SyncDLObjectServiceImpl extends SyncDLObjectServiceBaseImpl {
 				syncDLObjectPersistence.findByR_T(
 					repositoryId, SyncConstants.TYPE_FOLDER);
 
-			return checkSyncDLObjects(syncDLObjects, repositoryId);
+			return checkSyncDLObjects(syncDLObjects, repositoryId, 0);
 		}
 		catch (PortalException pe) {
 			throw new PortalException(SyncUtil.buildExceptionMessage(pe), pe);
@@ -581,8 +586,8 @@ public class SyncDLObjectServiceImpl extends SyncDLObjectServiceBaseImpl {
 				syncDLObjects.size() - 1);
 
 			SyncDLObjectUpdate syncDLObjectUpdate = new SyncDLObjectUpdate(
-				checkSyncDLObjects(syncDLObjects, repositoryId), count,
-				syncDLObject.getModifiedTime());
+				checkSyncDLObjects(syncDLObjects, repositoryId, lastAccessTime),
+				count, syncDLObject.getModifiedTime());
 
 			return syncDLObjectUpdate.toString();
 		}
@@ -1015,7 +1020,8 @@ public class SyncDLObjectServiceImpl extends SyncDLObjectServiceBaseImpl {
 	}
 
 	protected List<SyncDLObject> checkSyncDLObjects(
-			List<SyncDLObject> syncDLObjects, long repositoryId)
+			List<SyncDLObject> syncDLObjects, long repositoryId,
+			long lastAccessTime)
 		throws PortalException {
 
 		PermissionChecker permissionChecker = getPermissionChecker();
@@ -1024,29 +1030,65 @@ public class SyncDLObjectServiceImpl extends SyncDLObjectServiceBaseImpl {
 			return syncDLObjects;
 		}
 
-		List<Long> typePKs = new ArrayList<>();
+		boolean hasFileModelPermission = hasModelPermission(
+			repositoryId, DLFileEntryConstants.getClassName());
+		boolean hasFolderModelPermission = hasModelPermission(
+			repositoryId, DLFolderConstants.getClassName());
+
+		if (hasFileModelPermission && hasFolderModelPermission) {
+			return syncDLObjects;
+		}
+
+		Set<Long> typePKs = new HashSet<>();
 
 		for (SyncDLObject syncDLObject : syncDLObjects) {
 			typePKs.add(syncDLObject.getTypePK());
+
+			if ((lastAccessTime != -1) && !hasFolderModelPermission &&
+				_PERMISSIONS_VIEW_DYNAMIC_INHERITANCE) {
+
+				long[] parentFolderIds = StringUtil.split(
+					syncDLObject.getTreePath(), StringPool.SLASH, 0L);
+
+				for (long parentFolderId : parentFolderIds) {
+					if (parentFolderId > 0) {
+						typePKs.add(parentFolderId);
+					}
+				}
+			}
 		}
 
 		Set<Long> checkedTypePKs = SetUtil.fromList(
-			checkTypePKs(repositoryId, permissionChecker.getUserId(), typePKs));
+			checkTypePKs(
+				repositoryId, permissionChecker.getUserId(),
+				new ArrayList(typePKs)));
 
 		List<SyncDLObject> checkedSyncDLObjects = new ArrayList<>();
+
+		Date lastAccessDate = new Date(lastAccessTime);
 
 		for (SyncDLObject syncDLObject : syncDLObjects) {
 			String event = syncDLObject.getEvent();
 
 			if (event.equals(SyncConstants.EVENT_DELETE) ||
-				event.equals(SyncConstants.EVENT_TRASH)) {
+				event.equals(SyncConstants.EVENT_TRASH) ||
+				hasPermission(
+					checkedTypePKs, syncDLObject, hasFileModelPermission,
+					hasFolderModelPermission)) {
 
 				checkedSyncDLObjects.add(syncDLObject);
 
 				continue;
 			}
 
-			if (checkedTypePKs.contains(syncDLObject.getTypePK())) {
+			Date lastPermissionChangeDate =
+				syncDLObject.getLastPermissionChangeDate();
+
+			if ((lastPermissionChangeDate != null) &&
+				lastPermissionChangeDate.after(lastAccessDate)) {
+
+				syncDLObject.setEvent(SyncConstants.EVENT_DELETE);
+
 				checkedSyncDLObjects.add(syncDLObject);
 			}
 		}
@@ -1120,7 +1162,8 @@ public class SyncDLObjectServiceImpl extends SyncDLObjectServiceBaseImpl {
 			syncDLObjectPersistence.findByM_R_P(
 				lastAccessTime, repositoryId, parentFolderId);
 
-		curSyncDLObjects = checkSyncDLObjects(curSyncDLObjects, repositoryId);
+		curSyncDLObjects = checkSyncDLObjects(
+			curSyncDLObjects, repositoryId, lastAccessTime);
 
 		syncDLObjects.addAll(curSyncDLObjects);
 
@@ -1137,6 +1180,72 @@ public class SyncDLObjectServiceImpl extends SyncDLObjectServiceBaseImpl {
 		}
 
 		return syncDLObjects;
+	}
+
+	protected boolean hasModelPermission(long groupId, String name)
+		throws PortalException {
+
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		long[] roleIds = permissionChecker.getRoleIds(
+			permissionChecker.getUserId(), groupId);
+
+		if (roleIds.length == 0) {
+			return false;
+		}
+
+		if (ResourcePermissionLocalServiceUtil.hasResourcePermission(
+				permissionChecker.getCompanyId(), name,
+				ResourceConstants.SCOPE_COMPANY,
+				String.valueOf(permissionChecker.getCompanyId()), roleIds,
+				ActionKeys.VIEW) ||
+			ResourcePermissionLocalServiceUtil.hasResourcePermission(
+				permissionChecker.getCompanyId(), name,
+				ResourceConstants.SCOPE_GROUP_TEMPLATE,
+				String.valueOf(GroupConstants.DEFAULT_PARENT_GROUP_ID), roleIds,
+				ActionKeys.VIEW) ||
+			ResourcePermissionLocalServiceUtil.hasResourcePermission(
+				permissionChecker.getCompanyId(), name,
+				ResourceConstants.SCOPE_GROUP, String.valueOf(groupId), roleIds,
+				ActionKeys.VIEW)) {
+
+			return true;
+		}
+
+		return false;
+	}
+
+	protected boolean hasPermission(
+		Set<Long> checkedTypePKs, SyncDLObject syncDLObject,
+		boolean hasFileModelPermission, boolean hasFolderModelPermission) {
+
+		String type = syncDLObject.getType();
+
+		if ((!type.equals(SyncConstants.TYPE_FILE) ||
+			 !hasFileModelPermission) &&
+			(!type.equals(SyncConstants.TYPE_FOLDER) ||
+			 !hasFolderModelPermission) &&
+			!checkedTypePKs.contains(syncDLObject.getTypePK())) {
+
+			return false;
+		}
+
+		if (!hasFolderModelPermission &&
+			_PERMISSIONS_VIEW_DYNAMIC_INHERITANCE) {
+
+			long[] parentFolderIds = StringUtil.split(
+				syncDLObject.getTreePath(), StringPool.SLASH, 0L);
+
+			for (long parentFolderId : parentFolderIds) {
+				if ((parentFolderId > 0) &&
+					!checkedTypePKs.contains(parentFolderId)) {
+
+					return false;
+				}
+			}
+		}
+
+		return true;
 	}
 
 	protected SyncDLObject toSyncDLObject(FileEntry fileEntry, String event)
@@ -1211,7 +1320,7 @@ public class SyncDLObjectServiceImpl extends SyncDLObjectServiceBaseImpl {
 				String checksum = MapUtil.getString(
 					jsonWebServiceActionParametersMap, "checksum");
 
-				return addFileEntry(
+				return syncDLObjectService.addFileEntry(
 					repositoryId, folderId, sourceFileName, mimeType, title,
 					description, changeLog, tempFile, checksum, serviceContext);
 			}
@@ -1229,7 +1338,7 @@ public class SyncDLObjectServiceImpl extends SyncDLObjectServiceBaseImpl {
 			String description = MapUtil.getString(
 				jsonWebServiceActionParametersMap, "description");
 
-			return addFolder(
+			return syncDLObjectService.addFolder(
 				repositoryId, parentFolderId, name, description,
 				serviceContext);
 		}
@@ -1245,7 +1354,7 @@ public class SyncDLObjectServiceImpl extends SyncDLObjectServiceBaseImpl {
 			String title = MapUtil.getString(
 				jsonWebServiceActionParametersMap, "title");
 
-			return copyFileEntry(
+			return syncDLObjectService.copyFileEntry(
 				sourceFileEntryId, repositoryId, folderId, sourceFileName,
 				title, serviceContext);
 		}
@@ -1255,13 +1364,14 @@ public class SyncDLObjectServiceImpl extends SyncDLObjectServiceBaseImpl {
 			long newFolderId = MapUtil.getLong(
 				jsonWebServiceActionParametersMap, "newFolderId");
 
-			return moveFileEntry(fileEntryId, newFolderId, serviceContext);
+			return syncDLObjectService.moveFileEntry(
+				fileEntryId, newFolderId, serviceContext);
 		}
 		else if (urlPath.endsWith("/move-file-entry-to-trash")) {
 			long fileEntryId = MapUtil.getLong(
 				jsonWebServiceActionParametersMap, "fileEntryId");
 
-			return moveFileEntryToTrash(fileEntryId);
+			return syncDLObjectService.moveFileEntryToTrash(fileEntryId);
 		}
 		else if (urlPath.endsWith("/move-folder")) {
 			long folderId = MapUtil.getLong(
@@ -1269,13 +1379,14 @@ public class SyncDLObjectServiceImpl extends SyncDLObjectServiceBaseImpl {
 			long parentFolderId = MapUtil.getLong(
 				jsonWebServiceActionParametersMap, "parentFolderId");
 
-			return moveFolder(folderId, parentFolderId, serviceContext);
+			return syncDLObjectService.moveFolder(
+				folderId, parentFolderId, serviceContext);
 		}
 		else if (urlPath.endsWith("/move-folder-to-trash")) {
 			long folderId = MapUtil.getLong(
 				jsonWebServiceActionParametersMap, "folderId");
 
-			return moveFolderToTrash(folderId);
+			return syncDLObjectService.moveFolderToTrash(folderId);
 		}
 		else if (urlPath.endsWith("/patch-file-entry")) {
 			long fileEntryId = MapUtil.getLong(
@@ -1306,7 +1417,7 @@ public class SyncDLObjectServiceImpl extends SyncDLObjectServiceBaseImpl {
 				String checksum = MapUtil.getString(
 					jsonWebServiceActionParametersMap, "checksum");
 
-				return patchFileEntry(
+				return syncDLObjectService.patchFileEntry(
 					fileEntryId, sourceVersionId, sourceFileName, mimeType,
 					title, description, changeLog, majorVersion, tempFile,
 					checksum, serviceContext);
@@ -1344,7 +1455,7 @@ public class SyncDLObjectServiceImpl extends SyncDLObjectServiceBaseImpl {
 				String checksum = MapUtil.getString(
 					jsonWebServiceActionParametersMap, "checksum");
 
-				return updateFileEntry(
+				return syncDLObjectService.updateFileEntry(
 					fileEntryId, sourceFileName, mimeType, title, description,
 					changeLog, majorVersion, tempFile, checksum,
 					serviceContext);
@@ -1361,13 +1472,18 @@ public class SyncDLObjectServiceImpl extends SyncDLObjectServiceBaseImpl {
 			String description = MapUtil.getString(
 				jsonWebServiceActionParametersMap, "description");
 
-			return updateFolder(folderId, name, description, serviceContext);
+			return syncDLObjectService.updateFolder(
+				folderId, name, description, serviceContext);
 		}
 		else {
 			throw new NoSuchJSONWebServiceException(
 				"No JSON web service action with path " + urlPath);
 		}
 	}
+
+	private static final boolean _PERMISSIONS_VIEW_DYNAMIC_INHERITANCE =
+		GetterUtil.getBoolean(
+			PropsUtil.get(PropsKeys.PERMISSIONS_VIEW_DYNAMIC_INHERITANCE));
 
 	private static final int _SQL_DATA_MAX_PARAMETERS = GetterUtil.getInteger(
 		PropsUtil.get(PropsKeys.SQL_DATA_MAX_PARAMETERS));
